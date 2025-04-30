@@ -68,6 +68,7 @@
                 :style="{ left: item.left }"
                 @mousedown="headerClick($event, p)"
                 @contextmenu.prevent="panelFilterClick(item, p)"
+                :ref="setHeaderRef"
               >
                 <div
                   :class="{ 'filter-sign': columnFilter[p]}"
@@ -114,7 +115,9 @@
               <td colspan="100%" style="height:40px; vertical-align: middle; text-align: center"></td>
             </tr>
             <tr v-else v-for="(record, rowPos) in pagingTable" :key="rowPos"
-              :class="{ select: typeof selected[pageTop + rowPos] !== 'undefined' }" :style="rowStyle(record)">
+              :class="{ select: typeof selected[pageTop + rowPos] !== 'undefined' }" 
+              :style="rowStyle(record)"
+            >
 
               <td v-if="selectable" class="center-text first-col-selectable" :id="`rid-${record.id}`" :class="{
                 hide: noNumCol,
@@ -450,6 +453,8 @@ import IconStepForward from "./components/svg/IconStepForward.vue";
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
+import { useExcelExport } from '../table/composables/useExportTable'
+
 export default defineComponent({
   components: {
     'vue-excel-filter': VueExcelFilter,
@@ -701,6 +706,7 @@ export default defineComponent({
       undoStack: [],
       redoStack: [],
       maxHistorySteps: 50,
+      headerRefs: [],
     }
     return dataset
   },
@@ -2186,6 +2192,12 @@ export default defineComponent({
     },
     /* *** Import/Export ************************************************************************************
      */
+
+    setHeaderRef(el) {
+      if (el && !this.headerRefs.includes(el)) {
+        this.headerRefs.push(el)
+      }
+    }, 
     importTable(cb, errCb) {
       this.$refs.importFile.click()
       this.importCallback = cb
@@ -2355,63 +2367,85 @@ export default defineComponent({
         fileReader.readAsBinaryString(file)
       }, 500)
     },
-    exportTable(format, selectedOnly, filename) {
-      this.localLoading = true
-      setTimeout(() => {
-        const wb = utils.book_new()
-        let ws1 = null
-        let data = this.table
-        if (selectedOnly)
-          data = this.table.filter((rec, i) => this.selected[i])
-        const mapped = data.map(rec => {
-          const conv = {}
-          this.fields.forEach(field => {
-            if (rec[field.name]) {
-              conv[field.name] = rec[field.name].value
-            }
-            else {
-              conv[field.name] = null
-            }
-          })
-          return conv
-        })
-        ws1 = utils.json_to_sheet(mapped, {
-          header: this.fields.map(field => field.name)
-        })
-        const labels = Array.from(this.labelTr.children).slice(1).map(t => t.children[0].innerText)
-        utils.sheet_add_aoa(ws1, [labels], { origin: 'A1' })
-        ws1['!cols'] = Array.from(this.labelTr.children).slice(1).map((t) => {
-          return {
-            width: t.getBoundingClientRect().width / 6.5
-          }
-        })
-        utils.book_append_sheet(wb, ws1, 'Sheet1')
-        filename = filename || 'export'
-        switch (format) {
-          case 'csv':
-            if (!filename.endsWith('.csv')) filename = filename + '.csv'
-            break
-          case 'xls':
-            if (!filename.endsWith('.xls')) filename = filename + '.xls'
-            break
-          case 'xlsx':
-          case 'excel':
-          default:
-            if (!filename.endsWith('.xlsx')) filename = filename + '.xlsx'
-            break
-        }
-        if (filename.endsWith('.xlsx'))
-          writeFile(wb, filename, {
-            compression: 'DEFLATE',
-            compressionOptions: {
-              level: 6
-            }
-          })
-        else
-          writeFile(wb, filename)
+    async exportTable (format, selectedOnly, filename) {
+      const { exportTable } = useExcelExport();
 
-        this.localLoading = false
-      }, 500)
+      const headerEls = Array.from(this.editor.querySelectorAll('thead th'));
+      headerEls.shift();
+
+      const rows = Array.from(this.editor.querySelectorAll('tbody tr'));
+
+      const rowData = rows.map(row => {
+        const cells = Array.from(row.querySelectorAll('td'));
+        cells.shift();
+        return cells;
+      });
+
+      console.log(rowData);
+
+      exportTable(this.table, this.fields,{
+        format: 'xlsx',
+        filename: 'отчет',
+        headerRefs: headerEls,
+        rowsRef: rowData,
+      })
+
+      // this.localLoading = true
+      // setTimeout(() => {
+      //   const wb = utils.book_new()
+      //   let ws1 = null
+      //   let data = this.table
+      //   if (selectedOnly)
+      //     data = this.table.filter((rec, i) => this.selected[i])
+      //   const mapped = data.map(rec => {
+      //     const conv = {}
+      //     this.fields.forEach(field => {
+      //       if (rec[field.name]) {
+      //         conv[field.name] = rec[field.name].value
+      //       }
+      //       else {
+      //         conv[field.name] = null
+      //       }
+      //     })
+      //     return conv
+      //   })
+      //   ws1 = utils.json_to_sheet(mapped, {
+      //     header: this.fields.map(field => field.name)
+      //   })
+      //   const labels = Array.from(this.labelTr.children).slice(1).map(t => t.children[0].innerText)
+      //   utils.sheet_add_aoa(ws1, [labels], { origin: 'A1' })
+      //   ws1['!cols'] = Array.from(this.labelTr.children).slice(1).map((t) => {
+      //     return {
+      //       width: t.getBoundingClientRect().width / 6.5
+      //     }
+      //   })
+      //   utils.book_append_sheet(wb, ws1, 'Sheet1')
+      //   filename = filename || 'export'
+      //   switch (format) {
+      //     case 'csv':
+      //       if (!filename.endsWith('.csv')) filename = filename + '.csv'
+      //       break
+      //     case 'xls':
+      //       if (!filename.endsWith('.xls')) filename = filename + '.xls'
+      //       break
+      //     case 'xlsx':
+      //     case 'excel':
+      //     default:
+      //       if (!filename.endsWith('.xlsx')) filename = filename + '.xlsx'
+      //       break
+      //   }
+      //   if (filename.endsWith('.xlsx'))
+      //     writeFile(wb, filename, {
+      //       compression: 'DEFLATE',
+      //       compressionOptions: {
+      //         level: 6
+      //       }
+      //     })
+      //   else
+      //     writeFile(wb, filename)
+
+      //   this.localLoading = false
+      // }, 500)
     },
 
     /* *** Select *******************************************************************************************
