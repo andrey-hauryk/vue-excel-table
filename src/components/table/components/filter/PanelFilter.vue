@@ -33,7 +33,6 @@
             v-model="search"
             @search="doInputFilter"
           ></SearchInput>
-
         <div class="panel-list">
           <div class="panel-list__item" @click="toggleSelectAll(!isAllSelected)">
             <ExcelCheckbox

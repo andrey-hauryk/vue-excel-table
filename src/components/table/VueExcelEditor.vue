@@ -482,8 +482,6 @@ export default defineComponent({
     noSorting: { type: Boolean, default: false }, //не работает
     noMassUpdate: { type: Boolean, default: false }, //хз че делает кандидат на удаление
 
-
-
     filterRow: { type: Boolean, default: false },
     freeSelect: { type: Boolean, default: false },
     noFooter: { type: Boolean, default: false },
@@ -587,6 +585,11 @@ export default defineComponent({
           filterAndText: 'И',
           enterValue: 'Введите значение...',
           select: 'Выбрать',
+          settings: 'Настройки',
+          moveFileOrSelect: 'Перетащите файл сюда или выберите файл',
+          importFile: 'Импортировать',
+          chooseFile: 'Выберите файл',
+          delimiter: 'Символ разделения',
         };
       },
     },
