@@ -150,7 +150,8 @@ watch(() => props.show, (newVal: boolean) => {
     display: flex;
     padding: 1rem;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
     border-top: 1px solid lightgray;
   }
   &__button {

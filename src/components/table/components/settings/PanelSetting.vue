@@ -1,49 +1,51 @@
 <template>
   <Modal
-    class="settings__modal"
+    class="table-settings"
     :show="show"
-    @close="hidePanel"
+    @close="closePanel"
     :header="localizedLabel.tableSetting"
     :localizedLabel="localizedLabel"
   >
     <template #content>
-      <div class="settings__content">
+      <div class="table-settings__content">
         <Tabs
           :tabs="availableTabs"
           v-model="activeTab"
         />
         <component
           :is="currentTabComponent"
+          :fields="localFields"
           :localizedLabel="localizedLabel"
         />
       </div>
     </template>
 
     <template #actions>
-      <div class="settings-actions">
         <ExcelButton 
-          class="panel-btn" 
+          class="table-settings__button" 
           :label="localizedLabel.back" 
-          @click="hidePanel"
+          @click="closePanel"
         />
         <ExcelButton 
-          class="panel-btn" 
+          class="table-settings__button" 
           :label="localizedLabel.apply" 
+          @click="applyChanges"
         />
-      </div>
     </template>
   </Modal>
 </template>
 
-
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch} from 'vue'
+import cloneDeep from 'lodash/cloneDeep'
 import Modal from "../Modal.vue"
 import ExcelButton from '../ExcelButton.vue'
 import Tabs from '../Tabs.vue'
 import ImportExcel from './ImportExcel.vue'
 import ExportExcel from './ExportExcel.vue'
 import SettingsList from './SettingsList.vue'
+
+type TabKey = 'settings' | 'export' | 'import';
 
 const props = defineProps({
   modelValue: Array,
@@ -66,9 +68,22 @@ const emit = defineEmits([
   "close"
 ])
 
-type TabKey = 'settings' | 'export' | 'import'
+const localFields = ref([]);
 
-const activeTab = ref<TabKey>('settings');
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    localFields.value = cloneDeep(newVal)
+  },
+  { immediate: true }
+)
+
+const fields = computed({
+  get: () => props.modelValue,
+  set: (newValue) => emit("update:modelValue", newValue)
+})
+
+const activeTab = ref<TabKey>('settings')
 
 const availableTabs = computed(() => [
   { name: 'settings', label: props.localizedLabel.settings },
@@ -84,7 +99,22 @@ const tabComponents = {
 
 const currentTabComponent = computed(() => tabComponents[activeTab.value])
 
-const hidePanel = () => {
+const closePanel = () => emit("close")
+
+const applyChanges = () => {
+  emit("update:modelValue", localFields.value)
   emit("close")
 }
 </script>
+
+<style scoped>
+.table-settings__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.table-settings__button {
+  min-width: 100px;
+}
+</style>

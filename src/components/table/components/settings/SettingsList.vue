@@ -4,10 +4,10 @@
       <draggable
         v-model="fields"
         draggable=".panel-list-item"
-        :item-key="getKey"
+        item-key="name"
       >
         <template #item="{ element }">
-          <div class="panel-list-item" @click="columnLabelClick(element)">
+          <div class="panel-list-item" @click="toggleVisibility(element)">
             <input
               type="checkbox"
               v-model="element.invisible"
@@ -25,26 +25,29 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from "vue";
+import { defineProps} from "vue";
 import draggable from "vuedraggable/src/vuedraggable";
 
 const props = defineProps({
   fields: Array,
-  getKey: Function,
 });
 
-const emit = defineEmits(["update:fields", "calStickyLeft"]);
-
-const columnLabelClick = (item: any) => {
+const toggleVisibility = (item: any) => {
   item.invisible = !item.invisible;
-  emit("calStickyLeft");
 };
 
 const fields = props.fields;
-const getKey = props.getKey;
 </script>
 
 <style scoped lang="scss">
+.panel-action {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  position: relative;
+  white-space: nowrap;
+}
 .panel-list {
   overflow-y: scroll;
   max-height: 20rem;
@@ -74,5 +77,25 @@ input[type="checkbox"] {
 }
 .panel-list-item:not(:last-child) {
   border-bottom: 1px solid lightgray;
+}
+
+.btn {
+  width: 45%;
+}
+
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.3s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.list-leave-active {
+  position: absolute;
 }
 </style>
