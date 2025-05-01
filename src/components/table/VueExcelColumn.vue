@@ -15,7 +15,6 @@ export default defineComponent({
     width: { type: String, default: "100px" },
     invisible: { type: Boolean, default: false },
     readonly: { type: Boolean, default: null },
-    textTransform: { type: String as PropType<ColumnProps["textTransform"]>, default: null },
     textAlign: { type: String as PropType<ColumnProps["textAlign"]>, default: null },
     keyField: { type: Boolean, default: false },
     sticky: { type: Boolean, default: false },
@@ -61,8 +60,6 @@ export default defineComponent({
     toValue: {
       type: Function as PropType<(text: string) => any>,
       default(text: string): any {
-        if (this.textTransform === "uppercase") text = text.toUpperCase();
-        if (this.textTransform === "lowercase") text = text.toLowerCase();
         if (
           ["datetick"].includes(this.type)
         ) {
@@ -142,7 +139,6 @@ export default defineComponent({
         throw new Error("VueExcelColumn: Not supported type: " + this.type);
       }
       const style = { ...this.initStyle };
-      if (this.textTransform) style.textTransform = this.textTransform;
       if (this.textAlign) style.textAlign = this.textAlign;
       this._autocomplete = this.autocomplete ?? this.type === "action";
       this._readonly = this.readonly;
@@ -167,7 +163,6 @@ export default defineComponent({
         allowKeys: this.allowKeys ?? defaultAllowKeys[this.type],
         mandatory: this.mandatory,
         lengthLimit: Number(this.lengthLimit),
-        textTransform: this.textTransform,
         autocomplete: this._autocomplete ?? this.$parent.autocomplete,
         initStyle: style,
         invisible: this.invisible,

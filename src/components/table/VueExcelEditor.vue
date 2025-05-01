@@ -1059,7 +1059,6 @@ export default defineComponent({
         lengthLimit: 0,
 
         autocomplete: this.autocomplete,
-        textTransform: null,
         initStyle: 'left',
         invisible: false,
         readonly: this.readonly,
