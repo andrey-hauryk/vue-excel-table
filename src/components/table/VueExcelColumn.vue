@@ -8,111 +8,104 @@ import { ColumnProps } from "./types";
 
 export default defineComponent({
   props: {
-    field: { type: String, default: "dummy" },
-    label: { type: String, default: null },
-    type: { type: String as PropType<ColumnProps["type"]>, default: "string" },
-    initStyle: { type: [Object, Function] as PropType<ColumnProps["initStyle"]>, default: null },
-    width: { type: String, default: "100px" },
-    invisible: { type: Boolean, default: false },
-    readonly: { type: Boolean, default: null },
-    textAlign: { type: String as PropType<ColumnProps["textAlign"]>, default: null },
-    keyField: { type: Boolean, default: false },
-    sticky: { type: Boolean, default: false },
-    listByClick: { type: Boolean, default: null },
-    validate: { type: Function as PropType<ColumnProps["validate"]>, default: null },
-    change: { type: Function as PropType<ColumnProps["change"]>, default: null },
-    link: { type: Function as PropType<ColumnProps["link"]>, default: null },
-    isLink: { type: Function as PropType<ColumnProps["isLink"]>, default: null },
-    format: { type: String, default: "text" },
-    cellClick: { type: Function as PropType<ColumnProps["cellClick"]>, default: null },
-    autoFillWidth: { type: Boolean, default: false },
-    hideDuplicate: { type: Boolean, default: false },
-    grouping: { type: String, default: null },
-    allowKeys: {
-      type: [Array, Function] as PropType<ColumnProps["allowKeys"]>,
-      default: null,
-    },
-    mandatory: { type: String, default: "" },
-    lengthLimit: { type: Number, default: 0 },
-    autocomplete: { type: Boolean, default: null },
-    pos: { type: Number, default: 0 },
-    options: {
-      type: [Array, Object, Function] as PropType<ColumnProps["options"]>,
-      default: null,
-    },
-    summary: { type: String, default: null },
-    sort: { type: Function as PropType<ColumnProps["sort"]>, default: null },
-    sorting: {
-      type: Function as PropType<ColumnProps["sorting"]>,
-      default: null,
-    },
-    noSorting: { type: Boolean, default: null },
-    masking: { type: String, default: "•" },
-    placeholder: { type: String, default: "" },
-    valueFormatter: {
-      type: Function as PropType<ColumnProps["valueFormatter"]>,
-      default: null,
-    },
-    render: {
-      type: Function as PropType<ColumnProps["render"]>,
-      default: null,
-    },
-    toValue: {
-      type: Function as PropType<(text: string) => any>,
-      default(text: string): any {
-        if (
-          ["datetick"].includes(this.type)
-        ) {
-          return new Date(text + " GMT+0").getTime();
-        }
+  // 🔧 ДАННЫЕ
+  field: { type: String, default: "dummy" },
+  label: { type: String, default: null },
+  type: { type: String as PropType<ColumnProps["type"]>, default: "string" },
+  width: { type: String, default: "100px" },
+  invisible: { type: Boolean, default: false },
+  readonly: { type: Boolean, default: null },
+  keyField: { type: Boolean, default: false },
+  sticky: { type: Boolean, default: false },
+  listByClick: { type: Boolean, default: null },
+  autoFillWidth: { type: Boolean, default: false },
+  hideDuplicate: { type: Boolean, default: false },
+  grouping: { type: String, default: null },
+  mandatory: { type: String, default: "" },
+  lengthLimit: { type: Number, default: 0 },
+  autocomplete: { type: Boolean, default: null },
+  pos: { type: Number, default: 0 },
+  summary: { type: String, default: null },
+  noSorting: { type: Boolean, default: null },
 
-        if (this.type === "map" && typeof this.options === "function") {
-          const list = this.options(text);
-          return Object.keys(list).find((k) => list[k] === text);
-        }
-        return text;
-      },
-    },
-    toText: {
-      type: Function as PropType<(val: any) => string>,
-      default(val: any, record: any): string {
-        if (this.keyField && val?.toString().startsWith("§")) return "";
-        if (val == null) return "";
-        const offset = new Date().getTimezoneOffset() * 60 * 1000;
-        let d: number;
-        switch (this.type) {
-          case "number":
-            return this.valueFormatter ? this.valueFormatter(val, record) : String(val);
-          case "boolean":
-            return val ? "Да" : "Нет";
-          case "date":
-            d = new Date(val).getTime();
-            if (!d) return "";
-            return new Date(d - offset).toISOString().slice(0, 10);
-          case "datetick":
-            d = new Date(val * 1 ? val * 1 : val).getTime();
-            if (!d) return "";
-            return new Date(d - offset).toISOString().slice(0, 10);
-          case "map":
-            return typeof this.options === "function"
-              ? this.options(val)?.[val]
-              : this.options?.[val] ?? "";
-          case "password":
-            return this.masking.repeat(val?.length || 0);
-          case "action":
-            return "";
-          case "list":
-            return val[0] ? val[0].slice(0, 19) : "";
-          default:
-            return String(val);
-        }
-      },
-    },
-    register: {
-      type: Function as PropType<ColumnProps["register"]>,
-      default: null,
+  // 📦 СЛОЖНЫЕ СТРУКТУРЫ (можно рассматривать как данные)
+  options: {
+    type: [Array, Object, Function] as PropType<ColumnProps["options"]>,
+    default: null,
+  },
+  allowKeys: {
+    type: [Array, Function] as PropType<ColumnProps["allowKeys"]>,
+    default: null,
+  },
+  initStyle: {
+    type: [Object, Function] as PropType<ColumnProps["initStyle"]>,
+    default: null,
+  },
+
+  // ⚙️ ФУНКЦИИ
+  validate: { type: Function as PropType<ColumnProps["validate"]>, default: null },
+  link: { type: Function as PropType<ColumnProps["link"]>, default: null },
+  isLink: { type: Function as PropType<ColumnProps["isLink"]>, default: null },
+  valueFormatter: {
+    type: Function as PropType<ColumnProps["valueFormatter"]>,
+    default: null,
+  },
+  render: {
+    type: Function as PropType<ColumnProps["render"]>,
+    default: null,
+  },
+  toValue: {
+    type: Function as PropType<(text: string) => any>,
+    default(text: string): any {
+      if (["datetick"].includes(this.type)) {
+        return new Date(text + " GMT+0").getTime();
+      }
+
+      if (this.type === "map" && typeof this.options === "function") {
+        const list = this.options(text);
+        return Object.keys(list).find((k) => list[k] === text);
+      }
+      return text;
     },
   },
+  toText: {
+    type: Function as PropType<(val: any) => string>,
+    default(val: any, record: any): string {
+      if (this.keyField && val?.toString().startsWith("§")) return "";
+      if (val == null) return "";
+      const offset = new Date().getTimezoneOffset() * 60 * 1000;
+      let d: number;
+      switch (this.type) {
+        case "number":
+          return this.valueFormatter ? this.valueFormatter(val, record) : String(val);
+        case "boolean":
+          return val ? "Да" : "Нет";
+        case "date":
+          d = new Date(val).getTime();
+          if (!d) return "";
+          return new Date(d - offset).toISOString().slice(0, 10);
+        case "datetick":
+          d = new Date(val * 1 ? val * 1 : val).getTime();
+          if (!d) return "";
+          return new Date(d - offset).toISOString().slice(0, 10);
+        case "map":
+          return typeof this.options === "function"
+            ? this.options(val)?.[val]
+            : this.options?.[val] ?? "";
+        case "action":
+          return "";
+        case "list":
+          return val[0] ? val[0].slice(0, 19) : "";
+        default:
+          return String(val);
+      }
+    },
+  },
+  register: {
+    type: Function as PropType<ColumnProps["register"]>,
+    default: null,
+  },
+},
   created() {
     this.init();
   },
@@ -139,7 +132,6 @@ export default defineComponent({
         throw new Error("VueExcelColumn: Not supported type: " + this.type);
       }
       const style = { ...this.initStyle };
-      if (this.textAlign) style.textAlign = this.textAlign;
       this._autocomplete = this.autocomplete ?? this.type === "action";
       this._readonly = this.readonly;
       this._listByClick = this.type === "action";
@@ -152,11 +144,8 @@ export default defineComponent({
         origWidth: this.width,
         autoFillWidth: this.autoFillWidth,
         validate: this.validate,
-        change: this.change,
         link: this.link,
         isLink: this.isLink ?? (this.link ? () => true : null),
-        sort: this.sort,
-        sorting: this.sorting,
         noSorting: this.noSorting !== null ?? this.$parent.noSorting,
         keyField: this.keyField,
         sticky: this.sticky,
@@ -170,13 +159,9 @@ export default defineComponent({
         pos: Number(this.pos),
         options: this.options,
         summary: this.summary,
-        masking: this.masking,
-        format: this.format,
         toValue: this.toValue,
-        toText: (...arg) => this.toText(...arg) || this.placeholder || "",
+        toText: (...arg) => this.toText(...arg) || "",
         register: this.register,
-        placeholder: this.placeholder,
-        cellClick: this.cellClick,
         listByClick: this.listByClick ?? this._listByClick,
         hideDuplicate: this.hideDuplicate ?? this.grouping,
         grouping: this.grouping,

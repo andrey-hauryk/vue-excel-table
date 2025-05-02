@@ -166,10 +166,6 @@
                   <template v-else-if="typeof item.render === 'function'">
                     <component :is="item.render(record)" />
                   </template>
-                  <!-- if html exist render html -->
-                  <template v-else-if="item.format === 'html'">
-                    <span v-html="item.toText(record[item.name]?.value, record, item, p)"></span>
-                  </template>
                   <!-- default standart text -->
                   <template v-else>
                     <cell-tooltip v-if="record[item.name]?.anomaly" :content="record[item.name].anomaly">
@@ -1049,7 +1045,6 @@ export default defineComponent({
         validate: null,
         change: null,
         link: null,
-        sort: null,
 
         keyField: false,
         sticky: false,
@@ -1110,7 +1105,6 @@ export default defineComponent({
           pos: 0,
           options: null,
           summary: null,
-          sort: null,
           toValue: t => t,
           toText: t => t,
           register: null
@@ -1604,13 +1598,6 @@ export default defineComponent({
       }
 
       if (!e.altKey) this.systable.classList.remove('alt')
-      if (this.inputBoxShow && this.currentField.type === 'password') {
-        setTimeout(() => {
-          const v = this.inputBox.value.split('').map((c, i) => c === this.currentField.masking ? this.inputBox._value[i] : c)
-          this.inputBox._value = v.join('')
-          this.inputBox.value = this.currentField.masking.repeat(v.length)
-        })
-      }
     },
     winKeydown(e) {
       if (e.key === 'Shift') {
@@ -2009,27 +1996,16 @@ export default defineComponent({
 
       const name = field.name
       setTimeout(() => {
-        let sorting = field.sorting
-        if (!sorting) {
-          if (field.type === 'number')
-            sorting = (a, b) => {
-              if (Number(a) > Number(b)) return 1
-              if (Number(a) < Number(b)) return -1
-              return 0
-            }
-          else
-            sorting = (a, b) => {
+        let sorting = (a, b) => {
               return String(a).localeCompare(String(b))
             }
-        }
         if (n === 0) {
           this.modelValue.sort((a, b) => a.id > b.id ? 1 : -1)
           this.sortPos = 0
         }
         else {
           this.modelValue.sort((a, b) => {
-            if (field.sort) return field.sort(a, b) * -n
-            else return sorting(a[name].value, b[name].value) * -n
+            return sorting(a[name].value, b[name].value) * -n
           })
           this.sortPos = colPos
         }
@@ -2286,13 +2262,6 @@ export default defineComponent({
                     if (field.readonly) {
                       if (this.importErrorCallback) this.importErrorCallback('readonlyColumnDetected', i + 1)
                       throw new Error(`VueExcelEditor: [row=${i + 1}] ` + this.localizedLabel.readonlyColumnDetected + ': ' + field.name)
-                    }
-                    if (field.change) {
-                      let result = await field.change(val, rec[field.name]?.value, rec, field)
-                      if (result === false) {
-                        if (this.importErrorCallback) this.importErrorCallback('columnHasValidationError', i + 1)
-                        throw new Error(`VueExcelEditor: [row=${i + 1}, val=${val}] ` + this.localizedLabel.columnHasValidationError(field.name, ''))
-                      }
                     }
                     if (field.validate) {
                       let err
@@ -3080,11 +3049,6 @@ export default defineComponent({
 
       const oldVal = row[field.name]
       const oldKeys = this.getKeys(row)
-
-      if (field.change) {
-        let result = await field.change(newVal, oldVal, row, field)
-        if (result === false) return
-      }
 
       row[field.name] = { value: newVal, anomaly: false, isSelected: false };
 
