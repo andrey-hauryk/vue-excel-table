@@ -1,5 +1,5 @@
 <template>
-  <Modal
+  <ExcelModal
     :show="show"
     @close="hidePanel"
     :header="localizedLabel.sortingAndFiltering"
@@ -11,7 +11,7 @@
         <ExcelButton class="panel-btn" :label="localizedLabel.sortDescending" @click="sort(-1)"></ExcelButton>
       </div>
       <div class="panel-action">
-        <Tabs
+        <ExcelTabs
           :tabs="[
             { name: 'basic', label: localizedLabel.basicFilter },
             { name: 'custom', label: localizedLabel.customFilter || 'Custom Filter' },
@@ -66,16 +66,16 @@
         <ExcelButton class="panel-btn" :label="localizedLabel.apply" @click="apply"></ExcelButton>
       </div>
     </template>
-  </Modal>
+  </ExcelModal>
 </template>
 
 <script setup lang="ts">
-import Modal from "../Modal.vue";
-import ExcelButton from '../ExcelButton.vue';
+import ExcelModal from "../ui/ExcelModal.vue";
+import ExcelButton from '../ui/ExcelButton.vue';
 import SearchInput from "../find/SearchInput.vue";
-import ExcelCheckbox from "../ExcelCheckbox.vue";
+import ExcelCheckbox from "../ui/ExcelCheckbox.vue";
 import CustomFilter from "./CustomFilter.vue";
-import Tabs from '../Tabs.vue';
+import ExcelTabs from '../ui/ExcelTabs.vue';
 import { ref, computed, watch } from "vue";
 
 const props = defineProps({

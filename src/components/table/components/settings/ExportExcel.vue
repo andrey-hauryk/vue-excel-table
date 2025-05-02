@@ -28,9 +28,9 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue';
-import ExcelInput from '../ExcelInput.vue';
-import ExcelAutocomplete from '../ExcelAutocomplete.vue';
-import ExcelSwitch from '../ExcelSwitch.vue';
+import ExcelInput from '../ui/ExcelInput.vue';
+import ExcelAutocomplete from '../ui/ExcelAutocomplete.vue';
+import ExcelSwitch from '../ui/ExcelSwitch.vue';
 
 const props = defineProps<{
   localizedLabel: {

@@ -1,5 +1,5 @@
 <template>
-  <Modal
+  <ExcelModal
     class="table-settings"
     :show="show"
     @close="closePanel"
@@ -8,7 +8,7 @@
   >
     <template #content>
       <div class="table-settings__content">
-        <Tabs
+        <ExcelTabs
           :tabs="availableTabs"
           v-model="activeTab"
         />
@@ -32,15 +32,15 @@
           @click="applyChanges"
         />
     </template>
-  </Modal>
+  </ExcelModal>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch} from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-import Modal from "../Modal.vue"
-import ExcelButton from '../ExcelButton.vue'
-import Tabs from '../Tabs.vue'
+import ExcelModal from "../ui/ExcelModal.vue"
+import ExcelButton from '../ui/ExcelButton.vue'
+import ExcelTabs from '../ui/ExcelTabs.vue'
 import ImportExcel from './ImportExcel.vue'
 import ExportExcel from './ExportExcel.vue'
 import SettingsList from './SettingsList.vue'
