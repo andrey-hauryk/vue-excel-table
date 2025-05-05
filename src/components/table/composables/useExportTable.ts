@@ -7,7 +7,7 @@ interface ExportField {
 
 interface ExportOptions {
   format?: 'xlsx' | 'csv'
-  filename?: string
+  fileName?: string
   headerRefs?: Ref<HTMLElement[]> | HTMLElement[]
   rowsRef?: Ref<HTMLElement[]> | HTMLElement[]
 }
@@ -53,7 +53,7 @@ export function useExcelExport() {
     fields: ExportField[],
     options: ExportOptions = {}
   ) => {
-    const { format = 'xlsx', filename = 'export', headerRefs, rowsRef } = options
+    const { format = 'xlsx', fileName, headerRefs, rowsRef } = options
     const { Workbook } = await import('exceljs')
     const { saveAs } = await import('file-saver')
 
@@ -142,7 +142,7 @@ export function useExcelExport() {
     })
 
     const buffer = await workbook.xlsx.writeBuffer()
-    saveAs(new Blob([buffer]), `${filename}.${format}`)
+    saveAs(new Blob([buffer]), `${fileName}.${format}`)
   }
 
   return { exportTable }

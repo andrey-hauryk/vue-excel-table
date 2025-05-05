@@ -586,6 +586,7 @@ export default defineComponent({
           importFile: 'Импортировать',
           chooseFile: 'Выберите файл',
           delimiter: 'Символ разделения',
+          fileName: 'Имя файла',
         };
       },
     },
@@ -2338,7 +2339,8 @@ export default defineComponent({
         fileReader.readAsBinaryString(file)
       }, 500)
     },
-    async exportTable (format, selectedOnly, filename) {
+    async exportTable (options) {
+
       const { exportTable } = useExcelExport();
 
       const headerEls = Array.from(this.editor.querySelectorAll('thead th'));
@@ -2352,11 +2354,9 @@ export default defineComponent({
         return cells;
       });
 
-      console.log(rowData);
-
       exportTable(this.table, this.fields,{
         format: 'xlsx',
-        filename: 'отчет',
+        fileName: options.value.fileName,
         headerRefs: headerEls,
         rowsRef: rowData,
       })

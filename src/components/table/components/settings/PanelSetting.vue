@@ -15,6 +15,7 @@
         <component
           :is="currentTabComponent"
           v-model:fields="localFields"
+          v-model:exportSettings="exportSettings"
           :localizedLabel="localizedLabel"
         />
       </div>
@@ -27,9 +28,22 @@
           @click="closePanel"
         />
         <ExcelButton 
+          v-if="activeTab === 'settings'"
           class="table-settings__button" 
           :label="localizedLabel.apply" 
           @click="applyChanges"
+        />
+        <ExcelButton
+          v-if="activeTab === 'export'"
+          class="table-settings__button" 
+          :label="localizedLabel.exportExcel" 
+          @click="exportTable"
+        />
+        <ExcelButton
+          v-if="activeTab === 'import'"
+          class="table-settings__button" 
+          :label="localizedLabel.importExcel" 
+          @click="importTable"
         />
     </template>
   </ExcelModal>
@@ -70,6 +84,10 @@ const emit = defineEmits([
 
 const localFields = ref([]);
 
+const exportSettings = ref({
+  fileName: 'report',
+})
+
 watch(
   () => props.modelValue,
   (newVal) => {
@@ -99,6 +117,14 @@ const closePanel = () => emit("close");
 const applyChanges = () => {
   emit("update:modelValue", localFields.value)
   emit("close")
+}
+
+const exportTable = () => {
+  emit('export', exportSettings);
+}
+
+const importTable = () => {
+  
 }
 </script>
 
