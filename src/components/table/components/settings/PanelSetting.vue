@@ -16,6 +16,7 @@
           :is="currentTabComponent"
           v-model:fields="localFields"
           v-model:exportSettings="exportSettings"
+          v-model:importedFile="importedFile"
           :localizedLabel="localizedLabel"
         />
       </div>
@@ -41,7 +42,8 @@
         />
         <ExcelButton
           v-if="activeTab === 'import'"
-          class="table-settings__button" 
+          class="table-settings__button"
+          :disabled="!importedFile"
           :label="localizedLabel.importExcel" 
           @click="importTable"
         />
@@ -88,6 +90,8 @@ const exportSettings = ref({
   fileName: 'report',
 })
 
+const importedFile = ref<File | null>(null);
+
 watch(
   () => props.modelValue,
   (newVal) => {
@@ -124,7 +128,7 @@ const exportTable = () => {
 }
 
 const importTable = () => {
-  
+  emit('import', importedFile.value);
 }
 </script>
 

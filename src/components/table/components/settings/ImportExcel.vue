@@ -11,7 +11,7 @@
       <input
         ref="fileInput"
         type="file"
-        accept=".xlsx, .csv"
+        accept=".xlsx"
         class="file-input"
         @change="handleFileChange"
         hidden
@@ -20,44 +20,40 @@
         <IconFileSaving />
       </div>
       <p>{{ localizedLabel.moveFileOrSelect }}</p>
-    </div>
-
-    <div v-if="fileName" class="file-info">
-      <p>{{ localizedLabel.chooseFile }}: {{ fileName }}</p>
-      <button @click="importExcelFile">{{localizedLabel.importFile}}</button>
+      <p v-if="modelValue" class="file-info">{{ fileInput.name }}</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import IconFileSaving from '../svg/IconFileSaving.vue';
+import { ref } from 'vue'
+import IconFileSaving from '../svg/IconFileSaving.vue'
 
-defineProps({
+const props = defineProps<{
+  modelValue: File | null
   localizedLabel: {
-    type: Object,
-  },
-});
+    moveFileOrSelect: string
+  }
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:importedFile', value: File | null): void
+}>()
 
 const fileInput = ref<HTMLInputElement | null>(null)
-const fileName = ref<string>('')
 
 const triggerFileInput = () => {
   fileInput.value?.click()
 }
 
-const handleFileChange = async () => {
-  const file = fileInput.value?.files?.[0]
-  if (file) {
-    fileName.value = file.name
-  }
+const handleFileChange = () => {
+  const file = fileInput.value?.files?.[0] ?? null
+  emit('update:importedFile', file)
 }
 
-const handleDrop = async (event: DragEvent) => {
-  const file = event.dataTransfer?.files?.[0]
-  if (file) {
-    fileName.value = file.name
-  }
+const handleDrop = (event: DragEvent) => {
+  const file = event.dataTransfer?.files?.[0] ?? null
+  emit('update:importedFile', file)
 }
 </script>
 
