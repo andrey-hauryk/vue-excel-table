@@ -1,5 +1,9 @@
 <template>
-  <button class="panel-button" @click="handleClick">
+  <button 
+    class="panel-button" 
+    @click="handleClick"
+    :disabled="disabled"
+    >
     <span>{{ label }}</span>
   </button>
 </template>
@@ -7,6 +11,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   label: string;
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -71,6 +76,13 @@ $borderRadius: 5px;
     transform: scale(0, 0);
     opacity: 0.3;
     transition: 0s;
+  }
+  &:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
   }
 }
 </style>

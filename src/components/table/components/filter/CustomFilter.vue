@@ -16,7 +16,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import DropDownButton from "./DropDownButton.vue";
-import DatePicker from '@vuepic/vue-datepicker';
 
 const props = defineProps<{
   localizedLabel: Record<string, string>;

@@ -14,17 +14,9 @@
     <VueExcelColumn
       v-for="(column, colIndex) in columns"
       :key="column.field"
-      :field="column.field"
-      :label="column.label"
-      :type="column.type"
-      :width="column.width"
-      :grouping="column.grouping"
-      :summary="column.summary"
-      :valueFormatter="column.valueFormatter"
+      v-bind="column"
       :init-style="{ padding: '2px 4px', height: '15px', 'text-align': 'center' }"
       auto-fill-width
-      v-slot="scope"
-      :readonly="column.readonly"
     >
     </VueExcelColumn>
   </VueExcelEditor>

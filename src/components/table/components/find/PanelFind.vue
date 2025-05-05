@@ -1,5 +1,5 @@
 <template>
-  <Modal
+  <ExcelModal
     :show="show"
     @close="hidePanel"
     :header="localizedLabel.findOnPage"
@@ -13,13 +13,13 @@
     <template #actions>
       <div></div>
     </template>
-  </Modal>
+  </ExcelModal>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, defineProps, defineEmits, nextTick } from "vue";
 import SearchInput from "./SearchInput.vue";
-import Modal from "../Modal.vue";
+import ExcelModal from "../ui/ExcelModal.vue";
 import SearchButton from './SearchButton.vue';
 
 const props = defineProps<{ show: boolean, localizedLabel: any }>();
