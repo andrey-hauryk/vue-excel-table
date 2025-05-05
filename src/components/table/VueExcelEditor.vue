@@ -652,15 +652,15 @@ export default defineComponent({
       focused: false,
       inputBoxChanged: false,
 
-      columnFilter: {},             // set filter storage in hash, key is the column pos
+      columnFilter: {},
 
       inputFind: '',
       calCellTop2: 29,
 
-      sortPos: 0,                   // Sort column position
-      sortDir: 0,                   // Sort direction, 1=Ascending, -1=Descending
+      sortPos: 0,
+      sortDir: 0,
 
-      redo: [],                     // redo log (надо убрать есть общая логика уже на всю таблицу)
+      redo: [],
 
       lazyTimeout: {},
       lazyBuffer: {},
