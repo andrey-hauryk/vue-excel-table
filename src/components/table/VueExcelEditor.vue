@@ -1,113 +1,50 @@
 <template>
-  <div
-    ref="editor"
-    class="vue-excel-editor"
-    :style="{ display: 'inline-block', width }"
-    @paste="handlePaste"
-    @copy="handleCopy"
-  >
+  <div ref="editor" class="vue-excel-editor" :style="{ display: 'inline-block', width }" @paste="handlePaste"
+    @copy="handleCopy">
     <div class="component-content">
-      <noRecordIndicator
-        v-if="!pagingTable.length"
-        :localizedLabel="localizedLabel"
-        :noFooter="noFooter"
-      ></noRecordIndicator>
+      <noRecordIndicator v-if="!pagingTable.length" :localizedLabel="localizedLabel" :noFooter="noFooter">
+      </noRecordIndicator>
 
-      <div
-        ref="tableContent"
-        class="table-content"
-        :class="{ 'no-footer': noFooter }"
-        @scroll="tableScroll"
-      >
-        <table
-          ref="systable"
-          id="systable"
-          style="table-layout: fixed; width: 0"
-          class="systable"
-          :class="{ 'no-number': noNumCol }"
-        >
+      <div ref="tableContent" class="table-content" :class="{ 'no-footer': noFooter }" @scroll="tableScroll">
+        <table ref="systable" id="systable" style="table-layout: fixed; width: 0" class="systable"
+          :class="{ 'no-number': noNumCol }">
           <colgroup>
-            <col
-              v-if="!noNumCol"
-              style="width:40px"
-            >
-            <col
-              v-for="(item, p) in fields"
-              v-show="!item.invisible"
-              :key="p"
-              :style="{ width: item.width }"
-            >
-            <col
-              v-if="vScroller.buttonHeight < vScroller.height"
-              style="width:12px"
-            >
+            <col v-if="!noNumCol" style="width:40px">
+            <col v-for="(item, p) in fields" v-show="!item.invisible" :key="p" :style="{ width: item.width }">
+            <col v-if="vScroller.buttonHeight < vScroller.height" style="width:12px">
           </colgroup>
           <thead class="center-text">
             <tr>
-              <th
-                class="center-text first-col tl-setting"
-                :class="{ hide: noNumCol }"
-                style="top: 0"
-                @mousedown.left="selectAllClick"
-                @contextmenu.prevent="settingClick"
-              >
-                  <IconClose v-if="selectedCount > 0"/>
-                  <IconBars v-else />
+              <th class="center-text first-col tl-setting" :class="{ hide: noNumCol }" style="top: 0"
+                @mousedown.left="selectAllClick" @contextmenu.prevent="settingClick">
+                <IconClose v-if="selectedCount > 0" />
+                <IconBars v-else />
               </th>
-              <th
-                v-for="(item, p) in fields"
-                v-show="!item.invisible"
-                :key="`th-${p}`"
-                :colspan="p === fields.length - 1 && vScroller.buttonHeight < vScroller.height ? 2 : 1"
-                :class="{
+              <th v-for="(item, p) in fields" v-show="!item.invisible" :key="`th-${p}`"
+                :colspan="p === fields.length - 1 && vScroller.buttonHeight < vScroller.height ? 2 : 1" :class="{
                   'sort-asc-sign': sortPos == p && sortDir == 1,
                   'sort-des-sign': sortPos == p && sortDir == -1,
                   'sticky-column': item.sticky,
                   'no-sorting': item.noSorting
-                }"
-                :style="{ left: item.left }"
-                @mousedown="headerClick($event, p)"
-                @contextmenu.prevent="panelFilterClick(item, p)"
-                :ref="setHeaderRef"
-              >
-                <div
-                  :class="{ 'filter-sign': columnFilter[p]}"
-                >
-                  <span
-                    :class="{ 'table-col-header': !noHeaderEdit }"
-                    v-html="headerLabel(item.label, item)"
-                  ></span>
+                }" :style="{ left: item.left }" @mousedown="headerClick($event, p)"
+                @contextmenu.prevent="panelFilterClick(item, p)" :ref="setHeaderRef">
+                <div :class="{ 'filter-sign': columnFilter[p] }">
+                  <span :class="{ 'table-col-header': !noHeaderEdit }" v-html="headerLabel(item.label, item)"></span>
                 </div>
-                <div
-                  class="col-sep"
-                  @mousedown="colSepMouseDown"
-                  @mouseover="colSepMouseOver"
-                  @mouseout="colSepMouseOut"
-                >
+                <div class="col-sep" @mousedown="colSepMouseDown" @mouseover="colSepMouseOver"
+                  @mouseout="colSepMouseOut">
                 </div>
               </th>
             </tr>
-            <tr
-              :class="{ hide: !filterRow }">
-              <td
-                class="center-text first-col tl-filter"
-                :class="{ hide: noNumCol }"
-                style="vertical-align: middle; padding: 0"
-                :style="{ top: calCellTop2 + 'px' }"
-                @click="columnFilter = {}"
-              >
-                <IconEraser v-if="Object.keys(columnFilter).length > 0"/>
+            <tr :class="{ hide: !filterRow }">
+              <td class="center-text first-col tl-filter" :class="{ hide: noNumCol }"
+                style="vertical-align: middle; padding: 0" :style="{ top: calCellTop2 + 'px' }"
+                @click="columnFilter = {}">
+                <IconEraser v-if="Object.keys(columnFilter).length > 0" />
               </td>
-              <vue-excel-filter
-                v-for="(item, p) in fields"
-                v-show="!item.invisible"
-                :ref="`filter-${item.name}`"
-                :key="`th2-${p}`"
-                v-model="columnFilter[p]"
-                :class="{ 'sticky-column': item.sticky }"
-                :style="{ left: item.left }"
-                class="column-filter"
-              />
+              <vue-excel-filter v-for="(item, p) in fields" v-show="!item.invisible" :ref="`filter-${item.name}`"
+                :key="`th2-${p}`" v-model="columnFilter[p]" :class="{ 'sticky-column': item.sticky }"
+                :style="{ left: item.left }" class="column-filter" />
             </tr>
           </thead>
           <tbody @mousedown="mouseDown" @mouseup="mouseUp">
@@ -115,21 +52,14 @@
               <td colspan="100%" style="height:40px; vertical-align: middle; text-align: center"></td>
             </tr>
             <tr v-else v-for="(record, rowPos) in pagingTable" :key="rowPos"
-              :class="{ select: typeof selected[pageTop + rowPos] !== 'undefined' }" 
-              :style="rowStyle(record)"
-            >
+              :class="{ select: typeof selected[pageTop + rowPos] !== 'undefined' }" :style="rowStyle(record)">
 
               <td v-if="selectable" class="center-text first-col-selectable" :id="`rid-${record.id}`" :class="{
                 hide: noNumCol,
                 error: rowerr[`rid-${record.id}`],
               }" :pos="rowPos">
-                <input
-                  class="table__checkbox"
-                  type="checkbox"
-                  :checked="selected[rowPos] === record.id"
-                  :class="{'table__checkbox--disabled': disableSelection}"
-                  @click="rowLabelClick"
-                />
+                <input class="table__checkbox" type="checkbox" :checked="selected[rowPos] === record.id"
+                  :class="{ 'table__checkbox--disabled': disableSelection }" @click="rowLabelClick" />
               </td>
 
               <td v-else class="center-text first-col" :id="`rid-${record.id}`" :class="{
@@ -141,8 +71,7 @@
 
 
               <td v-for="(item, p) in fields" v-show="!item.invisible" :id="`id-${record.id}-${item.name}`"
-                :cell-RC="`${rowPos}-${item.name}`"
-                :class="{
+                :cell-RC="`${rowPos}-${item.name}`" :class="{
                   'cell-selected': record[item.name]?.isSelected,
                   readonly: item.readonly,
                   error: errmsg[`id-${record.id}-${item.name}`],
@@ -154,25 +83,23 @@
                   datepick: item.type == 'date',
                   'sticky-column': item.sticky,
                   hideDuplicate: item.hideDuplicate && rowPos > 0 && isSameSinceLeft(p, record, pagingTable[rowPos - 1]),
-                }"
-                :key="p"
-                :style="Object.assign(cellStyle(record, item), renderColumnCellStyle(item, record))"
+                }" :key="p" :style="Object.assign(cellStyle(record, item), renderColumnCellStyle(item, record))"
                 @mouseover="cellMouseOver" @mousemove="cellMouseMove">
-                  <!--if slot exist render slot-->
-                  <template v-if="$slots[`cell-${item.name}`]">
-                    <slot :name="`cell-${item.name}`" :record="record" />
-                  </template>
-                  <!-- if render function exist render render fn-->
-                  <template v-else-if="typeof item.render === 'function'">
-                    <component :is="item.render(record)" />
-                  </template>
-                  <!-- default standart text -->
-                  <template v-else>
-                    <cell-tooltip v-if="record[item.name]?.anomaly" :content="record[item.name].anomaly">
-                      {{ item.toText(record[item.name].value) }}
-                    </cell-tooltip>
-                    <template v-else>{{ item.toText(record[item.name]?.value, record)}}</template>
-                  </template>
+                <!--if slot exist render slot-->
+                <template v-if="$slots[`cell-${item.name}`]">
+                  <slot :name="`cell-${item.name}`" :record="record" />
+                </template>
+                <!-- if render function exist render render fn-->
+                <template v-else-if="typeof item.render === 'function'">
+                  <component :is="item.render(record)" />
+                </template>
+                <!-- default standart text -->
+                <template v-else>
+                  <cell-tooltip v-if="record[item.name]?.anomaly" :content="record[item.name].anomaly">
+                    {{ item.toText(record[item.name].value) }}
+                  </cell-tooltip>
+                  <template v-else>{{ item.toText(record[item.name]?.value, record) }}</template>
+                </template>
               </td>
               <td v-if="vScroller.buttonHeight < vScroller.height" class="last-col"></td>
             </tr>
@@ -181,24 +108,14 @@
           <tfoot>
             <!--TotalRow-->
             <tr v-show="pagingTable.length && summaryRow">
-              <td
-                class="row-summary first-col"
-                :class="{ 'hide': noNumCol }"
-              ></td>
-              <td
-                v-for="(field, p) in fields"
-                v-show="!field.invisible"
-                class="row-summary"
-                :colspan="p === fields.length - 1 && vScroller.buttonHeight < vScroller.height ? 2 : 1"
-                :class="{
+              <td class="row-summary first-col" :class="{ 'hide': noNumCol }"></td>
+              <td v-for="(field, p) in fields" v-show="!field.invisible" class="row-summary"
+                :colspan="p === fields.length - 1 && vScroller.buttonHeight < vScroller.height ? 2 : 1" :class="{
                   'sticky-column': field.sticky,
                   'summary-column1': p + 1 < fields.length && fields[p + 1].summary,
                   'summary-column2': field.summary
-                }"
-                :key="`f${p}`"
-                :style="renderColumnCellStyle(field)"
-              >
-                {{field.toText(totalRow[field.name]?.value)}}
+                }" :key="`f${p}`" :style="renderColumnCellStyle(field)">
+                {{ field.toText(totalRow[field.name]?.value) }}
               </td>
             </tr>
 
@@ -223,48 +140,19 @@
         <div v-show="textTip" ref="texttip" class="text-tip">Пример</div>
 
         <!-- Editor Square -->
-        <div
-          v-show="focused"
-          ref="inputSquare"
-          class="input-square"
-          @mousedown="inputSquareClick"
-          @mouseup="mouseUp"
-        >
+        <div v-show="focused" ref="inputSquare" class="input-square" @mousedown="inputSquareClick" @mouseup="mouseUp">
           <div style="position: relative; height: 100%; padding: 2px 2px 1px">
             <div class="rb-square" />
-            <textarea
-              ref="inputBox"
-              id="inputBox"
-              name="inputBox"
-              class="input-box"
-              :style="{ opacity: inputBoxShow }"
-              @blur="inputBoxBlur"
-              @mousemove="inputBoxMouseMove"
-              @mousedown="inputBoxMouseDown"
-              @mouseup="mouseUp"
-              trim
-              autocomplete="off"
-              autocorrect="off"
-              autocompitaize="off"
-              :spellcheck="spellcheck"
-              ></textarea>
+            <textarea ref="inputBox" id="inputBox" name="inputBox" class="input-box" :style="{ opacity: inputBoxShow }"
+              @blur="inputBoxBlur" @mousemove="inputBoxMouseMove" @mousedown="inputBoxMouseDown" @mouseup="mouseUp" trim
+              autocomplete="off" autocorrect="off" autocompitaize="off" :spellcheck="spellcheck"></textarea>
           </div>
         </div>
 
         <!-- Date Picker -->
-        <div
-          ref="dpContainer"
-          v-show="showDatePicker"
-          style="z-index:20; position:fixed"
-        >
-          <date-picker
-            ref="datepicker"
-            inline
-            auto-apply
-            v-model="inputDateTime"
-            @update:modelValue="datepickerClick"
-            valueType="format"
-          ></date-picker>
+        <div ref="dpContainer" v-show="showDatePicker" style="z-index:20; position:fixed">
+          <date-picker ref="datepicker" inline auto-apply v-model="inputDateTime" @update:modelValue="datepickerClick"
+            valueType="format"></date-picker>
         </div>
 
         <!-- Waiting scene -->
@@ -272,145 +160,77 @@
       </div>
 
       <!-- Vertical Scroll Bar -->
-      <div
-        v-show="vScroller.buttonHeight < vScroller.height"
-        ref="vScroll"
-        class="v-scroll"
-        :style="{ top: `${vScroller.top}px`, height: `${vScroller.height}px` }" @mousedown="vsMouseDown"
-      >
-        <div
-          ref="vScrollButton"
-          class="v-scroll-button"
+      <div v-show="vScroller.buttonHeight < vScroller.height" ref="vScroll" class="v-scroll"
+        :style="{ top: `${vScroller.top}px`, height: `${vScroller.height}px` }" @mousedown="vsMouseDown">
+        <div ref="vScrollButton" class="v-scroll-button"
           :style="{ marginTop: `${vScroller.buttonTop}px`, height: `${vScroller.buttonHeight}px` }"
-          @mousedown="vsbMouseDown"
-        >
+          @mousedown="vsbMouseDown">
           <div v-show="vScroller.runner" class="runner" v-html="vScroller.runner" />
         </div>
       </div>
 
       <!-- Autocomplete List -->
-      <ul
-        ref="autocomplete"
-        v-show="focused && autocompleteInputs.length"
-        class="autocomplete-results"
-      >
-        <li
-          v-for="(item, i) in autocompleteInputs"
-          :key="i"
-          :class="{ select: autocompleteSelect === i }"
+      <ul ref="autocomplete" v-show="focused && autocompleteInputs.length" class="autocomplete-results">
+        <li v-for="(item, i) in autocompleteInputs" :key="i" :class="{ select: autocompleteSelect === i }"
           @mousedown.left.prevent="inputAutocompleteText($event.target.textContent, $event)"
-          class="autocomplete-result"
-        >
-          {{item }}
+          class="autocomplete-result">
+          {{ item }}
         </li>
       </ul>
 
       <!-- Footer -->
-      <div
-        ref="footer"
-        class="footer center-text"
-        :class="{ hide: noFooter }"
-        style="position:relative"
-        @mousedown="ftMouseDown"
-      >
-        <div
-          ref="hScroll"
-          class="h-scroll"
-          @mousedown="sbMouseDown"
-        />
-        <span
-          class="left-block"
-          :class="{ 'hide': noNumCol }"
-        ></span>
-        <span
-          v-show="!noPaging"
-          class="footer-left"
-        >
-          <span> {{localizedLabel.footerLeft(pageTop + 1, pageBottom, table.length)}}</span>
+      <div ref="footer" class="footer center-text" :class="{ hide: noFooter }" style="position:relative"
+        @mousedown="ftMouseDown">
+        <div ref="hScroll" class="h-scroll" @mousedown="sbMouseDown" />
+        <span class="left-block" :class="{ 'hide': noNumCol }"></span>
+        <span v-show="!noPaging" class="footer-left">
+          <span> {{ localizedLabel.footerLeft(pageTop + 1, pageBottom, table.length) }}</span>
         </span>
         <span v-show="!noPaging && pageBottom - pageTop < table.length">
-            <a
-              :class="{ disabled: pageTop <= 0 }"
-              @mousedown="firstPage"
-            >
-              <IconStepBackward></IconStepBackward>
-              <span>{{' ' + localizedLabel.first + ' | '}} </span>
-            </a>
-            <a
-              :class="{ disabled: pageTop <= 0 }"
-              @mousedown="prevPage"
-            >
-              <IconBackward></IconBackward>
-              <span> {{' ' + localizedLabel.previous + ' | '}}</span>
-            </a>
-            <a
-              :class="{ disabled: pageTop + pageSize >= table.length }"
-              @mousedown="nextPage"
-            >
-              <IconForward></IconForward>
-              <span>{{' ' + localizedLabel.next + ' | '}}</span>
-              </a>
-            <a
-              :class="{ disabled: pageTop + pageSize >= table.length }"
-              @mousedown="lastPage"
-            >
-              <span>{{localizedLabel.last + ' '}}</span>
-              <IconStepForward></IconStepForward>
-            </a>
+          <a :class="{ disabled: pageTop <= 0 }" @mousedown="firstPage">
+            <IconStepBackward></IconStepBackward>
+            <span>{{ ' ' + localizedLabel.first + ' | ' }} </span>
+          </a>
+          <a :class="{ disabled: pageTop <= 0 }" @mousedown="prevPage">
+            <IconBackward></IconBackward>
+            <span> {{ ' ' + localizedLabel.previous + ' | ' }}</span>
+          </a>
+          <a :class="{ disabled: pageTop + pageSize >= table.length }" @mousedown="nextPage">
+            <IconForward></IconForward>
+            <span>{{ ' ' + localizedLabel.next + ' | ' }}</span>
+          </a>
+          <a :class="{ disabled: pageTop + pageSize >= table.length }" @mousedown="lastPage">
+            <span>{{ localizedLabel.last + ' ' }}</span>
+            <IconStepForward></IconStepForward>
+          </a>
         </span>
         <span class="footer-right">
-          <a
-            :class="{ disabled: !showSelectedOnly && selectedCount <= 1 }"
-            @mousedown="toggleSelectView"
-          >
-            <span>{{localizedLabel.footerRight.selected}}</span>
+          <a :class="{ disabled: !showSelectedOnly && selectedCount <= 1 }" @mousedown="toggleSelectView">
+            <span>{{ localizedLabel.footerRight.selected }}</span>
             <span :style="{ color: selectedCount > 0 ? 'red' : 'inherit' }">{{ selectedCount }}</span>
-            <span>{{' | '}}</span>
+            <span>{{ ' | ' }}</span>
           </a>
-          <a
-            :class="{ disabled: columnFilterString === '{}' }"
-            @mousedown="toggleFilterView"
-          >
-            <span>{{localizedLabel.footerRight.filtered}}</span>
-            <span :style="{ color: table.length !== filteredValue.length ? 'red' : 'inherit' }">{{ table.length }}</span>
-            <span>{{' | '}}</span>
+          <a :class="{ disabled: columnFilterString === '{}' }" @mousedown="toggleFilterView">
+            <span>{{ localizedLabel.footerRight.filtered }}</span>
+            <span :style="{ color: table.length !== filteredValue.length ? 'red' : 'inherit' }">{{ table.length
+              }}</span>
+            <span>{{ ' | ' }}</span>
           </a>
           <a :class="{ disabled: true }">
-            <span>{{localizedLabel.footerRight.loaded}}</span>
+            <span>{{ localizedLabel.footerRight.loaded }}</span>
             <span>{{ filteredValue.length }}</span>
           </a>
         </span>
       </div>
-      <panel-filter
-        ref="panelFilter"
-        v-model="columnFilter[filterColumnPosition]"
-        :localized-label="localizedLabel"
-        :show="showPanelFilter"
-        :filterColumnPosition="filterColumnPosition"
-        :filterColumnsRows="filterColumnsRows"
-        :selectedColumnRowsForFilter="selectedColumnRowsForFilter"
-        :columnType="fields[filterColumnPosition]?.type"
-        @close="showPanelFilter = false"
-        @sort="sort"
-        @applyFilter="applyFilter"
-        @removeFilter="removeFilter"
-      />
-      <panel-setting
-        :show="showPanelSetting"
-        v-model="fields"
-        :localized-label="localizedLabel"
-        @close="showPanelSetting = false"
-        @import="importTable"
-        @export="exportTable"
-        @resetColumn="resetColumn"
-        @calStickyLeft="calStickyLeft"
-      />
-      <panel-find
-        :show="showPanelFind"
-        :localized-label="localizedLabel"
-        @doFind="doFind"
-        @close="showPanelFind = false"
-      />
+      <panel-filter ref="panelFilter" v-model="columnFilter[filterColumnPosition]" :localized-label="localizedLabel"
+        :show="showPanelFilter" :filterColumnPosition="filterColumnPosition" :filterColumnsRows="filterColumnsRows"
+        :selectedColumnRowsForFilter="selectedColumnRowsForFilter" :columnType="fields[filterColumnPosition]?.type"
+        @close="showPanelFilter = false" @sort="sort" @applyFilter="applyFilter" @removeFilter="removeFilter" />
+      <panel-setting :show="showPanelSetting" v-model="fields" :localized-label="localizedLabel"
+        @close="showPanelSetting = false" @import="importTable" @export="exportTable" @resetColumn="resetColumn"
+        @calStickyLeft="calStickyLeft" />
+      <panel-find :show="showPanelFind" :localized-label="localizedLabel" @doFind="doFind"
+        @close="showPanelFind = false" />
     </div>
   </div>
 </template>
@@ -427,7 +247,6 @@ import CellTooltip from "./components/tooltip/CellTooltip.vue";
 import TableLoading from './components/loading/TableLoading.vue';
 import { cloneDeep } from 'lodash';
 import noRecordIndicator from './components/NoRecordIndicator.vue';
-//svg icons
 import IconClose from './components/svg/IconClose.vue';
 import IconBars from './components/svg/IconBars.vue';
 import IconEraser from './components/svg/IconEraser.vue';
@@ -465,8 +284,8 @@ export default defineComponent({
     disableMultiPaste: { type: Boolean, default: false },
     disablePanelFilter: { type: Boolean, default: false },
     noFinding: { type: Boolean, default: false },
-    noSorting: { type: Boolean, default: false }, //не работает
-    noMassUpdate: { type: Boolean, default: false }, //хз че делает кандидат на удаление
+    noSorting: { type: Boolean, default: false },
+    noMassUpdate: { type: Boolean, default: false },
 
     filterRow: { type: Boolean, default: false },
     freeSelect: { type: Boolean, default: false },
@@ -475,8 +294,8 @@ export default defineComponent({
     noNumCol: { type: Boolean, default: false },
     noMouseScroll: { type: Boolean, default: false },
     selectable: { type: Boolean, default: false },
-    enterToSouth: { type: Boolean, default: false },  // default enter to south
-    autocomplete: { type: Boolean, default: false },  // Default autocomplete of all columns
+    enterToSouth: { type: Boolean, default: false },
+    autocomplete: { type: Boolean, default: false },
     allowAddCol: { type: Boolean, default: false },
     readonly: { type: Boolean, default: false },
     remember: { type: Boolean, default: false },
@@ -508,7 +327,7 @@ export default defineComponent({
         return pos
       }
     },
-    page: { type: Number, default: 0 },               // prefer page size, auto-cal if not provided
+    page: { type: Number, default: 0 },
     height: { type: String, default: '' },
     width: { type: String, default: '100%' },
     wheelSensitivity: { type: Number, default: 30 },
@@ -612,65 +431,51 @@ export default defineComponent({
     const pageSize = this.noPaging ? 999999 : 20
     const dataset = {
       version: '1.3',
-      tableContent: null,           // Table parent
-      systable: null,               // TABLE dom node
-      colgroupTr: null,             // colgroup TR dom node
-      labelTr: null,                // THEAD label dom node
-      filterTr: null,               // THEAD filter dom node
-      recordBody: null,             // TBODY dom node
-      footer: null,                 // TFOOTER dom node
-
+      tableContent: null,
+      systable: null,
+      colgroupTr: null,
+      labelTr: null,
+      filterTr: null,
+      recordBody: null,
+      footer: null,
       pageSize: pageSize,
-      pageTop: 0,                   // Current page top pos of [table] array
-
-      selected: {},                 // selected storage in hash, key is the pos of [table] array
-      _selectedCount: 0,            // selected row count
-      prevSelect: -1,               // previous select pos of [table] array
-
+      pageTop: 0,
+      selected: {},
+      _selectedCount: 0,
+      prevSelect: -1,
       localLoading: false,
-
-      rowIndex: {},                 // index of the record key to pos of [table] array
-
-      currentRecord: null,          // focusing row content
-      currentRowPos: 0,             // focusing array pos of [table] array
-      currentColPos: 0,             // focusing pos of column/field
-      currentField: null,           // focusing field object
+      rowIndex: {},
+      currentRecord: null,
+      currentRowPos: 0,
+      currentColPos: 0,
+      currentField: null,
       currentCell: null,
       inputBox: null,
       inputBoxShow: 0,
       inputSquare: null,
       autocompleteInputs: [],
       autocompleteSelect: -1,
-
       errmsg: {},
       rowerr: {},
       tip: '',
       textTip: '',
-
       colHash: '',
       fields: [],
       focused: false,
       inputBoxChanged: false,
-
       columnFilter: {},
-
       inputFind: '',
       calCellTop2: 29,
-
       sortPos: 0,
       sortDir: 0,
-
       redo: [],
-
       lazyTimeout: {},
       lazyBuffer: {},
       hScroller: {},
       vScroller: {},
       leftMost: 0,
-
       showDatePicker: false,
       inputDateTime: new Date(),
-
       table: [],
       filteredValue: [],
       lastFilterTime: '',
@@ -678,7 +483,6 @@ export default defineComponent({
       summary: {},
       showFilteredOnly: true,
       showSelectedOnly: false,
-
       ungroup: {},
       showPanelFind: false,
       showPanelSetting: false,
@@ -737,7 +541,6 @@ export default defineComponent({
       },
       set(setter) {
         if (setter.fields) {
-          // ignore if fields counts are different
           if (setter.fields.length !== this.fields.length) return
           let valid = true
           const newFields = setter.fields.map(local => {
@@ -798,7 +601,7 @@ export default defineComponent({
             el[this.selectionField] == field || el[this.selectionField]?.value == field
           );
 
-          if(rowPos >= 0) {
+          if (rowPos >= 0) {
             this.selected[rowPos] = this.modelValue[rowPos].id;
           }
         });
@@ -807,14 +610,14 @@ export default defineComponent({
       deep: true,
     },
     sortingByDefault: {
-      handler (defaultSort) {
+      handler(defaultSort) {
         this.sortPos = defaultSort?.colPos || 0;
         this.sortDir = defaultSort?.dir || 0;
         this.sort(this.sortDir, this.sortPos);
       }
     },
     totalRow: {
-      handler (newValue) {
+      handler(newValue) {
         if (Object.keys(newValue).length) {
           this.summaryRow = true;
         }
@@ -881,12 +684,12 @@ export default defineComponent({
       this.refresh();
     },
     sortOptions(colPos, sortDir) {
-      if ( sortDir > 0)
-          this.sort(-1, colPos)
-        else if (this.sortDir === 0)
-          this.sort(1, colPos)
-        else
-          this.sort(0, colPos)
+      if (sortDir > 0)
+        this.sort(-1, colPos)
+      else if (this.sortDir === 0)
+        this.sort(1, colPos)
+      else
+        this.sort(0, colPos)
     },
     saveState() {
       const lastState = this.undoStack[this.undoStack.length - 1];
@@ -952,7 +755,6 @@ export default defineComponent({
     },
     addEventListener() {
       window.addEventListener('resize', this.winResize)
-      window.addEventListener('paste', this.winPaste)
       window.addEventListener('keydown', this.winKeydown)
       window.addEventListener('keyup', this.winKeyup)
       window.addEventListener('scroll', this.winScroll)
@@ -960,7 +762,6 @@ export default defineComponent({
     },
     removeEventListener() {
       window.removeEventListener('resize', this.winResize)
-      window.removeEventListener('paste', this.winPaste)
       window.removeEventListener('keydown', this.winKeydown)
       window.removeEventListener('keyup', this.winKeyup)
       window.removeEventListener('scroll', this.winScroll)
@@ -1033,7 +834,6 @@ export default defineComponent({
 
         keyField: false,
         sticky: false,
-        // tabStop: true,
         allowKeys: null,
         mandatory: false,
         lengthLimit: 0,
@@ -1062,7 +862,6 @@ export default defineComponent({
       this.colHash = this.hashCode(this.version + JSON.stringify(this.fields))
     },
     autoRegisterAllColumns(rows) {
-      // If no field is defined, this function will help to create all fields based on provided row sample argument
       const widths = rows.slice(0, 25)
         .reduce((t, v) => Object.keys(v).map((s, i) => !t || v[s].length > t[i] ? v[s].length : t[i]), 0)
         .map(v => Math.min(Math.max(v * 8.2, 55), 250))
@@ -1105,9 +904,7 @@ export default defineComponent({
       this.calStickyLeft()
       this.refreshPageSize()
     },
-
     //------------фильтрация
-
     calTable() {
       this.textTip = '';
 
@@ -1124,7 +921,7 @@ export default defineComponent({
       this.table = this.modelValue;
 
       this.table = this.modelValue.filter(row => {
-          return Object.keys(this.selectedColumnRowsForFilter).every(columnIndex => {
+        return Object.keys(this.selectedColumnRowsForFilter).every(columnIndex => {
           const filterValues = this.selectedColumnRowsForFilter[columnIndex];
           const columnName = this.fields[columnIndex].name;
           return filterValues.includes(row[columnName].value);
@@ -1134,8 +931,6 @@ export default defineComponent({
       this.selectedColumnRowsForFilter
 
       this.reviseSelectedAfterTableChange();
-
-      // this.calcSummary();
     },
     filterGrouping(rec, i, table) {
       if (i === 0) return true
@@ -1157,14 +952,13 @@ export default defineComponent({
     calStickyLeft() {
       let left = 0, n = 0
       this.leftMost = -1
-      // this.tableContent.scrollTo(0, this.tableContent.scrollTop)
       Array.from(this.labelTr.children).forEach(th => {
         left += th.offsetWidth
         const field = this.fields[n++]
         if (field) {
           if (field.sticky) {
             field.left = left + 'px'
-            this.leftMost = -1 // Reset the leftMost, so it will equal to the next non-sticky col
+            this.leftMost = -1
           }
           else if (this.leftMost === -1) this.leftMost = left
         }
@@ -1202,11 +996,11 @@ export default defineComponent({
         switch (field.summary) {
           case 'sum':
             result = this.table.reduce((a, b) => (a + Number(b[i].value ? b[i].value : 0)), 0)
-            result = Number(Math.round(result + 'e+5') + 'e-5')  // solve the infinite .9 issue of javascript
+            result = Number(Math.round(result + 'e+5') + 'e-5')
             break
           case 'avg':
             result = this.table.reduce((a, b) => (a + Number(b[i].value ? b[i].value : 0)), 0) / this.table.length
-            result = Number(Math.round(result + 'e+5') + 'e-5')  // solve the infinite .9 issue of javascript
+            result = Number(Math.round(result + 'e+5') + 'e-5')
             break
           case 'max':
             result = this.table.reduce((a, b) => (a > b[i].value ? a : b[i].value), Number.MIN_VALUE)
@@ -1265,7 +1059,6 @@ export default defineComponent({
     getFieldByLabel(label) {
       return this.fields.find(f => f.label === label)
     },
-
     /* *** Customization **************************************************************************************
      */
     setFilter(name, filterText) {
@@ -1293,8 +1086,6 @@ export default defineComponent({
           field.invisible = true
       })
     },
-
-    /* Still evaluating */
     columnAutoWidth(name) {
       if (this.table.length === 0) return
       let doFields = this.fields
@@ -1334,7 +1125,6 @@ export default defineComponent({
           })
       })
     },
-
     /* *** Date Picker *********************************************************************************
      */
     showDatePickerDiv() {
@@ -1355,19 +1145,15 @@ export default defineComponent({
     },
     datepickerClick() {
       const offset = new Date().getTimezoneOffset() * 60 * 1000
-      // const m = moment(this.inputDateTime)
       switch (this.currentField.type) {
         case 'date':
-          // this.inputBox.value = m.format('YYYY-MM-DD')
           this.inputBox.value = new Date(new Date(this.inputDateTime) - offset).toISOString().slice(0, 10)
           break
         case 'datetime':
-          // this.inputBox.value = m.format('YYYY-MM-DD hh:mn:00')
           this.inputBox.value = new Date(new Date(this.inputDateTime) - offset).toISOString().replace('T', ' ').slice(0, 16) + ':00'
           break
         case 'datetimesec':
           this.inputBox.value = new Date(new Date(this.inputDateTime) - offset).toISOString().replace('T', ' ').slice(0, 19)
-          // this.inputBox.value = m.format('YYYY-MM-DD hh:mn:ss')
           break
         case 'datetick':
         case 'datetimetick':
@@ -1453,7 +1239,7 @@ export default defineComponent({
           const ratio = this.vScroller.buttonTop / (this.vScroller.height - this.vScroller.buttonHeight)
           const recPos = Math.round((this.table.length - this.pageSize) * ratio) + 1
           const rec = this.table[recPos]
-          if (rec) { // Добавлено: проверка существования записи
+          if (rec) {
             this.vScroller.runner = recPos + '<br>' + this.fields
               .filter((field, i) => field.keyField || field.sticky || this.sortPos === i)
               .map(field => field.label + ': ' + (rec[field.name]?.value ?? ''))
@@ -1467,7 +1253,6 @@ export default defineComponent({
         }
       }
     },
-
     /* *** Horizontal Scrollbar *********************************************************************************
      */
     ftMouseDown(e) {
@@ -1509,7 +1294,6 @@ export default defineComponent({
         this.tableContent.scrollTo(this.hScroller.tableUnseenWidth * ratio, this.tableContent.scrollTop)
       }
     },
-
     /* *** Window Event *******************************************************************************************
      */
     tableScroll() {
@@ -1560,19 +1344,6 @@ export default defineComponent({
     winResize() {
       this.lazy(this.refreshPageSize, 0)
     },
-    winPaste(e) {
-      return;
-      if (e.target.tagName !== 'TEXTAREA') return
-      if (!this.mousein && !this.focused) return
-      if (!this.currentField || this.currentField.readonly) return
-      if (this.inputBoxShow) {
-        this.inputBoxChanged = true
-        return
-      }
-      const text = (e.originalEvent || e).clipboardData.getData('text/plain')
-      this.inputCellWrite(text)
-      e.preventDefault()
-    },
     winKeyup(e) {
       if (e.key === 'Shift') {
         this.isShiftPressed = false;
@@ -1597,44 +1368,44 @@ export default defineComponent({
       if (!this.focused) return
       if (e.ctrlKey || e.metaKey)
         switch (e.keyCode) {
-          case 90: // z
+          case 90:
             if (e.shiftKey) {
-              this.redoHistory(); // Ctrl + Shift + Z (Windows) или Cmd + Shift + Z (Mac)
+              this.redoHistory();
             } else {
-              this.undoHistory(); // Ctrl + Z (Windows/Linux) или Cmd + Z (Mac)
+              this.undoHistory();
               this.undoTransaction();
             }
             e.preventDefault()
             break
-          case 89: // y
+          case 89:
             this.redoHistory();
             this.undoTransaction()
             e.preventDefault()
             break
-          case 65: // a
+          case 65:
             this.toggleSelectAllRecords()
             e.preventDefault()
             break
-          case 67: // c
+          case 67:
             this.inputBox.value = this.currentCell.textContent
             this.inputBox.focus()
             this.inputBox.select()
             document.execCommand('copy')
             e.preventDefault()
             break
-          case 70: // f
+          case 70:
             if (!this.noFinding) {
               this.showPanelFind = true;
               e.preventDefault()
             }
             break
-          case 71: // g
+          case 71:
             if (!this.noFinding && this.inputFind !== '') {
               this.doFindNext()
               e.preventDefault()
             }
             break
-          case 76: // l
+          case 76:
             e.preventDefault()
             this.calAutocompleteList(true)
             break
@@ -1642,7 +1413,7 @@ export default defineComponent({
       else {
         if (this.currentRowPos < 0) return
         switch (e.keyCode) {
-          case 37:  // Left Arrow
+          case 37:
             if (!this.focused) return
             if (!this.inputBoxShow) {
               this.moveWest(e)
@@ -1655,7 +1426,7 @@ export default defineComponent({
               }
             }
             break
-          case 38:  // Up Arrow
+          case 38:
             if (!this.focused) return
             e.preventDefault()
             if (this.autocompleteInputs.length === 0)
@@ -1670,10 +1441,9 @@ export default defineComponent({
               else
                 if (this.autocompleteSelect === -1) {
                   this.autocompleteSelect = 0
-                  // this.autocompleteSelect = this.autocompleteInputs.length - 1
                 }
             break
-          case 9:  // Tab
+          case 9:
             if (!this.focused) return
             if (e.shiftKey) {
               if (!this.moveWest(e)) {
@@ -1693,7 +1463,7 @@ export default defineComponent({
             }
             e.preventDefault()
             break
-          case 39: // Right Arrow
+          case 39:
             if (!this.focused) return
             if (!this.inputBoxShow) {
               this.moveEast(e)
@@ -1706,7 +1476,7 @@ export default defineComponent({
               }
             }
             break
-          case 40:  // Down Arrow
+          case 40:
             if (!this.focused) return
             e.preventDefault()
             if (this.autocompleteInputs.length === 0)
@@ -1722,7 +1492,7 @@ export default defineComponent({
                 }
               }
             break
-          case 13:  // Enter
+          case 13:
             if (!this.focused) return
             e.preventDefault()
             if (this.autocompleteInputs.length === 0 || this.autocompleteSelect === -1) {
@@ -1741,7 +1511,7 @@ export default defineComponent({
             }
             this.inputBoxComplete()
             break
-          case 27:  // Esc
+          case 27:
             if (!this.focused) return
             this.showDatePicker = false
             this.autocompleteInputs = []
@@ -1753,16 +1523,16 @@ export default defineComponent({
               this.inputBoxChanged = false
             }
             break
-          case 33:  // Page Up
+          case 33:
             this.prevPage()
             e.preventDefault()
             break
-          case 34:  // Page Down
+          case 34:
             this.nextPage()
             e.preventDefault()
             break
-          case 8:   // Delete
-          case 46:  // BS
+          case 8:
+          case 46:
             if (!this.focused) return
             if (this.inputBoxShow) {
               this.inputBoxChanged = true
@@ -1814,7 +1584,6 @@ export default defineComponent({
         }
       }
     },
-
     /* *** Column Separator *******************************************************************************************
      */
     colSepMouseDown(e) {
@@ -1832,10 +1601,8 @@ export default defineComponent({
       }
       const index = Array.from(this.labelTr.children).indexOf(e.target.parentElement)
       this.sep = {}
-      // this.sep.curCol = this.colgroupTr.children[Array.from(this.labelTr.children).indexOf(e.target.parentElement)]
       this.sep.curCol = this.colgroupTr.children[index - (this.noNumCol ? 1 : 0)]
       this.sep.curField = this.fields[index - 1]
-      // this.sep.nxtCol = this.sep.curCol.nextElementSibling
       this.sep.pageX = e.pageX
       let padding = 0
       if (getStyleVal(this.sep.curCol, 'box-sizing') !== 'border-box') {
@@ -1845,8 +1612,6 @@ export default defineComponent({
           padding = parseInt(padLeft) + parseInt(padRight)
       }
       this.sep.curColWidth = e.target.parentElement.offsetWidth - padding
-      // if (this.sep.nxtCol)
-      //   this.sep.nxtColWidth = this.sep.nxtCol.offsetWidth - padding
       window.addEventListener('mousemove', this.colSepMouseMove)
       window.addEventListener('mouseup', this.colSepMouseUp)
     },
@@ -1858,7 +1623,6 @@ export default defineComponent({
           e.target.children[0].style.display = 'block'
       }
       else {
-        // add-col-btn
         if (this.addColBtnTimeout) clearTimeout(this.addColBtnTimeout)
         if (this.allowAddCol)
           e.target.style.display = 'block'
@@ -1883,7 +1647,6 @@ export default defineComponent({
     colSepMouseMove(e) {
       if (!this.sep || !this.sep.curCol) return
       const diffX = e.pageX - this.sep.pageX
-      // this.sep.curCol.style.width = (this.sep.curColWidth + diffX) + 'px'
       const newWidth = (this.sep.curColWidth + diffX) + 'px'
       this.sep.curCol.style.width = newWidth
       this.sep.curField.width = newWidth
@@ -1899,7 +1662,6 @@ export default defineComponent({
       if (this.remember) localStorage[window.location.pathname + window.location.hash + '.' + this.token] = JSON.stringify(setting)
       this.$emit('setting', setting)
     },
-
     /* *** Finder *******************************************************************************************
      */
     doFindNext() {
@@ -1948,7 +1710,6 @@ export default defineComponent({
         if (rowPos >= pt && rowPos < pt + this.pageSize) return pt
       return this.pageTop
     },
-
     /* *** Sort *******************************************************************************************
      */
     headerClick(e, colPos) {
@@ -1982,8 +1743,8 @@ export default defineComponent({
       const name = field.name
       setTimeout(() => {
         let sorting = (a, b) => {
-              return String(a).localeCompare(String(b))
-            }
+          return String(a).localeCompare(String(b))
+        }
         if (n === 0) {
           this.modelValue.sort((a, b) => a.id > b.id ? 1 : -1)
           this.sortPos = 0
@@ -2117,7 +1878,6 @@ export default defineComponent({
         })
       }
     },
-
     /* *** Setting *******************************************************************************************
      */
     getSetting() {
@@ -2155,12 +1915,11 @@ export default defineComponent({
     },
     /* *** Import/Export ************************************************************************************
      */
-
     setHeaderRef(el) {
       if (el && !this.headerRefs.includes(el)) {
         this.headerRefs.push(el)
       }
-    }, 
+    },
     importTable(file) {
       this.localLoading = true
       this.clearAllSelected()
@@ -2305,7 +2064,7 @@ export default defineComponent({
 
       process()
     },
-    async exportTable (options) {
+    async exportTable(options) {
 
       const { exportTable } = useExcelExport();
 
@@ -2320,71 +2079,13 @@ export default defineComponent({
         return cells;
       });
 
-      exportTable(this.table, this.fields,{
+      exportTable(this.table, this.fields, {
         format: 'xlsx',
         fileName: options.value.fileName,
         headerRefs: headerEls,
         rowsRef: rowData,
       })
-
-      // this.localLoading = true
-      // setTimeout(() => {
-      //   const wb = utils.book_new()
-      //   let ws1 = null
-      //   let data = this.table
-      //   if (selectedOnly)
-      //     data = this.table.filter((rec, i) => this.selected[i])
-      //   const mapped = data.map(rec => {
-      //     const conv = {}
-      //     this.fields.forEach(field => {
-      //       if (rec[field.name]) {
-      //         conv[field.name] = rec[field.name].value
-      //       }
-      //       else {
-      //         conv[field.name] = null
-      //       }
-      //     })
-      //     return conv
-      //   })
-      //   ws1 = utils.json_to_sheet(mapped, {
-      //     header: this.fields.map(field => field.name)
-      //   })
-      //   const labels = Array.from(this.labelTr.children).slice(1).map(t => t.children[0].innerText)
-      //   utils.sheet_add_aoa(ws1, [labels], { origin: 'A1' })
-      //   ws1['!cols'] = Array.from(this.labelTr.children).slice(1).map((t) => {
-      //     return {
-      //       width: t.getBoundingClientRect().width / 6.5
-      //     }
-      //   })
-      //   utils.book_append_sheet(wb, ws1, 'Sheet1')
-      //   filename = filename || 'export'
-      //   switch (format) {
-      //     case 'csv':
-      //       if (!filename.endsWith('.csv')) filename = filename + '.csv'
-      //       break
-      //     case 'xls':
-      //       if (!filename.endsWith('.xls')) filename = filename + '.xls'
-      //       break
-      //     case 'xlsx':
-      //     case 'excel':
-      //     default:
-      //       if (!filename.endsWith('.xlsx')) filename = filename + '.xlsx'
-      //       break
-      //   }
-      //   if (filename.endsWith('.xlsx'))
-      //     writeFile(wb, filename, {
-      //       compression: 'DEFLATE',
-      //       compressionOptions: {
-      //         level: 6
-      //       }
-      //     })
-      //   else
-      //     writeFile(wb, filename)
-
-      //   this.localLoading = false
-      // }, 500)
     },
-
     /* *** Select *******************************************************************************************
      */
     rowLabelClick(e) {
@@ -2563,7 +2264,6 @@ export default defineComponent({
     },
     moveSouth() {
       if (this.focused) {
-        // if (this.currentRowPos + 1 >= this.table.length) {
         if (this.currentRowPos + 1 >= (this.pageBottom - this.pageTop) && this.pageBottom >= this.table.length) {
           if (this.readonly) return false
           if (!this.newIfBottom) return false
@@ -2630,14 +2330,12 @@ export default defineComponent({
         if (this.currentField.listByClick) return this.calAutocompleteList(true)
         if (e.target.offsetWidth - e.offsetX > 25) return
         if (e.target.offsetWidth < e.target.scrollWidth) {
-          // show textTip
           this.textTip = this.currentCell.textContent
           this.$refs.texttip.style.opacity = 0
           const rect = e.target.getBoundingClientRect()
           setTimeout(() => {
             const r = this.$refs.texttip.getBoundingClientRect()
             if (rect.bottom + r.height > window.innerHeight) {
-              // show at top
               this.$refs.texttip.style.top = (rect.top - r.height) + 'px'
             }
             else {
@@ -2687,21 +2385,12 @@ export default defineComponent({
       const colPos = Array.from(row.children).indexOf(e.target) - 1
       const rowPos = Array.from(row.parentNode.children).indexOf(row)
       const [startRow, startCol] = this.startCell;
-        this.selectRange(
-          startRow,
-          startCol,
-          rowPos,
-          colPos
-        );
-
-      // const cell = e.target
-      // if (!cell.classList.contains('error')) return
-      // if (this.tipTimeout) clearTimeout(this.tipTimeout)
-      // if ((this.tip = this.errmsg[cell.getAttribute('id')]) === '') return
-      // const rect = cell.getBoundingClientRect()
-      // this.$refs.tooltip.style.top = (rect.top - 14) + 'px'
-      // this.$refs.tooltip.style.left = (rect.right + 8) + 'px'
-      // cell.addEventListener('mouseout', this.cellMouseOut)
+      this.selectRange(
+        startRow,
+        startCol,
+        rowPos,
+        colPos
+      );
     },
     numcolMouseOver(e) {
       const cell = e.target
@@ -2721,33 +2410,6 @@ export default defineComponent({
     },
     /* *** InputBox *****************************************************************************************
      */
-
-    // moveInputSquareZone(selectedCells) {
-    //   const tableRect = this.systable.getBoundingClientRect();
-
-    //   const selectedCellsArr = Array.from(this.selectedCells);
-
-    //   const [firstRowIndex, firstColIndex] = selectedCellsArr[0].split('-');
-    //   const [lastRowIndex, lastColIndex] = selectedCellsArr.at(-1).split('-');
-
-    //   const firstRow = this.recordBody.children[firstRowIndex];
-    //   const firstCell = firstRow.children[parseInt(firstColIndex) + 1];
-    //   const firstCellRect = firstCell.getBoundingClientRect();
-
-    //   const lastRow = this.recordBody.children[lastRowIndex];
-    //   const lastCell = firstRow.children[parseInt(lastColIndex) + 1];
-    //   const lastCellRect = lastCell.getBoundingClientRect();
-
-    //   const selectedRowsQuntity = (parseInt(lastRowIndex)) - (parseInt(firstRowIndex)) + 1;
-
-    //   this.inputSquare.style.marginLeft = 0
-    //   this.inputSquare.style.left = (firstCellRect.left - tableRect.left - 1) + 'px';
-    //   this.inputSquare.style.top = (firstCellRect.top - tableRect.top - 1) + 'px';
-    //   this.inputSquare.style.width = (lastCellRect.right - firstCellRect.left + 1) + 'px';
-    //   this.inputSquare.style.height = (lastCellRect.height * selectedRowsQuntity + 2) + 'px';
-    //   this.inputSquare.style.zIndex = this.currentField.sticky ? 3 : 1
-    // },
-     
     moveInputSquare(rowPos, colPos) {
       this.textTip = ''
       if (colPos < 0) return false
@@ -2755,7 +2417,6 @@ export default defineComponent({
       let row = this.recordBody.children[rowPos]
       if (!row) {
         if (rowPos > this.currentRowPos) {
-          // move the whole page down 1 record
           if (this.pageTop + this.pageSize < this.table.length)
             this.pageTop += 1
           else
@@ -2763,7 +2424,6 @@ export default defineComponent({
           row = this.recordBody.children[--rowPos]
         }
         else {
-          // move the whole page up 1 record
           if (this.pageTop - 1 >= 0)
             this.pageTop -= 1
           else
@@ -2772,13 +2432,11 @@ export default defineComponent({
         }
       }
 
-      // Clear the label markers
       this.labelTr.children[this.currentColPos + 1].classList.remove('focus')
       if (this.currentRowPos >= 0 && this.currentRowPos < this.pagingTable.length)
         this.recordBody.children[this.currentRowPos].children[0].classList.remove('focus')
       this.lastCell?.classList.remove('focus')
 
-      // Off the textarea when moving, write to value if changed
       if (this.inputBoxShow) this.inputBoxShow = 0
       if (this.inputBoxChanged) {
         const value = this.inputBox._value || this.inputBox.value
@@ -2787,25 +2445,19 @@ export default defineComponent({
         this.inputBoxChanged = false
       }
 
-      // if (Array.from(this.selectedCells).length - 1 !== 0) {
-      //   this.moveInputSquareZone(this.selectedCells)
-      // } 
+      const cell = row.children[colPos + 1]
+      if (!cell) return false
+      this.currentField = this.fields[colPos]
+      const cellRect = cell.getBoundingClientRect()
+      const tableRect = this.systable.getBoundingClientRect()
+      this.squareSavedLeft = this.tableContent.scrollLeft
+      this.inputSquare.style.marginLeft = 0
+      this.inputSquare.style.left = (cellRect.left - tableRect.left - 1) + 'px'
+      this.inputSquare.style.top = (cellRect.top - tableRect.top - 1) + 'px'
+      this.inputSquare.style.width = (cellRect.width + 1) + 'px'
+      this.inputSquare.style.height = (cellRect.height + 1) + 'px'
+      this.inputSquare.style.zIndex = this.currentField.sticky ? 3 : 0
 
-        const cell = row.children[colPos + 1]
-        if (!cell) return false
-        this.currentField = this.fields[colPos]
-        const cellRect = cell.getBoundingClientRect()
-        const tableRect = this.systable.getBoundingClientRect()
-        this.squareSavedLeft = this.tableContent.scrollLeft
-        this.inputSquare.style.marginLeft = 0
-        this.inputSquare.style.left = (cellRect.left - tableRect.left - 1) + 'px'
-        this.inputSquare.style.top = (cellRect.top - tableRect.top - 1) + 'px'
-        this.inputSquare.style.width = (cellRect.width + 1) + 'px'
-        this.inputSquare.style.height = (cellRect.height + 1) + 'px'
-        this.inputSquare.style.zIndex = this.currentField.sticky ? 3 : 0
-      // Relocate the inputSquare
-
-      // Adjust the scrolling to display the whole focusing cell
       if (!this.currentField.sticky) {
         const boundRect = this.$el.getBoundingClientRect()
         if (cellRect.right >= boundRect.right - 12)
@@ -2823,7 +2475,6 @@ export default defineComponent({
       this.currentCell.classList.add('focus')
       this.lastCell = this.currentCell
 
-      // Off all editors
       if (this.showDatePicker) this.showDatePicker = false
       if (this.autocompleteInputs.length) {
         this.autocompleteInputs = []
@@ -2831,7 +2482,6 @@ export default defineComponent({
       }
       if (this.recalAutoCompleteList) clearTimeout(this.recalAutoCompleteList)
 
-      // set the label markers
       if (this.currentRowPos >= 0 && this.currentRowPos < this.pagingTable.length) {
         this.inputBox.value = this.currentCell.textContent
         this.inputBox.focus()
@@ -2862,11 +2512,9 @@ export default defineComponent({
       if (e.target.offsetWidth - e.offsetX > 15) return
       if (this.currentField.readonly) return
       if (this.currentField.options) {
-        // e.preventDefault()
         this.calAutocompleteList(true)
       }
       if (this.currentField.type === 'date') {
-        // e.preventDefault()
         this.showDatePickerDiv()
       }
     },
@@ -2899,13 +2547,9 @@ export default defineComponent({
       }
       this.inputBoxShow = 0
       this.showDatePicker = false
-      // Without this, the cell cannot refresh, dont know why
       this.focused = false
       this.focused = true
     },
-
-
-
     /* *** Update *******************************************************************************************
      */
     undoTransaction(e) {
@@ -2915,15 +2559,12 @@ export default defineComponent({
       transaction.every((t) => {
         try {
           if (t.type === 'd') {
-            // deleteRecord() transaction
             this.newRecord(t.rec, false, true, true)
           }
           else if (t.field && t.field.keyField && t.oldKeys.includes(t.newVal)) {
-            // newRecord() transaction
             const valueRowPos = this.modelValue.findIndex(v => v.id === t.id)
             if (valueRowPos >= 0) {
               this.deleteRecord(valueRowPos, true)
-              // return false
             }
           }
           else
@@ -2955,7 +2596,6 @@ export default defineComponent({
         const field = this.fields.find(f => f.name === name)
         if (field) this.updateCell(rec, field, rec[name].value, isUndo)
       })
-      // this.refresh()
       if (!noLastPage) this.lazy(() => {
         this.lastPage()
         this.moveToSouthWest()
@@ -2987,31 +2627,31 @@ export default defineComponent({
     async updateCell(row, field, newVal, isUndo) {
       const rowIndex = row;
       switch (row.constructor.name) {
-        case 'String': // $id
-          row = this.modelValue.find(r => r.id === row) // id
+        case 'String':
+          row = this.modelValue.find(r => r.id === row)
           break
         case 'Number':
-          row = this.table[row] // tablePos
+          row = this.table[row]
           break
-        case 'Object': // record object
+        case 'Object':
           break
         default:
           throw new Error('Invalid row argument type')
       }
       switch (field.constructor.name) {
-        case 'String': // field name
+        case 'String':
           field = this.fields.find(f => f.name === field)
           break
-        case 'Number': // field pos
+        case 'Number':
           field = this.fields[field]
           break
-        case 'Object': // field object
+        case 'Object':
           break
         default:
           throw new Error('Invalid field argument type')
       }
       if (!field) throw new Error('Invalid field argument')
-      if (!row) return // No row is found
+      if (!row) return
 
       const oldVal = row[field.name]
       const oldKeys = this.getKeys(row)
@@ -3097,7 +2737,6 @@ export default defineComponent({
         Promise.all(Object.keys(row).map(name => this.updateCell(row, name, row[name].value, false))
         )))
     },
-
     /* *** Autocomplete ****************************************************************************************
      */
     async calAutocompleteList(force) {
@@ -3124,7 +2763,6 @@ export default defineComponent({
               if (this.inputBoxShow)
                 list = list.filter(element => element.toUpperCase().includes(value))
               list.sort().splice(listCount)
-              // this.autocompleteSelect = list.findIndex(element => element.toUpperCase().includes(value))
             }
             else if (Object.values(field.options).length > 0) {
               list = field.options
@@ -3133,7 +2771,6 @@ export default defineComponent({
               if (this.inputBoxShow)
                 list = list.filter(element => element.toUpperCase().includes(value))
               list.sort().splice(listCount)
-              // this.autocompleteSelect = list.findIndex(element => element.toUpperCase().includes(value))
             }
           }
           else {
@@ -3153,7 +2790,6 @@ export default defineComponent({
             this.$refs.autocomplete.style.minWidth = rect.width + 'px'
             const r = this.$refs.autocomplete.getBoundingClientRect()
             if (rect.bottom + r.height > window.innerHeight) {
-              // show at top
               this.autocompleteInputs.reverse()
               this.autocompleteSelect = this.autocompleteInputs.length - this.autocompleteSelect - 1
               this.$refs.autocomplete.style.top = (rect.top - r.height) + 'px'
@@ -3186,7 +2822,6 @@ export default defineComponent({
         this.inputCellWrite(text, this.currentColPos, this.currentRowPos + this.pageTop)
       })
     },
-
     /* *** Helper ****************************************************************************************
      */
     tempKey() {
@@ -3341,8 +2976,6 @@ export default defineComponent({
       copyData = copyData.trimEnd();
 
       event.clipboardData.setData("text/plain", copyData);
-
-      // this.$emit("copyData", event);
     },
     handleCellClick(position, text, record, currentField, context) {
       if (this.disableMultiCopy) {
@@ -3391,7 +3024,6 @@ export default defineComponent({
           this.table[row][columnKey].isSelected = true;
         }
       }
-      // this.moveInputSquareZone(this.selectedCells);
     },
     clearSelection() {
       this.selectedCells.clear();
