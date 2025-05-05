@@ -14,7 +14,7 @@
         />
         <component
           :is="currentTabComponent"
-          :fields="localFields"
+          v-model:fields="localFields"
           :localizedLabel="localizedLabel"
         />
       </div>
@@ -78,11 +78,6 @@ watch(
   { immediate: true }
 )
 
-const fields = computed({
-  get: () => props.modelValue,
-  set: (newValue) => emit("update:modelValue", newValue)
-})
-
 const activeTab = ref<TabKey>('settings')
 
 const availableTabs = computed(() => [
@@ -97,9 +92,9 @@ const tabComponents = {
   import: ImportExcel
 }
 
-const currentTabComponent = computed(() => tabComponents[activeTab.value])
+const currentTabComponent = computed(() => tabComponents[activeTab.value]);
 
-const closePanel = () => emit("close")
+const closePanel = () => emit("close");
 
 const applyChanges = () => {
   emit("update:modelValue", localFields.value)

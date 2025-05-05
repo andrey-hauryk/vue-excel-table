@@ -2,7 +2,8 @@
   <div class="panel-list">
     <transition-group name="list" tag="div">
       <draggable
-        v-model="fields"
+        v-model="localFields"
+        @change="onDragChange"
         draggable=".panel-list-item"
         item-key="name"
       >
@@ -25,18 +26,35 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps} from "vue";
+import {ref, watch} from "vue";
 import draggable from "vuedraggable/src/vuedraggable";
 
 const props = defineProps({
   fields: Array,
 });
 
+const emit = defineEmits<{
+  (e: 'update:fields', value: Array<any>): void;
+}>();
+
 const toggleVisibility = (item: any) => {
   item.invisible = !item.invisible;
+  emit('update:fields', localFields.value);
 };
 
-const fields = props.fields;
+const localFields = ref([...props.fields]); //not deep copy
+
+watch(
+  () => props.fields,
+  (newFields) => {
+    localFields.value = [...newFields];
+  }
+);
+
+const onDragChange = () => {
+  emit('update:fields', localFields.value);
+};
+
 </script>
 
 <style scoped lang="scss">

@@ -4,7 +4,6 @@
         v-model="tableData"
         :columns="columns"
         autocomplete
-        width="30%"
         no-header-edit
         page="1"
         no-paging
