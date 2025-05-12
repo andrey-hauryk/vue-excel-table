@@ -6,12 +6,28 @@
         :label="localizedLabel.fileName"
         :placeholder="localizedLabel.fileName"
       ></ExcelInput>
+      <DropDownButton 
+        v-model="form.delimiter" 
+        :items="delimitersOptions"
+        @update:modelValue="submitExport"
+      ></DropDownButton>
+      <ExcelCheckbox v-model="form.filteredValues">
+        Форматирование значений
+      </ExcelCheckbox>
+      <ExcelCheckbox v-model="form.filteredValues">
+        Экспортировать офильтрованные значения
+      </ExcelCheckbox>
+      <ExcelCheckbox v-model="form.selectedRows">
+        Выбранные строки
+      </ExcelCheckbox>
   </form>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import ExcelInput from '../ui/ExcelInput.vue';
+import DropDownButton from "../filter/DropDownButton.vue";
+import ExcelCheckbox from '../ui/ExcelCheckbox.vue';
 
 const props = defineProps<{
   localizedLabel: {
@@ -25,11 +41,30 @@ const emit = defineEmits<{
 
 type ExportSettings = {
   fileName: string
+  delimiter: string
+  filteredValues: boolean,
+  selectedRows: boolean,
+  formatValues: boolean,
 }
 
 const form = reactive<ExportSettings>({
-  fileName: 'report',
-})
+  fileName: 'отчет',
+  delimiter: ',',
+  formatValues: true,
+  filteredValues: false,
+  selectedRows: false,
+});
+
+const delimitersOptions = ref([
+  {
+    value: ',',
+    name: ','
+  },
+  {
+    value: '.',
+    name: '.'
+  },
+]);
 
 function submitExport() {
   emit('update:exportSettings', { ...form })

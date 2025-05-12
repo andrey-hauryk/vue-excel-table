@@ -2081,9 +2081,9 @@ export default defineComponent({
 
       exportTable(this.table, this.fields, {
         format: 'xlsx',
+        delimiter: options.value.delimiter,
         fileName: options.value.fileName,
-        headerRefs: headerEls,
-        rowsRef: rowData,
+        editor: this.editor,
       })
     },
     /* *** Select *******************************************************************************************
