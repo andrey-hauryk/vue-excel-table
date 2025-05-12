@@ -1,5 +1,7 @@
 import type { Ref } from 'vue'
-import { getHeaderStyles, getRowStyles } from '../utils/styleUtils'
+import { Workbook } from 'exceljs'
+import { saveAs } from 'file-saver'
+import { getRowHeights, getColumnWidths, getHeaderStyles, getRowStyles, getHeaderHeight } from '../utils/styleUtils'
 import { formatCellValue, applyNumberFormat } from '../utils/dataUtils'
 
 interface ExportField {
@@ -9,10 +11,12 @@ interface ExportField {
 }
 
 interface ExportOptions {
-  format?: 'xlsx' | 'csv'
   fileName?: string
   editor?: Ref<HTMLElement> | HTMLElement
 }
+
+const EXPORT_FORMAT = 'xlsx';
+const DEFAULT_FILENAME = 'отчет';
 
 export function useExcelExport() {
   const exportTable = async (
@@ -20,26 +24,34 @@ export function useExcelExport() {
     fields: ExportField[],
     options: ExportOptions = {}
   ) => {
-    const { format = 'xlsx', fileName = 'export', editor } = options
-    const { Workbook } = await import('exceljs')
-    const { saveAs } = await import('file-saver')
+
+    const { 
+      fileName = DEFAULT_FILENAME, 
+      editor 
+    } = options
+
+    if (!editor) {
+      throw new Error("Editor element is required in ExportOptions")
+    }
 
     const workbook = new Workbook()
     const worksheet = workbook.addWorksheet('Sheet1')
 
-    // Получение стилей
     const headerStyles = getHeaderStyles(editor, fields.length)
     const rowCellStyles = getRowStyles(editor);
+    const rowHeights = getRowHeights(editor)
+    const columnWidths = getColumnWidths(editor)
+    const headerHight = getHeaderHeight(editor);
 
-    // Заголовки
+    worksheet.columns = columnWidths.map(width => ({ width: width / 8 }))
+
     worksheet.addRow(fields.map(f => f.label))
     const headerRow = worksheet.getRow(1)
-    headerRow.height = 20
+    headerRow.height = headerHight
     headerRow.eachCell((cell, colIdx) => {
       Object.assign(cell, headerStyles[colIdx - 1])
     })
 
-    // Данные
     tableData.forEach((record, rowIndex) => {
       const row = fields.map(field => {
         const raw = record[field.name]
@@ -47,6 +59,7 @@ export function useExcelExport() {
         return value;
       });
       const worksheetRow = worksheet.addRow(row)
+      worksheetRow.height = rowHeights[rowIndex]
 
       worksheetRow.eachCell((cell, colIdx) => {
         const field = fields[colIdx - 1]
@@ -58,7 +71,7 @@ export function useExcelExport() {
     })
 
     const buffer = await workbook.xlsx.writeBuffer()
-    saveAs(new Blob([buffer]), `${fileName}.${format}`)
+    saveAs(new Blob([buffer]), `${fileName}.${EXPORT_FORMAT}`)
   }
 
   return { exportTable }

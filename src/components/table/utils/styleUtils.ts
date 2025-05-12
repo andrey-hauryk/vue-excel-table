@@ -121,3 +121,60 @@ export function getRowStyles(editor: HTMLElement | Ref<HTMLElement>): Partial<Ex
 
   return result
 }
+
+/**
+ * Extracts the row heights from the table.
+ * @param editor - The table container element or Vue Ref to it.
+ * @returns - An array of row heights.
+ */
+export function getRowHeights(editor: HTMLElement | Ref<HTMLElement>): number[] {
+  const heights: number[] = []
+  const el = getEditorElement(editor)
+  if (!el) return heights
+
+  const rows = Array.from(el.querySelectorAll('tbody tr'))
+  rows.forEach(row => {
+    if (row instanceof HTMLElement) {
+      heights.push(row.offsetHeight)
+    }
+  })
+
+  return heights
+}
+
+/**
+ * Extracts the column widths from the table.
+ * @param editor - The table container element or Vue Ref to it.
+ * @returns - An array of column widths.
+ */
+export function getColumnWidths(editor: HTMLElement | Ref<HTMLElement>): number[] {
+  const widths: number[] = []
+  const el = getEditorElement(editor)
+  if (!el) return widths
+
+  const headerCells = Array.from(el.querySelectorAll('thead th')).slice(1)
+  headerCells.forEach(cell => {
+    if (cell instanceof HTMLElement) {
+      widths.push(cell.offsetWidth)
+    }
+  })
+
+  return widths
+}
+
+/**
+ * Extracts the height of the table header row.
+ * @param editor - The table container element or Vue Ref to it.
+ * @returns - The height of the header row.
+ */
+export function getHeaderHeight(editor: HTMLElement | Ref<HTMLElement>): number {
+  const el = getEditorElement(editor)
+  if (!el) return 0
+
+  const headerRow = el.querySelector('thead')
+  if (headerRow instanceof HTMLElement) {
+    return headerRow.offsetHeight
+  }
+
+  return 0
+}
