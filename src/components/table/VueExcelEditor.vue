@@ -891,6 +891,7 @@ export default defineComponent({
           summary: null,
           toValue: t => t,
           toText: t => t,
+          valueFormatter: null,
           register: null
         })
       })
@@ -2080,8 +2081,8 @@ export default defineComponent({
       });
 
       exportTable(this.table, this.fields, {
-        format: 'xlsx',
         delimiter: options.value.delimiter,
+        formattedValues: options.value.formattedValues,
         fileName: options.value.fileName,
         editor: this.editor,
       })

@@ -161,6 +161,7 @@ const init = () => {
     summary: props.summary,
     toValue: finalToValue,
     toText: (...args) => finalToText(...args) || "",
+    valueFormatter: props.valueFormatter || null,
     register: props.register,
     listByClick: props.listByClick ?? _listByClick,
     hideDuplicate: props.hideDuplicate ?? props.grouping,

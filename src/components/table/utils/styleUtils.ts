@@ -1,5 +1,7 @@
 import type ExcelJS from 'exceljs'
 import type { Ref } from 'vue'
+import type {ExportField} from '../types/export';
+
 
 /**
  * Returns the underlying HTMLElement from either a direct element or a Vue Ref.
@@ -177,4 +179,55 @@ export function getHeaderHeight(editor: HTMLElement | Ref<HTMLElement>): number 
   }
 
   return 0
+}
+
+/**
+ * Automatically calculates the width of each column based on its content.
+ * @param tableData - The table data to be exported.
+ * @param fields - The fields to be included in the export.
+ * @returns - An array of column widths.
+ */
+export function calculateColumnWidths(tableData: any[], fields: ExportField[]): number[] {
+  const widths: number[] = []
+
+  fields.forEach((field, colIdx) => {
+    let maxLength = field.label.length
+
+    tableData.forEach(record => {
+      const cellValue = record[field.name]?.value ?? record[field.name]
+      const strValue = String(cellValue)
+      maxLength = Math.max(maxLength, strValue.length)
+    })
+
+    widths.push(maxLength)
+  })
+
+  return widths
+}
+
+/**
+ * Automatically calculates the height of each row based on its content.
+ * @param tableData - The table data to be exported.
+ * @param fields - The fields to be included in the export.
+ * @returns - An array of row heights.
+ */
+export function calculateRowHeights(tableData: any[], fields: ExportField[]): number[] {
+  const heights: number[] = []
+
+  tableData.forEach(record => {
+    let maxHeight = 0
+
+    fields.forEach(field => {
+      const cellValue = record[field.name]?.value ?? record[field.name]
+      const strValue = String(cellValue)
+
+      // Calculate the height based on the number of lines of text (approx. 15 characters per line)
+      const lines = Math.ceil(strValue.length / 15)
+      maxHeight = Math.max(maxHeight, lines)
+    })
+
+    heights.push(maxHeight)
+  })
+
+  return heights
 }

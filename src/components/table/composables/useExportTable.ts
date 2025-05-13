@@ -1,17 +1,13 @@
 import type { Ref } from 'vue'
 import { Workbook } from 'exceljs'
 import { saveAs } from 'file-saver'
+import type {ColumnProps} from '../types/column';
 import { getRowHeights, getColumnWidths, getHeaderStyles, getRowStyles, getHeaderHeight } from '../utils/styleUtils'
 import { formatCellValue, applyNumberFormat } from '../utils/dataUtils'
 
-interface ExportField {
-  name: string
-  label: string
-  type: 'string' | 'number' | 'date'
-}
-
 interface ExportOptions {
   fileName?: string
+  formattedValues?: boolean
   editor?: Ref<HTMLElement> | HTMLElement
 }
 
@@ -21,12 +17,13 @@ const DEFAULT_FILENAME = 'отчет';
 export function useExcelExport() {
   const exportTable = async (
     tableData: any[],
-    fields: ExportField[],
+    fields: ColumnProps[],
     options: ExportOptions = {}
   ) => {
 
     const { 
-      fileName = DEFAULT_FILENAME, 
+      fileName = DEFAULT_FILENAME,
+      formattedValues = false, 
       editor 
     } = options
 
@@ -56,6 +53,7 @@ export function useExcelExport() {
       const row = fields.map(field => {
         const raw = record[field.name]
         const value = raw?.value ?? raw
+        console.log(formatedValues, field);
         return value;
       });
       const worksheetRow = worksheet.addRow(row)

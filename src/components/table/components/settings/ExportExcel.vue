@@ -11,7 +11,7 @@
         :items="delimitersOptions"
         @update:modelValue="submitExport"
       ></DropDownButton>
-      <ExcelCheckbox v-model="form.filteredValues">
+      <ExcelCheckbox v-model="form.formattedValues">
         Форматирование значений
       </ExcelCheckbox>
       <ExcelCheckbox v-model="form.filteredValues">
@@ -44,13 +44,13 @@ type ExportSettings = {
   delimiter: string
   filteredValues: boolean,
   selectedRows: boolean,
-  formatValues: boolean,
+  formattedValues: boolean,
 }
 
 const form = reactive<ExportSettings>({
   fileName: 'отчет',
   delimiter: ',',
-  formatValues: true,
+  formattedValues: false,
   filteredValues: false,
   selectedRows: false,
 });
