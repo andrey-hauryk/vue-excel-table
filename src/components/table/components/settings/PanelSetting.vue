@@ -87,7 +87,10 @@ const emit = defineEmits([
 const localFields = ref([]);
 
 const exportSettings = ref({
-  fileName: 'report',
+  fileName: 'отчет',
+  formattedValues: true,
+  selectedRows: false,
+  filteredValues: false,
 })
 
 const importedFile = ref<File | null>(null);

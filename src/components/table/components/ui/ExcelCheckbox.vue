@@ -3,9 +3,9 @@
     <input
       type="checkbox"
       class="checkbox__input"
-      :checked="value"
+      :checked="modelValue"
       @change="handleChange"
-      @click.stop=""
+      @click.stop
     />
     <span class="checkbox__label">
       <slot></slot>
@@ -14,16 +14,17 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
-    modelValue: Boolean,
-    value: Boolean,
-});
+defineProps<{ modelValue: boolean }>()
 
-const emit = defineEmits(["update:modelValue", "change"]);
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: boolean): void
+  (e: 'change', value: boolean): void
+}>()
 
 const handleChange = (e: Event) => {
-    emit("update:modelValue", e.target.checked);
-    emit("change", e.target.checked);
+  const target = e.target as HTMLInputElement
+  emit('update:modelValue', target.checked)
+  emit('change', target.checked)
 }
 </script>
 
@@ -36,11 +37,13 @@ $tableBaseColor: #009639;
   gap: 10px;
   cursor: pointer;
   user-select: none;
+
   &__input {
     accent-color: $tableBaseColor;
     cursor: pointer;
     transition: transform 0.2s ease;
   }
+
   &__label {
     color: gray;
   }
