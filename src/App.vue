@@ -1,18 +1,20 @@
 <template>
     <div class="table">
-      <ExcelTable
+      <!-- <ExcelTable
         v-model="tableData"
         :columns="columns"
         autocomplete
         no-header-edit
         page="1"
         no-paging
-      ></ExcelTable>
+      ></ExcelTable> -->
+      <CubaTest></CubaTest>
     </div>
 </template>
 
 
 <script setup lang="ts">
+import CubaTest from './CubaTest.vue';
 import ExcelTable from './components/ui/ExcelTable.vue';
 import {formatNumber} from './mock/helpers';
 import tableDataMock from './mock/data';
