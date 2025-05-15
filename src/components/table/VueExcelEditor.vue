@@ -1915,7 +1915,13 @@ export default defineComponent({
     /* *** Import/Export ************************************************************************************
      */
     importTable(file) {
-      
+      const importTable = useExcelImport();
+      const test = importTable(file)
+
+      test.then((data) => {
+        console.log('data', data);
+        console.log('tableData', this.table);
+      })
     },
     async exportTable(options) {
       const { exportTable } = useExcelExport();
