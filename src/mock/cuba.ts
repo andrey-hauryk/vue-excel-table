@@ -1,1065 +1,1436 @@
 export default {
   "2025-04": {
-    "days": {
-      "9": {
-        "params": [
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "75.2"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "8.95343488"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "5.0"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "35.36"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "65.0"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "32.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "30.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "8.95343488"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "45.71428571429"
-          }
-        ]
-      },
-      "10": {
-        "params": [
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "62.0"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "4.3577301"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "87.7"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "4.3577301"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "34.7"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "302.0"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "32.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "30.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "45.71428571429"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "34.7"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "7.0"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "7.0"
-          }
-        ]
-      },
-      "11": {
-        "params": [
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "5.0"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "34.0"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "61.0"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "34.04"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "87.1"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "48.57142857143"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "30.0"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "296.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "4.48337436"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "4.48337436"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "34.04"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "5.0"
-          }
-        ]
-      },
-      "12": {
-        "params": [
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "35.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "34.0"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "34.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "7.428796"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "45873.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "50.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "30.0"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "64.0"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "304.0"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "45873.0"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "78.6"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "7.428796"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          }
-        ]
-      },
-      "13": {
-        "params": [
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "292.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "34.0"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "4.0"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "7.428796"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "65.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "30.0"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "51.42857142857"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "7.428796"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "78.6"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "4.0"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "34.0"
-          }
-        ]
-      },
-      "14": {
-        "params": [
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "45692.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "34.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "30.0"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "89.3"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "3.714398"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "66.0"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "37.0"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "298.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "52.85714285714"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "45692.0"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "3.714398"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "34.0"
-          }
-        ]
-      },
-      "15": {
-        "params": [
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "7.63708"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "34.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "34.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "51.42857142857"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "30.0"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "78.0"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "67.0"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "296.0"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "45842.0"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "7.63708"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "45842.0"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          }
-        ]
-      },
-      "16": {
-        "params": [
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "1.35793"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "72.0"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "45662.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "35.0"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "96.2"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "304.0"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "35.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "51.42857142857"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "1.35793"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "45662.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "34.0"
-          }
-        ]
-      },
-      "17": {
-        "params": [
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "20.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "30.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "51.42857142857"
-          },
-          {
-            "full_name": "Время простоя",
-            "short_name": "Время простоя",
-            "value": "4.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "1.16394"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "34.0"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "96.2"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "1.396728"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "66.0"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Код простоя",
-            "short_name": "Код простоя",
-            "value": "6.0"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "312.0"
-          }
-        ]
-      },
-      "18": {
-        "params": [
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "27.0"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "18.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "51.42857142857"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "316.0"
-          },
-          {
-            "full_name": "Время простоя",
-            "short_name": "Время простоя",
-            "value": "6.0"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "4.116672"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "34.0"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "88.8"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "68.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "3.087504"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "45812.0"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "45812.0"
-          },
-          {
-            "full_name": "Код простоя",
-            "short_name": "Код простоя",
-            "value": "6.0"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          }
-        ]
-      },
-      "19": {
-        "params": [
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "45812.0"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "8.931708"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "318.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "8.931708"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "64.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "51.42857142857"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "34.0"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "75.7"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "45812.0"
-          }
-        ]
-      },
-      "20": {
-        "params": [
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "63.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "9.593316"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "34.0"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "9.593316"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "45812.0"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "73.9"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "334.0"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "51.42857142857"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "45812.0"
-          }
-        ]
-      },
-      "21": {
-        "params": [
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "51.42857142857"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "86.8"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "45904.0"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "4.851792"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "45904.0"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "338.0"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "58.0"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "34.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "4.851792"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          }
-        ]
-      },
-      "22": {
-        "params": [
-          {
-            "full_name": "Загрузка",
-            "short_name": "Загруз",
-            "value": "51.42857142857"
-          },
-          {
-            "full_name": "Линейное давление",
-            "short_name": "Рлин",
-            "value": "45693.0"
-          },
-          {
-            "full_name": "% воды",
-            "short_name": "% воды",
-            "value": "85.0"
-          },
-          {
-            "full_name": "Добыча жидкости",
-            "short_name": "Доб.Ж",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Дебит жидкости",
-            "short_name": "Qж",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          },
-          {
-            "full_name": "Частота",
-            "short_name": "F",
-            "value": "34.0"
-          },
-          {
-            "full_name": "Давление буферное",
-            "short_name": "Рбуф",
-            "value": "45693.0"
-          },
-          {
-            "full_name": "Добыча нефти",
-            "short_name": "Доб.Н",
-            "value": "1181316.0"
-          },
-          {
-            "full_name": "Давление затрубное",
-            "short_name": "Рзат",
-            "value": "45781.0"
-          },
-          {
-            "full_name": "Динамический уровень",
-            "short_name": "Hдин",
-            "value": "342.0"
-          },
-          {
-            "full_name": "Сила тока",
-            "short_name": "I",
-            "value": "36.0"
-          },
-          {
-            "full_name": "Температура жидкости (в линии)",
-            "short_name": "Тжид (линия)",
-            "value": "57.0"
-          },
-          {
-            "full_name": "Дебит нефти",
-            "short_name": "Qн",
-            "value": "1181316.0"
-          }
-        ]
-      },
-      "23": {
-        "params": [
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          }
-        ]
-      },
-      "24": {
-        "params": [
-          {
-            "full_name": "Время работы",
-            "short_name": "Время раб",
-            "value": "24.0"
-          }
-        ]
+      "days": {
+        "1": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 40,
+          "oil_debit": 24.13644,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 40,
+          "oil_production": 24.13644,
+          "water_percent": 40.9,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.4,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.4,
+          "linear_fluid_temperature": 67,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 285,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 32,
+          "loading": 45.71428571429,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "2": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 40,
+          "oil_debit": 11.10848,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 40,
+          "oil_production": 11.10848,
+          "water_percent": 72.8,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.4,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.4,
+          "linear_fluid_temperature": 68,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 276,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 32,
+          "loading": 45.71428571429,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "3": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 40,
+          "oil_debit": 11.10848,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 40,
+          "oil_production": 11.10848,
+          "water_percent": 72.8,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.4,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.4,
+          "linear_fluid_temperature": 74,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 272,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 32,
+          "loading": 45.71428571429,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "4": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 40,
+          "oil_debit": 10.98596,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 40,
+          "oil_production": 10.98596,
+          "water_percent": 73.1,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.8,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.8,
+          "linear_fluid_temperature": 67,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 276,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 32,
+          "loading": 45.71428571429,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "5": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 38,
+          "oil_debit": 9.039934,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 38,
+          "oil_production": 9.039934,
+          "water_percent": 76.7,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.4,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.4,
+          "linear_fluid_temperature": 72,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 278,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 32,
+          "loading": 45.71428571429,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "6": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 37.34,
+          "oil_debit": 8.88292462,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 37.34,
+          "oil_production": 8.88292462,
+          "water_percent": 76.7,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.8,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.8,
+          "linear_fluid_temperature": 68,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 282,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 32,
+          "loading": 45.71428571429,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "7": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36.68,
+          "oil_debit": 20.48530316,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 36.68,
+          "oil_production": 20.48530316,
+          "water_percent": 45.3,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.7,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.7,
+          "linear_fluid_temperature": 71,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 286,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 32,
+          "loading": 45.71428571429,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "8": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36.02,
+          "oil_debit": 11.18003168,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 36.02,
+          "oil_production": 11.18003168,
+          "water_percent": 69.6,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.7,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.7,
+          "linear_fluid_temperature": 67,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 294,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 32,
+          "loading": 45.71428571429,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "9": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 35.36,
+          "oil_debit": 8.95343488,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 35.36,
+          "oil_production": 8.95343488,
+          "water_percent": 75.2,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 5,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 5,
+          "linear_fluid_temperature": 65,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 306,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 32,
+          "loading": 45.71428571429,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "10": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 34.7,
+          "oil_debit": 4.3577301,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 34.7,
+          "oil_production": 4.3577301,
+          "water_percent": 87.7,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 7,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 7,
+          "linear_fluid_temperature": 62,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 302,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 32,
+          "loading": 45.71428571429,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "11": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 34.04,
+          "oil_debit": 4.48337436,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 34.04,
+          "oil_production": 4.48337436,
+          "water_percent": 87.1,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 5,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 5,
+          "linear_fluid_temperature": 61,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 296,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 34,
+          "loading": 48.57142857143,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "12": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 34,
+          "oil_debit": 7.428796,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 34,
+          "oil_production": 7.428796,
+          "water_percent": 78.6,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.8,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.8,
+          "linear_fluid_temperature": 64,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 304,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 35,
+          "loading": 50,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "13": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 34,
+          "oil_debit": 7.428796,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 34,
+          "oil_production": 7.428796,
+          "water_percent": 78.6,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4,
+          "linear_fluid_temperature": 65,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 292,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 36,
+          "loading": 51.42857142857,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "14": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 34,
+          "oil_debit": 3.714398,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 34,
+          "oil_production": 3.714398,
+          "water_percent": 89.3,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.2,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.2,
+          "linear_fluid_temperature": 66,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 298,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 37,
+          "loading": 52.85714285714,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "15": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 34,
+          "oil_debit": 7.63708,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 34,
+          "oil_production": 7.63708,
+          "water_percent": 78,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.7,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.7,
+          "linear_fluid_temperature": 67,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 296,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 36,
+          "loading": 51.42857142857,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 30,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "16": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 35,
+          "oil_debit": 1.35793,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 35,
+          "oil_production": 1.35793,
+          "water_percent": 96.2,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 5.1,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 5.1,
+          "linear_fluid_temperature": 72,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 304,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 36,
+          "loading": 51.42857142857,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "17": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36,
+          "oil_debit": 1.396728,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 30,
+          "oil_production": 1.16394,
+          "water_percent": 96.2,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.5,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.5,
+          "linear_fluid_temperature": 66,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 312,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 36,
+          "loading": 51.42857142857,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 4,
+          "sleep_code": 6,
+          "work_time": 20,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "18": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36,
+          "oil_debit": 4.116672,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 27,
+          "oil_production": 3.087504,
+          "water_percent": 88.8,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.6,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.6,
+          "linear_fluid_temperature": 68,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 316,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 36,
+          "loading": 51.42857142857,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 6,
+          "sleep_code": 6,
+          "work_time": 18,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "19": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36,
+          "oil_debit": 8.931708,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 36,
+          "oil_production": 8.931708,
+          "water_percent": 75.7,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.6,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.6,
+          "linear_fluid_temperature": 64,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 318,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 36,
+          "loading": 51.42857142857,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "20": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36,
+          "oil_debit": 9.593316,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 36,
+          "oil_production": 9.593316,
+          "water_percent": 73.9,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.6,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.6,
+          "linear_fluid_temperature": 63,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 334,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 36,
+          "loading": 51.42857142857,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "21": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36,
+          "oil_debit": 4.851792,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 36,
+          "oil_production": 4.851792,
+          "water_percent": 86.8,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.9,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.9,
+          "linear_fluid_temperature": 58,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 338,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 36,
+          "loading": 51.42857142857,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "22": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36,
+          "oil_debit": 5.5134,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 36,
+          "oil_production": 5.5134,
+          "water_percent": 85,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 5.2,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 5.2,
+          "linear_fluid_temperature": 57,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 342,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 36,
+          "loading": 51.42857142857,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "23": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 0,
+          "oil_debit": 0,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 0,
+          "oil_production": 0,
+          "water_percent": 0,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 0,
+          "borehole_pressure": 0,
+          "linear_pressure": 0,
+          "linear_fluid_temperature": 0,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 0,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 0,
+          "loading": 0,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 0,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "24": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 0,
+          "oil_debit": 0,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 0,
+          "oil_production": 0,
+          "water_percent": 0,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 0,
+          "borehole_pressure": 0,
+          "linear_pressure": 0,
+          "linear_fluid_temperature": 0,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 0,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 0,
+          "loading": 0,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 0,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "25": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36,
+          "oil_debit": 5.917716,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 36,
+          "oil_production": 5.917716,
+          "water_percent": 83.9,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.9,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.9,
+          "linear_fluid_temperature": 55,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 334,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 38,
+          "loading": 54.28571428571,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "26": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36,
+          "oil_debit": 13.489452,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 36,
+          "oil_production": 13.489452,
+          "water_percent": 63.3,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.8,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.8,
+          "linear_fluid_temperature": 52,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 328,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 38,
+          "loading": 54.28571428571,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "27": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36,
+          "oil_debit": 17.165052,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 36,
+          "oil_production": 17.165052,
+          "water_percent": 53.3,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.8,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.8,
+          "linear_fluid_temperature": 58,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 332,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 38,
+          "loading": 54.28571428571,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "28": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 36,
+          "oil_debit": 8.012808,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 36,
+          "oil_production": 8.012808,
+          "water_percent": 78.2,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.6,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.6,
+          "linear_fluid_temperature": 57,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 330,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 38,
+          "loading": 54.28571428571,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "29": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 34,
+          "oil_debit": 14.267454,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 34,
+          "oil_production": 14.267454,
+          "water_percent": 58.9,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.8,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.8,
+          "linear_fluid_temperature": 64,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 334,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 38,
+          "loading": 54.28571428571,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        },
+        "30": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 0,
+          "oil_debit": 0,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 0,
+          "oil_production": 0,
+          "water_percent": 0,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 0,
+          "borehole_pressure": 0,
+          "linear_pressure": 0,
+          "linear_fluid_temperature": 0,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 0,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 0,
+          "loading": 0,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 0,
+          "torque": 0,
+          "frequency": 0,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        }
+      }
+    },
+    "2025-05": {
+      "days": {
+        "1": {
+          "kinematic_viscosity": 0,
+          "downhole_pressure_tm": 0,
+          "period": 0,
+          "cycle_number": 0,
+          "connector_diameter": 0,
+          "liquid_debit": 34,
+          "oil_debit": 7.4878098,
+          "water_cut": 0,
+          "gas_debit": 0,
+          "gas_factor": 0,
+          "liquid_production": 34,
+          "oil_production": 7.4878098,
+          "water_percent": 78.43,
+          "gas_production": 0,
+          "steam_pumping": 0,
+          "steam_dryness": 0,
+          "loading_temperature": 0,
+          "injection_pressure": 0,
+          "buffer_pressure": 4.8,
+          "borehole_pressure": 4.5,
+          "linear_pressure": 4.8,
+          "linear_fluid_temperature": 52,
+          "buffer_fluid_temperature": 0,
+          "salt_concentration": 0,
+          "dynamic_level": 346,
+          "static_level": 0,
+          "ushvn_frequency": 0,
+          "amperage": 38,
+          "loading": 54.28571428571,
+          "suspended_particle_count": 0,
+          "reservoir_pressure": 0,
+          "downhole_pressure": 0,
+          "sleep_time": 0,
+          "sleep_code": 0,
+          "work_time": 24,
+          "torque": 0,
+          "frequency": 34,
+          "feed_rate": 0,
+          "theoretical_debit": 0,
+          "power_consumption": 0,
+          "energy_consumption": 0,
+          "inflow_volume": 0,
+          "oily_fluid_sampled": 0,
+          "fluid_sampled": 0
+        }
       }
     }
-  }
 }
