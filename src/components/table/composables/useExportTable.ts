@@ -94,7 +94,6 @@ export function useExcelExport() {
     })
 
     const buffer = await workbook.xlsx.writeBuffer()
-    console.log(fileName);
     saveAs(new Blob([buffer]), `${fileName}.${EXPORT_FORMAT}`)
   }
 

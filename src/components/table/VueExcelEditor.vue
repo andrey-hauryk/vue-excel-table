@@ -672,7 +672,6 @@ export default defineComponent({
   },
   methods: {
     applyFilter(rowsForFilter, columnIndex) {
-      console.log('rowsForFilter', rowsForFilter);
       this.selectedColumnRowsForFilter[columnIndex] = rowsForFilter;
       this.columnFilter[columnIndex] = 'tempValue';
       this.refresh();
@@ -1920,8 +1919,14 @@ export default defineComponent({
     },
     async exportTable(options) {
       const { exportTable } = useExcelExport();
-      console.log(options.value);
-      exportTable(this.table, this.fields, {
+      let tableData = [];
+      if (options.value.filteredValues) {
+        tableData = this.table;
+      } else {
+        tableData = this.modelValue;
+      }
+
+      exportTable(tableData, this.fields, {
         delimiter: options.value.delimiter,
         formattedValues: options.value.formattedValues,
         fileName: options.value.fileName,
