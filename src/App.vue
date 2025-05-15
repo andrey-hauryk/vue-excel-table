@@ -3,9 +3,9 @@
       <ExcelTable
         v-model="tableData"
         :columns="columns"
-        autocomplete
+        selectable
+        free-select
         no-header-edit
-        page="1"
         no-paging
       ></ExcelTable>
     </div>

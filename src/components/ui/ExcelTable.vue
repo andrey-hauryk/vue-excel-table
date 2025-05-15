@@ -60,7 +60,7 @@ const handleCellClick = (position, text, record, currentField, context) => {
 }
 
 const setProps = () => {
-  localSelectedWells.value = props.selectedRows;
+  localSelectedWells.value = props.selectedRows || [];
   allSelectedIds.value = localSelectedWells.value;
   emit('onReady');
 }
