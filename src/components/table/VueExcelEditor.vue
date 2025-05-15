@@ -1926,6 +1926,13 @@ export default defineComponent({
         tableData = this.modelValue;
       }
 
+      if (options.value.selectedRows) {
+        const selectedIds = Object.values(this.selected);
+        tableData = tableData.filter((row) => {
+          return selectedIds.includes(row.id);
+        });
+      }
+
       exportTable(tableData, this.fields, {
         delimiter: options.value.delimiter,
         formattedValues: options.value.formattedValues,
