@@ -20,7 +20,7 @@
         <IconFileSaving />
       </div>
       <p>{{ localizedLabel.moveFileOrSelect }}</p>
-      <p v-if="modelValue" class="file-info">{{ fileInput.name }}</p>
+      <p v-if="importedFile" class="file-info">{{ importedFile.name }}</p>
     </div>
   </div>
 </template>
@@ -29,8 +29,8 @@
 import { ref } from 'vue'
 import IconFileSaving from '../svg/IconFileSaving.vue'
 
-const props = defineProps<{
-  modelValue: File | null
+defineProps<{
+  importedFile: File | null
   localizedLabel: {
     moveFileOrSelect: string
   }

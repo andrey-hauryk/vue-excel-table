@@ -90,370 +90,370 @@ export default [
             "anomaly": 0
         }
     },
-    // {
-    //     "id": "c2817d1a-091b-4ad4-9c1f-107b37a6154a",
-    //     "date_dt": {
-    //         "value": "2024-10-01T00:00:00.000",
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_rate_tn": {
-    //         "value": 23.902,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_rate_tn": {
-    //         "value": 1.601,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_rate_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_month_tn": {
-    //         "value": 740.962,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_month_tn": {
-    //         "value": 49.622,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_month_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_cumul_tn": {
-    //         "value": 21399.48,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_cumul_tn": {
-    //         "value": 10200.409,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_cumul_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_rate_m3": {
-    //         "value": 143.6146451613,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_month_m3": {
-    //         "value": 4452.054,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_cumul_m3": {
-    //         "value": 474461.348,
-    //         "anomaly": 0
-    //     },
-    //     "well_id": {
-    //         "value": "972",
-    //         "anomaly": 0
-    //     },
-    //     "well_name": {
-    //         "value": "22103",
-    //         "anomaly": 0
-    //     },
-    //     "cluster_name": {
-    //         "value": "Куст-1",
-    //         "anomaly": 0
-    //     },
-    //     "prod_horizon": {
-    //         "value": "D3fm-III ",
-    //         "anomaly": 0
-    //     },
-    //     "well_status": {
-    //         "value": "НАК",
-    //         "anomaly": 0
-    //     },
-    //     "well_type": {
-    //         "value": "Нефтяные",
-    //         "anomaly": 0
-    //     },
-    //     "eff": {
-    //         "value": 1,
-    //         "anomaly": 0
-    //     },
-    //     "wct_tn": {
-    //         "value": 0.9330303038,
-    //         "anomaly": 0
-    //     },
-    //     "gor_tn_to_m3": {
-    //         "value": 89.7030887953,
-    //         "anomaly": 0
-    //     }
-    // },
-    // {
-    //     "id": "82fdf83f-a02f-4ea6-997d-0eee043c55d9",
-    //     "date_dt": {
-    //         "value": "2024-09-01T00:00:00.000",
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_rate_tn": {
-    //         "value": 23.039,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_rate_tn": {
-    //         "value": 0.971,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_rate_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_month_tn": {
-    //         "value": 691.17,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_month_tn": {
-    //         "value": 29.123,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_month_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_cumul_tn": {
-    //         "value": 20658.514,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_cumul_tn": {
-    //         "value": 10150.787,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_cumul_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_rate_m3": {
-    //         "value": 84.2592,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_month_m3": {
-    //         "value": 2527.776,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_cumul_m3": {
-    //         "value": 470009.294,
-    //         "anomaly": 0
-    //     },
-    //     "well_id": {
-    //         "value": "972",
-    //         "anomaly": 0
-    //     },
-    //     "well_name": {
-    //         "value": "22103",
-    //         "anomaly": 0
-    //     },
-    //     "cluster_name": {
-    //         "value": "Куст-1",
-    //         "anomaly": 0
-    //     },
-    //     "prod_horizon": {
-    //         "value": "D3fm-III ",
-    //         "anomaly": 0
-    //     },
-    //     "well_status": {
-    //         "value": "НАК",
-    //         "anomaly": 0
-    //     },
-    //     "well_type": {
-    //         "value": "Нефтяные",
-    //         "anomaly": 0
-    //     },
-    //     "eff": {
-    //         "value": 1,
-    //         "anomaly": 0
-    //     },
-    //     "wct_tn": {
-    //         "value": 0.9578642013,
-    //         "anomaly": 0
-    //     },
-    //     "gor_tn_to_m3": {
-    //         "value": 86.7756951596,
-    //         "anomaly": 0
-    //     }
-    // },
-    // {
-    //     "id": "2863d175-162e-4f71-a8ca-249fa0e6ce21",
-    //     "date_dt": {
-    //         "value": "2024-08-01T00:00:00.000",
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_rate_tn": {
-    //         "value": 20.758,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_rate_tn": {
-    //         "value": 3.177,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_rate_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_month_tn": {
-    //         "value": 641.7681666667,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_month_tn": {
-    //         "value": 98.235,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_month_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_cumul_tn": {
-    //         "value": 19967.352,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_cumul_tn": {
-    //         "value": 10121.664,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_cumul_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_rate_m3": {
-    //         "value": 150.2427493261,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_month_m3": {
-    //         "value": 4645.005,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_cumul_m3": {
-    //         "value": 467481.518,
-    //         "anomaly": 0
-    //     },
-    //     "well_id": {
-    //         "value": "972",
-    //         "anomaly": 0
-    //     },
-    //     "well_name": {
-    //         "value": "22103",
-    //         "anomaly": 0
-    //     },
-    //     "cluster_name": {
-    //         "value": "Куст-1",
-    //         "anomaly": 0
-    //     },
-    //     "prod_horizon": {
-    //         "value": "D3fm-III ",
-    //         "anomaly": 0
-    //     },
-    //     "well_status": {
-    //         "value": "НАК",
-    //         "anomaly": 0
-    //     },
-    //     "well_type": {
-    //         "value": "Нефтяные",
-    //         "anomaly": 0
-    //     },
-    //     "eff": {
-    //         "value": 0.997311828,
-    //         "anomaly": 0
-    //     },
-    //     "wct_tn": {
-    //         "value": 0.8469307063,
-    //         "anomaly": 0
-    //     },
-    //     "gor_tn_to_m3": {
-    //         "value": 47.2907615128,
-    //         "anomaly": 0
-    //     }
-    // },
-    // {
-    //     "id": "a58bdac9-fb85-48c1-a64c-bb494c8d66bd",
-    //     "date_dt": {
-    //         "value": "2024-07-01T00:00:00.000",
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_rate_tn": {
-    //         "value": 20.29,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_rate_tn": {
-    //         "value": 6.564,
-    //         "anomaly": 1
-    //     },
-    //     "wat_inje_rate_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_month_tn": {
-    //         "value": 628.99,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_month_tn": {
-    //         "value": 203.474,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_month_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "liq_prod_cumul_tn": {
-    //         "value": 19325.588,
-    //         "anomaly": 0
-    //     },
-    //     "oil_prod_cumul_tn": {
-    //         "value": 10023.429,
-    //         "anomaly": 0
-    //     },
-    //     "wat_inje_cumul_m3": {
-    //         "value": 0,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_rate_m3": {
-    //         "value": 311.4057419355,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_month_m3": {
-    //         "value": 9653.578,
-    //         "anomaly": 0
-    //     },
-    //     "png_prod_cumul_m3": {
-    //         "value": 462836.513,
-    //         "anomaly": 0
-    //     },
-    //     "well_id": {
-    //         "value": "972",
-    //         "anomaly": 0
-    //     },
-    //     "well_name": {
-    //         "value": "22103",
-    //         "anomaly": 0
-    //     },
-    //     "cluster_name": {
-    //         "value": "Куст-1",
-    //         "anomaly": 0
-    //     },
-    //     "prod_horizon": {
-    //         "value": "D3fm-III ",
-    //         "anomaly": 0
-    //     },
-    //     "well_status": {
-    //         "value": "НАК",
-    //         "anomaly": 0
-    //     },
-    //     "well_type": {
-    //         "value": "Нефтяные",
-    //         "anomaly": 0
-    //     },
-    //     "eff": {
-    //         "value": 1,
-    //         "anomaly": 0
-    //     },
-    //     "wct_tn": {
-    //         "value": 0.6765067807,
-    //         "anomaly": 0
-    //     },
-    //     "gor_tn_to_m3": {
-    //         "value": 47.4414597708,
-    //         "anomaly": 0
-    //     }
-    // },
+    {
+        "id": "c2817d1a-091b-4ad4-9c1f-107b37a6154a",
+        "date_dt": {
+            "value": "2024-10-01T00:00:00.000",
+            "anomaly": 0
+        },
+        "liq_prod_rate_tn": {
+            "value": 23.902,
+            "anomaly": 0
+        },
+        "oil_prod_rate_tn": {
+            "value": 1.601,
+            "anomaly": 0
+        },
+        "wat_inje_rate_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "liq_prod_month_tn": {
+            "value": 740.962,
+            "anomaly": 0
+        },
+        "oil_prod_month_tn": {
+            "value": 49.622,
+            "anomaly": 0
+        },
+        "wat_inje_month_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "liq_prod_cumul_tn": {
+            "value": 21399.48,
+            "anomaly": 0
+        },
+        "oil_prod_cumul_tn": {
+            "value": 10200.409,
+            "anomaly": 0
+        },
+        "wat_inje_cumul_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "png_prod_rate_m3": {
+            "value": 143.6146451613,
+            "anomaly": 0
+        },
+        "png_prod_month_m3": {
+            "value": 4452.054,
+            "anomaly": 0
+        },
+        "png_prod_cumul_m3": {
+            "value": 474461.348,
+            "anomaly": 0
+        },
+        "well_id": {
+            "value": "972",
+            "anomaly": 0
+        },
+        "well_name": {
+            "value": "22103",
+            "anomaly": 0
+        },
+        "cluster_name": {
+            "value": "Куст-1",
+            "anomaly": 0
+        },
+        "prod_horizon": {
+            "value": "D3fm-III ",
+            "anomaly": 0
+        },
+        "well_status": {
+            "value": "НАК",
+            "anomaly": 0
+        },
+        "well_type": {
+            "value": "Нефтяные",
+            "anomaly": 0
+        },
+        "eff": {
+            "value": 1,
+            "anomaly": 0
+        },
+        "wct_tn": {
+            "value": 0.9330303038,
+            "anomaly": 0
+        },
+        "gor_tn_to_m3": {
+            "value": 89.7030887953,
+            "anomaly": 0
+        }
+    },
+    {
+        "id": "82fdf83f-a02f-4ea6-997d-0eee043c55d9",
+        "date_dt": {
+            "value": "2024-09-01T00:00:00.000",
+            "anomaly": 0
+        },
+        "liq_prod_rate_tn": {
+            "value": 23.039,
+            "anomaly": 0
+        },
+        "oil_prod_rate_tn": {
+            "value": 0.971,
+            "anomaly": 0
+        },
+        "wat_inje_rate_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "liq_prod_month_tn": {
+            "value": 691.17,
+            "anomaly": 0
+        },
+        "oil_prod_month_tn": {
+            "value": 29.123,
+            "anomaly": 0
+        },
+        "wat_inje_month_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "liq_prod_cumul_tn": {
+            "value": 20658.514,
+            "anomaly": 0
+        },
+        "oil_prod_cumul_tn": {
+            "value": 10150.787,
+            "anomaly": 0
+        },
+        "wat_inje_cumul_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "png_prod_rate_m3": {
+            "value": 84.2592,
+            "anomaly": 0
+        },
+        "png_prod_month_m3": {
+            "value": 2527.776,
+            "anomaly": 0
+        },
+        "png_prod_cumul_m3": {
+            "value": 470009.294,
+            "anomaly": 0
+        },
+        "well_id": {
+            "value": "972",
+            "anomaly": 0
+        },
+        "well_name": {
+            "value": "22103",
+            "anomaly": 0
+        },
+        "cluster_name": {
+            "value": "Куст-1",
+            "anomaly": 0
+        },
+        "prod_horizon": {
+            "value": "D3fm-III ",
+            "anomaly": 0
+        },
+        "well_status": {
+            "value": "НАК",
+            "anomaly": 0
+        },
+        "well_type": {
+            "value": "Нефтяные",
+            "anomaly": 0
+        },
+        "eff": {
+            "value": 1,
+            "anomaly": 0
+        },
+        "wct_tn": {
+            "value": 0.9578642013,
+            "anomaly": 0
+        },
+        "gor_tn_to_m3": {
+            "value": 86.7756951596,
+            "anomaly": 0
+        }
+    },
+    {
+        "id": "2863d175-162e-4f71-a8ca-249fa0e6ce21",
+        "date_dt": {
+            "value": "2024-08-01T00:00:00.000",
+            "anomaly": 0
+        },
+        "liq_prod_rate_tn": {
+            "value": 20.758,
+            "anomaly": 0
+        },
+        "oil_prod_rate_tn": {
+            "value": 3.177,
+            "anomaly": 0
+        },
+        "wat_inje_rate_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "liq_prod_month_tn": {
+            "value": 641.7681666667,
+            "anomaly": 0
+        },
+        "oil_prod_month_tn": {
+            "value": 98.235,
+            "anomaly": 0
+        },
+        "wat_inje_month_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "liq_prod_cumul_tn": {
+            "value": 19967.352,
+            "anomaly": 0
+        },
+        "oil_prod_cumul_tn": {
+            "value": 10121.664,
+            "anomaly": 0
+        },
+        "wat_inje_cumul_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "png_prod_rate_m3": {
+            "value": 150.2427493261,
+            "anomaly": 0
+        },
+        "png_prod_month_m3": {
+            "value": 4645.005,
+            "anomaly": 0
+        },
+        "png_prod_cumul_m3": {
+            "value": 467481.518,
+            "anomaly": 0
+        },
+        "well_id": {
+            "value": "972",
+            "anomaly": 0
+        },
+        "well_name": {
+            "value": "22103",
+            "anomaly": 0
+        },
+        "cluster_name": {
+            "value": "Куст-1",
+            "anomaly": 0
+        },
+        "prod_horizon": {
+            "value": "D3fm-III ",
+            "anomaly": 0
+        },
+        "well_status": {
+            "value": "НАК",
+            "anomaly": 0
+        },
+        "well_type": {
+            "value": "Нефтяные",
+            "anomaly": 0
+        },
+        "eff": {
+            "value": 0.997311828,
+            "anomaly": 0
+        },
+        "wct_tn": {
+            "value": 0.8469307063,
+            "anomaly": 0
+        },
+        "gor_tn_to_m3": {
+            "value": 47.2907615128,
+            "anomaly": 0
+        }
+    },
+    {
+        "id": "a58bdac9-fb85-48c1-a64c-bb494c8d66bd",
+        "date_dt": {
+            "value": "2024-07-01T00:00:00.000",
+            "anomaly": 0
+        },
+        "liq_prod_rate_tn": {
+            "value": 20.29,
+            "anomaly": 0
+        },
+        "oil_prod_rate_tn": {
+            "value": 6.564,
+            "anomaly": 1
+        },
+        "wat_inje_rate_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "liq_prod_month_tn": {
+            "value": 628.99,
+            "anomaly": 0
+        },
+        "oil_prod_month_tn": {
+            "value": 203.474,
+            "anomaly": 0
+        },
+        "wat_inje_month_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "liq_prod_cumul_tn": {
+            "value": 19325.588,
+            "anomaly": 0
+        },
+        "oil_prod_cumul_tn": {
+            "value": 10023.429,
+            "anomaly": 0
+        },
+        "wat_inje_cumul_m3": {
+            "value": 0,
+            "anomaly": 0
+        },
+        "png_prod_rate_m3": {
+            "value": 311.4057419355,
+            "anomaly": 0
+        },
+        "png_prod_month_m3": {
+            "value": 9653.578,
+            "anomaly": 0
+        },
+        "png_prod_cumul_m3": {
+            "value": 462836.513,
+            "anomaly": 0
+        },
+        "well_id": {
+            "value": "972",
+            "anomaly": 0
+        },
+        "well_name": {
+            "value": "22103",
+            "anomaly": 0
+        },
+        "cluster_name": {
+            "value": "Куст-1",
+            "anomaly": 0
+        },
+        "prod_horizon": {
+            "value": "D3fm-III ",
+            "anomaly": 0
+        },
+        "well_status": {
+            "value": "НАК",
+            "anomaly": 0
+        },
+        "well_type": {
+            "value": "Нефтяные",
+            "anomaly": 0
+        },
+        "eff": {
+            "value": 1,
+            "anomaly": 0
+        },
+        "wct_tn": {
+            "value": 0.6765067807,
+            "anomaly": 0
+        },
+        "gor_tn_to_m3": {
+            "value": 47.4414597708,
+            "anomaly": 0
+        }
+    },
     // {
     //     "id": "432ff888-b217-4281-a040-b495006fb77f",
     //     "date_dt": {

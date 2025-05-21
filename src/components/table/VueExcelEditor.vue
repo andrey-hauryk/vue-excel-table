@@ -27,7 +27,7 @@
                   'sticky-column': item.sticky,
                   'no-sorting': item.noSorting
                 }" :style="{ left: item.left }" @mousedown="headerClick($event, p)"
-                @contextmenu.prevent="panelFilterClick(item, p)" :ref="setHeaderRef">
+                @contextmenu.prevent="panelFilterClick(item, p)">
                 <div :class="{ 'filter-sign': columnFilter[p] }">
                   <span :class="{ 'table-col-header': !noHeaderEdit }" v-html="headerLabel(item.label, item)"></span>
                 </div>
@@ -213,7 +213,7 @@
           <a :class="{ disabled: columnFilterString === '{}' }" @mousedown="toggleFilterView">
             <span>{{ localizedLabel.footerRight.filtered }}</span>
             <span :style="{ color: table.length !== filteredValue.length ? 'red' : 'inherit' }">{{ table.length
-              }}</span>
+            }}</span>
             <span>{{ ' | ' }}</span>
           </a>
           <a :class="{ disabled: true }">
@@ -500,7 +500,6 @@ export default defineComponent({
       undoStack: [],
       redoStack: [],
       maxHistorySteps: 50,
-      headerRefs: [],
     }
     return dataset
   },
@@ -673,7 +672,6 @@ export default defineComponent({
   },
   methods: {
     applyFilter(rowsForFilter, columnIndex) {
-      console.log('rowsForFilter', rowsForFilter);
       this.selectedColumnRowsForFilter[columnIndex] = rowsForFilter;
       this.columnFilter[columnIndex] = 'tempValue';
       this.refresh();
@@ -891,6 +889,7 @@ export default defineComponent({
           summary: null,
           toValue: t => t,
           toText: t => t,
+          valueFormatter: null,
           register: null
         })
       })
@@ -1915,175 +1914,36 @@ export default defineComponent({
     },
     /* *** Import/Export ************************************************************************************
      */
-    setHeaderRef(el) {
-      if (el && !this.headerRefs.includes(el)) {
-        this.headerRefs.push(el)
-      }
-    },
     importTable(file) {
-      this.localLoading = true
-      this.clearAllSelected()
+      const importTable = useExcelImport();
+      const test = importTable(file)
 
-      const keyStart = String(Date.now() % 1e8)
-
-      const process = async () => {
-        try {
-          const importData = await useExcelImport(file)
-
-          if (!importData.length) {
-            this.importErrorCallback?.('noRecordIsRead')
-            throw new Error('VueExcelEditor: ' + this.localizedLabel.noRecordIsRead)
-          }
-
-          const requiredKeys = this.fields.filter(f => f.keyField)
-          const isMissingKey = requiredKeys.some(f =>
-            typeof importData[0][f.name] === 'undefined' && typeof importData[0][f.label] === 'undefined'
-          )
-
-          if (isMissingKey) {
-            this.importErrorCallback?.('missingKeyColumn')
-            throw new Error(`VueExcelEditor: ${this.localizedLabel.missingKeyColumn}`)
-          }
-
-          let pass = 0
-          let inserted = 0
-          let updated = 0
-
-          while (pass < 2) {
-            const keys = this.fields.filter(f => f.keyField)
-            const uniqueKeys = []
-
-            for (let i = 0; i < importData.length; i++) {
-              const line = importData[i]
-              let rowPos = -1
-
-              if (keys.length) {
-                rowPos = this.table.findIndex(v =>
-                  keys.every(f => {
-                    const fieldValue = v[f.name]?.value
-                    return fieldValue === line[f.name] || fieldValue === line[f.label]
-                  })
-                )
-
-                if (rowPos === -1) {
-                  const lineKey = keys.map(k => line[k.name] || line[k.label]).join(':')
-                  if (lineKey && uniqueKeys.includes(lineKey)) continue
-                  uniqueKeys.push(lineKey)
-                }
-              }
-
-              if (rowPos === -1) {
-                rowPos = this.table.findIndex(v =>
-                  Object.keys(v).filter(f => !f.startsWith('$')).length === 0
-                )
-              }
-
-              const rec = {
-                id: line.id ?? `${keyStart}-${('000000' + i).slice(-7)}`
-              }
-
-              for (const field of this.fields) {
-                if (field.name.startsWith('$')) continue
-                let val = line[field.name] ?? line[field.label] ?? null
-
-                if (field.readonly) {
-                  this.importErrorCallback?.('readonlyColumnDetected', i + 1)
-                  throw new Error(`VueExcelEditor: [row=${i + 1}] ${this.localizedLabel.readonlyColumnDetected}: ${field.name}`)
-                }
-
-                if (field.validate) {
-                  const err = field.validate(val, rec[field.name]?.value, rec, field)
-                  if (err) {
-                    this.importErrorCallback?.('columnHasValidationError', i + 1, val)
-                    throw new Error(`VueExcelEditor: [row=${i + 1}, val=${val}] ${this.localizedLabel.columnHasValidationError(field.name, err)}`)
-                  }
-                }
-
-                if (this.validate) {
-                  const err = this.validate(val, rec[field.name]?.value, rec, field)
-                  if (err) {
-                    this.importErrorCallback?.('rowHasValidationError', i + 1, val)
-                    throw new Error(`VueExcelEditor: [row=${i + 1}, val=${val}] ${this.localizedLabel.rowHasValidationError(i + 1, field.name, err)}`)
-                  }
-                }
-
-                if (val !== null) {
-                  rec[field.name] = { value: val, anomaly: false, isSelected: false }
-                } else if (field.mandatory) {
-                  this.importErrorCallback?.(field.mandatory, i + 1, val)
-                  throw new Error(`VueExcelEditor: [row=${i + 1}, val=${val}] ${field.mandatory}`)
-                }
-              }
-
-              if (pass === 1) {
-                if (rowPos >= 0) {
-                  updated++
-                  Object.keys(rec).forEach(name => {
-                    if (!name.startsWith('$')) {
-                      this.updateCell(rowPos, name, rec[name].value)
-                    }
-                  })
-                  this.selected[rowPos] = this.table[rowPos].id
-                } else {
-                  const newRec = {}
-                  Object.keys(rec).forEach(name => {
-                    if (name.startsWith('$')) {
-                      newRec[name] = rec[name]
-                    } else {
-                      newRec[name] = {
-                        value: rec[name].value,
-                        anomaly: false,
-                        isSelected: false
-                      }
-                    }
-                  })
-                  this.newRecord(newRec, true)
-                  inserted++
-                }
-              }
-            }
-
-            pass++
-          }
-
-          if (pass === 2 && this.importCallback) {
-            this.importCallback({
-              inserted,
-              updated,
-              recordAffected: inserted + updated
-            })
-          }
-
-        } catch (err) {
-          this.importErrorCallback?.(err.message)
-          throw new Error('VueExcelEditor: ' + err.stack)
-        } finally {
-          this.localLoading = false
-        }
-      }
-
-      process()
+      test.then((data) => {
+        console.log('data', data);
+        console.log('tableData', this.table);
+      })
     },
     async exportTable(options) {
-
       const { exportTable } = useExcelExport();
+      let tableData = [];
+      if (options.value.filteredValues) {
+        tableData = this.table;
+      } else {
+        tableData = this.modelValue;
+      }
 
-      const headerEls = Array.from(this.editor.querySelectorAll('thead th'));
-      headerEls.shift();
+      if (options.value.selectedRows) {
+        const selectedIds = Object.values(this.selected);
+        tableData = tableData.filter((row) => {
+          return selectedIds.includes(row.id);
+        });
+      }
 
-      const rows = Array.from(this.editor.querySelectorAll('tbody tr'));
-
-      const rowData = rows.map(row => {
-        const cells = Array.from(row.querySelectorAll('td'));
-        cells.shift();
-        return cells;
-      });
-
-      exportTable(this.table, this.fields, {
-        format: 'xlsx',
+      exportTable(tableData, this.fields, {
+        delimiter: options.value.delimiter,
+        formattedValues: options.value.formattedValues,
         fileName: options.value.fileName,
-        headerRefs: headerEls,
-        rowsRef: rowData,
+        editor: this.editor,
       })
     },
     /* *** Select *******************************************************************************************
