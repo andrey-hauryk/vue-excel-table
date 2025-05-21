@@ -242,7 +242,6 @@ import PanelFilter from './components/filter/PanelFilter.vue'
 import PanelSetting from './components/settings/PanelSetting.vue'
 import PanelFind from './components/find/PanelFind.vue'
 import DatePicker from '@vuepic/vue-datepicker'
-import { read, writeFile, utils } from 'xlsx'
 import CellTooltip from "./components/tooltip/CellTooltip.vue";
 import TableLoading from './components/loading/TableLoading.vue';
 import { cloneDeep } from 'lodash';
