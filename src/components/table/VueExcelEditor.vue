@@ -47,6 +47,12 @@
                 :style="{ left: item.left }" class="column-filter" />
             </tr>
           </thead>
+
+          <!--тест виртуализации-->
+
+          
+
+
           <tbody @mousedown="mouseDown" @mouseup="mouseUp">
             <tr v-if="localizedLabel.noRecordIndicator && pagingTable.length == 0">
               <td colspan="100%" style="height:40px; vertical-align: middle; text-align: center"></td>
@@ -253,6 +259,7 @@ import IconStepBackward from "./components/svg/IconStepBackward.vue";
 import IconBackward from "./components/svg/IconBackward.vue";
 import IconForward from "./components/svg/IconForward.vue";
 import IconStepForward from "./components/svg/IconStepForward.vue";
+import { RecycleScroller } from 'vue-virtual-scroller'
 
 import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -297,7 +304,6 @@ export default defineComponent({
     autocomplete: { type: Boolean, default: false },
     allowAddCol: { type: Boolean, default: false },
     readonly: { type: Boolean, default: false },
-    remember: { type: Boolean, default: false },
     noHeaderEdit: { type: Boolean, default: false },
     spellcheck: { type: Boolean, default: false },
     newIfBottom: { type: Boolean, default: false },
@@ -572,7 +578,6 @@ export default defineComponent({
       handler() {
         this.lazy(() => {
           const setting = this.getSetting()
-          if (this.remember) localStorage[window.location.pathname + window.location.hash + '.' + this.token] = JSON.stringify(setting)
           this.$emit('setting', setting)
         })
       },
@@ -657,15 +662,6 @@ export default defineComponent({
 
     if (ResizeObserver) new ResizeObserver(this.winResize).observe(this.editor)
     this.addEventListener()
-
-    if (this.remember) {
-      const saved = localStorage[window.location.pathname + window.location.hash + '.' + this.token]
-      if (saved) {
-        const data = JSON.parse(saved)
-        if (data.colHash === this.colHash)
-          this.setting = data
-      }
-    }
 
     this.$emit('ready');
   },
@@ -1657,7 +1653,6 @@ export default defineComponent({
       window.removeEventListener('mousemove', this.colSepMouseMove)
       window.removeEventListener('mouseup', this.colSepMouseUp)
       const setting = this.getSetting()
-      if (this.remember) localStorage[window.location.pathname + window.location.hash + '.' + this.token] = JSON.stringify(setting)
       this.$emit('setting', setting)
     },
     /* *** Finder *******************************************************************************************
