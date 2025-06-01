@@ -250,7 +250,7 @@ import PanelFind from './components/find/PanelFind.vue'
 import DatePicker from '@vuepic/vue-datepicker'
 import CellTooltip from "./components/tooltip/CellTooltip.vue";
 import TableLoading from './components/loading/TableLoading.vue';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, debounce } from 'lodash';
 import noRecordIndicator from './components/NoRecordIndicator.vue';
 import IconClose from './components/svg/IconClose.vue';
 import IconBars from './components/svg/IconBars.vue';
@@ -505,6 +505,8 @@ export default defineComponent({
       undoStack: [],
       redoStack: [],
       maxHistorySteps: 50,
+      clearVScrollFocus: () => {},
+      clearHScrollFocus: () => {},
     }
     return dataset
   },
@@ -647,6 +649,16 @@ export default defineComponent({
     this.footer = this.$refs.footer
     this.inputSquare = this.$refs.inputSquare
     this.inputBox = this.$refs.inputBox
+
+    this.baseScrollTopOffset = this.calcStaticScrollOffset();
+
+    this.clearVScrollFocus = debounce(() => {
+      this.$refs.vScrollButton?.classList.remove('focus')
+    }, 1000)
+
+    this.clearHScrollFocus = debounce(() => {
+      this.$refs.hScroll?.classList.remove('focus')
+    }, 1000)
 
     if (this.height)
       this.systable.parentNode.style.height = this.height
@@ -1163,19 +1175,25 @@ export default defineComponent({
     /* *** Vertical Scrollbar *********************************************************************************
      */
     calVScroll() {
-      let d = this.labelTr.getBoundingClientRect().height
-      if (this.filterRow) d += 29
-      this.vScroller.top = d - 1
-      if (!this.noFooter) d += 25
-      if (this.summaryRow) d += 27
-      const fullHeight = this.$el.getBoundingClientRect().height
-      this.vScroller.height = fullHeight - d
-      const ratio = this.vScroller.height / (this.table.length * 24)
-      this.vScroller.buttonHeight = Math.max(24, this.vScroller.height * ratio)
-      const prop = (this.tableContent.scrollTop + this.pageTop * 24) / (this.table.length * 24 - this.vScroller.height)
-      this.vScroller.buttonTop = (this.vScroller.height - this.vScroller.buttonHeight) * prop
-      const instance = getCurrentInstance()
-      instance?.proxy?.$forceUpdate()
+      const fullHeight = this.$el.clientHeight
+      const offset = this.baseScrollTopOffset
+
+      const visibleHeight = fullHeight - offset
+      this.vScroller.top = offset - 1
+      this.vScroller.height = visibleHeight
+
+      const rowHeight = 24
+      const totalRowsHeight = this.table.length * rowHeight
+
+      const ratio = visibleHeight / totalRowsHeight
+      this.vScroller.buttonHeight = Math.max(24, visibleHeight * ratio)
+
+      const scrollPosition = this.tableContent.scrollTop + this.pageTop * rowHeight
+      const scrollRange = totalRowsHeight - visibleHeight
+      const prop = scrollRange > 0 ? scrollPosition / scrollRange : 0
+
+      this.vScroller.buttonTop =
+        (visibleHeight - this.vScroller.buttonHeight) * prop
     },
     vsMouseDown(e) {
       e.stopPropagation()
@@ -1290,28 +1308,36 @@ export default defineComponent({
     },
     /* *** Window Event *******************************************************************************************
      */
+    calcStaticScrollOffset() {
+      let offset = this.labelTr?.offsetHeight || 0
+      if (this.filterRow) offset += 29
+      if (!this.noFooter) offset += 25
+      if (this.summaryRow) offset += 27
+      return offset
+    },
     tableScroll() {
-      this.showDatePicker = false
-      this.autocompleteInputs = []
-      if (this.focused && this.currentField)
-        this.inputSquare.style.marginLeft =
-          (this.currentField.sticky ? this.tableContent.scrollLeft - this.squareSavedLeft : 0) + 'px'
+      // this.showDatePicker = false;
+      // this.autocompleteInputs = [];
+
+      if (this.focused && this.currentField) {
+        this.inputSquare.style.marginLeft = (this.currentField.sticky ? this.tableContent.scrollLeft - this.squareSavedLeft: 0) + 'px';
+      }
 
       if (this.tableContent.scrollTop !== this.vScroller.lastTop) {
         this.calVScroll()
-        if (this.$refs.vScrollButton) {
-          this.$refs.vScrollButton.classList.add('focus')
-          this.lazy(() => this.$refs.vScrollButton.classList.remove('focus'), 1000)
-        }
+        this.$refs.vScrollButton?.classList.add('focus')
+        this.clearVScrollFocus()
       }
-      this.vScroller.lastTop = this.tableContent.scrollTop
+      this.vScroller.lastTop = this.tableContent.scrollTop;
 
       if (this.tableContent.scrollLeft !== this.hScroller.lastLeft) {
         if (this.$refs.hScroll && this.hScroller.tableUnseenWidth) {
           this.$refs.hScroll.classList.add('focus')
-          this.lazy(() => this.$refs.hScroll.classList.remove('focus'), 1000)
+
           const ratio = this.tableContent.scrollLeft / this.hScroller.tableUnseenWidth
-          this.$refs.hScroll.style.left = (this.hScroller.scrollerUnseenWidth * ratio) + 'px'
+          this.$refs.hScroll.style.left = this.hScroller.scrollerUnseenWidth * ratio + 'px'
+
+          this.clearHScrollFocus()
         }
       }
       this.hScroller.lastLeft = this.tableContent.scrollLeft

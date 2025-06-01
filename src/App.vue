@@ -3,6 +3,7 @@
       <ExcelTable
         v-model="tableData"
         :columns="columns"
+        height="200px"
         selectable
         free-select
         no-header-edit
