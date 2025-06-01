@@ -33,10 +33,10 @@ export interface TableProps {
   noMouseScroll?: boolean;
   noSorting?: boolean;
   noMassUpdate?: boolean;
-  singleSelect: boolean;
-  selectedRows: Array<string>;
-  selectionField: string;
-  disableSelection: Boolean;
+  singleSelect?: boolean;
+  selectedRows?: Array<string>;
+  selectionField?: string;
+  disableSelection?: Boolean;
 }
 
 export interface ColumnProps {
