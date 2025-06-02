@@ -12,11 +12,8 @@
     "@vuepic/vue-datepicker": "^3.3.0",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
-    "install": "^0.13.0",
     "lodash": "^4.17.21",
-    "npm": "^11.4.1",
     "vue": "^3.5.13",
-    "vue-virtual-scroller": "^2.0.0-beta.8",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {

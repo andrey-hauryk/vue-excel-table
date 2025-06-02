@@ -1343,8 +1343,8 @@ export default defineComponent({
       this.hScroller.lastLeft = this.tableContent.scrollLeft
     },
     winScroll() {
-      this.showDatePicker = false
-      this.autocompleteInputs = []
+      // this.showDatePicker = false
+      // this.autocompleteInputs = []
     },
     mousewheel(e) {
       if (this.noMouseScroll || !e.deltaY) return
