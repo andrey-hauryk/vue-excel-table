@@ -139,12 +139,6 @@
           <slot></slot>
         </table>
 
-        <!-- Tool Tip -->
-        <div v-show="tip" ref="tooltip" class="tool-tip">{{ tip }}</div>
-
-        <!-- Text Tip -->
-        <div v-show="textTip" ref="texttip" class="text-tip">Пример</div>
-
         <!-- Editor Square -->
         <div v-show="focused" ref="inputSquare" class="input-square" @mousedown="inputSquareClick" @mouseup="mouseUp">
           <div style="position: relative; height: 100%; padding: 2px 2px 1px">
@@ -462,8 +456,6 @@ export default defineComponent({
       autocompleteSelect: -1,
       errmsg: {},
       rowerr: {},
-      tip: '',
-      textTip: '',
       colHash: '',
       fields: [],
       focused: false,
@@ -912,31 +904,48 @@ export default defineComponent({
     },
     //------------фильтрация
     calTable() {
-      this.textTip = '';
+        const seed = String(new Date().getTime() % 1e8);
 
-      const seed = String(new Date().getTime() % 1e8);
-      this.modelValue.forEach((rec, i) => {
-        if (!rec.id) rec.id = `${seed}-${('00000' + i).slice(-7)}`;
-      })
-
-      if (!this.showFilteredOnly) {
-        this.table = this.modelValue;
-        return;
-      }
-
-      this.table = this.modelValue;
-
-      this.table = this.modelValue.filter(row => {
-        return Object.keys(this.selectedColumnRowsForFilter).every(columnIndex => {
-          const filterValues = this.selectedColumnRowsForFilter[columnIndex];
-          const columnName = this.fields[columnIndex].name;
-          return filterValues.includes(row[columnName].value);
+        this.modelValue.forEach((rec, i) => {
+          if (!rec.id) rec.id = `${seed}-${('00000' + i).slice(-7)}`;
         });
-      });
 
-      this.selectedColumnRowsForFilter
+        let filtered = this.modelValue;
 
-      this.reviseSelectedAfterTableChange();
+        if (this.showFilteredOnly) {
+          filtered = filtered.filter((row) => {
+            return Object.keys(this.selectedColumnRowsForFilter).every((columnIndex) => {
+              const filterValues = this.selectedColumnRowsForFilter[columnIndex];
+              const columnName = this.fields[columnIndex].name;
+              return filterValues.includes(row[columnName].value);
+            });
+          });
+        }
+
+        const grouped = filtered.filter((rec, i, table) => {
+          if (i === 0) return true;
+
+          const prec = table[i - 1];
+          let result = true;
+
+          this.fields.forEach((field) => {
+            const name = field.name;
+
+            if (field.grouping && rec[name].value === prec[name].value) {
+              if (field.grouping === 'collapse' && this.ungroup[field.name + rec[name].value] !== true) {
+                result = false;
+              } else if (field.grouping === 'expand' && this.ungroup[field.name + rec[name].value]) {
+                result = false;
+              }
+            }
+          });
+
+          return result;
+        });
+
+        this.table = grouped;
+
+        this.reviseSelectedAfterTableChange();
     },
     filterGrouping(rec, i, table) {
       if (i === 0) return true
@@ -2210,23 +2219,7 @@ export default defineComponent({
         if (this.currentField.listByClick) return this.calAutocompleteList(true)
         if (e.target.offsetWidth - e.offsetX > 25) return
         if (e.target.offsetWidth < e.target.scrollWidth) {
-          this.textTip = this.currentCell.textContent
-          this.$refs.texttip.style.opacity = 0
           const rect = e.target.getBoundingClientRect()
-          setTimeout(() => {
-            const r = this.$refs.texttip.getBoundingClientRect()
-            if (rect.bottom + r.height > window.innerHeight) {
-              this.$refs.texttip.style.top = (rect.top - r.height) + 'px'
-            }
-            else {
-              this.$refs.texttip.style.top = rect.bottom + 'px'
-            }
-            if (rect.left + r.width > window.innerWidth)
-              this.$refs.texttip.style.left = (rect.right - r.width) + 'px'
-            else
-              this.$refs.texttip.style.left = rect.left + 'px'
-            this.$refs.texttip.style.opacity = 1
-          })
         }
         if (this.currentField.readonly) return
         this.inputBox.value = this.currentCell.textContent
@@ -2276,22 +2269,17 @@ export default defineComponent({
       const cell = e.target
       if (!cell.classList.contains('error')) return
       if (this.tipTimeout) clearTimeout(this.tipTimeout)
-      if ((this.tip = this.rowerr[cell.getAttribute('id')]) === '') return
       const rect = cell.getBoundingClientRect()
       this.$refs.tooltip.style.top = (rect.top - 14) + 'px'
       this.$refs.tooltip.style.left = (rect.right + 8) + 'px'
       cell.addEventListener('mouseout', this.cellMouseOut)
     },
     cellMouseOut(e) {
-      this.tipTimeout = setTimeout(() => {
-        this.tip = ''
-      }, 1000)
       e.target.removeEventListener(e.type, this.cellMouseOut)
     },
     /* *** InputBox *****************************************************************************************
      */
     moveInputSquare(rowPos, colPos) {
-      this.textTip = ''
       if (colPos < 0) return false
       const top = this.pageTop
       let row = this.recordBody.children[rowPos]
