@@ -75,38 +75,52 @@
                 <span v-html="recordLabel(pageTop + rowPos + 1, record)"></span>
               </td>
 
-
-              <td v-for="(item, p) in fields" v-show="!item.invisible" :id="`id-${record.id}-${item.name}`"
-                :cell-RC="`${rowPos}-${item.name}`" :class="{
+              <template v-for="(item, p) in fields">
+                <td
+                v-if="getRowSpan(rowPos, item.name) !== 0 && !item.invisible"
+                :rowspan="getRowSpan(rowPos, item.name)"
+                :id="`id-${record.id}-${item.name}`"
+                :cell-RC="`${rowPos}-${item.name}`"
+                :class="{
                   'cell-selected': record[item.name]?.isSelected,
                   readonly: item.readonly,
                   error: errmsg[`id-${record.id}-${item.name}`],
                   link: item.link && item.isLink && item.isLink(record),
                   select: item.options,
                   grouping: item.grouping,
-                  anomaly: record[item.name]?.anomaly,
                   expand: item.grouping && ungroup[item.name + record[item.name]?.value],
                   datepick: item.type == 'date',
-                  'sticky-column': item.sticky,
-                  hideDuplicate: item.hideDuplicate && rowPos > 0 && isSameSinceLeft(p, record, pagingTable[rowPos - 1]),
-                }" :key="p" :style="Object.assign(cellStyle(record, item), renderColumnCellStyle(item, record))"
-                @mouseover="cellMouseOver" @mousemove="cellMouseMove">
-                <!--if slot exist render slot-->
+                  'sticky-column': item.sticky
+                }"
+                :key="p"
+                :style="Object.assign(cellStyle(record, item), renderColumnCellStyle(item, record))"
+                @mouseover="cellMouseOver"
+                @mousemove="cellMouseMove"
+              >
+                <!-- if slot exist render slot -->
                 <template v-if="$slots[`cell-${item.name}`]">
                   <slot :name="`cell-${item.name}`" :record="record" />
                 </template>
-                <!-- if render function exist render render fn-->
+
+                <!-- if render function exist render render fn -->
                 <template v-else-if="typeof item.render === 'function'">
                   <component :is="item.render(record)" />
                 </template>
-                <!-- default standart text -->
+
+                <!-- default text -->
                 <template v-else>
                   <cell-tooltip v-if="record[item.name]?.anomaly" :content="record[item.name].anomaly">
                     {{ item.toText(record[item.name].value) }}
                   </cell-tooltip>
-                  <template v-else>{{ item.toText(record[item.name]?.value, record) }}</template>
+                  <template v-else>
+                    {{ item.toText(record[item.name]?.value, record) }}
+                  </template>
                 </template>
               </td>
+              </template>
+
+
+              
               <td v-if="vScroller.buttonHeight < vScroller.height" class="last-col"></td>
             </tr>
           </tbody>
@@ -138,12 +152,6 @@
           </tfoot>
           <slot></slot>
         </table>
-
-        <!-- Tool Tip -->
-        <div v-show="tip" ref="tooltip" class="tool-tip">{{ tip }}</div>
-
-        <!-- Text Tip -->
-        <div v-show="textTip" ref="texttip" class="text-tip">Пример</div>
 
         <!-- Editor Square -->
         <div v-show="focused" ref="inputSquare" class="input-square" @mousedown="inputSquareClick" @mouseup="mouseUp">
@@ -435,6 +443,7 @@ export default defineComponent({
   data() {
     const pageSize = this.noPaging ? 999999 : 20
     const dataset = {
+      rowSpans: {},
       version: '1.3',
       tableContent: null,
       systable: null,
@@ -462,8 +471,6 @@ export default defineComponent({
       autocompleteSelect: -1,
       errmsg: {},
       rowerr: {},
-      tip: '',
-      textTip: '',
       colHash: '',
       fields: [],
       focused: false,
@@ -912,31 +919,92 @@ export default defineComponent({
     },
     //------------фильтрация
     calTable() {
-      this.textTip = '';
+        const seed = String(new Date().getTime() % 1e8);
 
-      const seed = String(new Date().getTime() % 1e8);
-      this.modelValue.forEach((rec, i) => {
-        if (!rec.id) rec.id = `${seed}-${('00000' + i).slice(-7)}`;
-      })
-
-      if (!this.showFilteredOnly) {
-        this.table = this.modelValue;
-        return;
-      }
-
-      this.table = this.modelValue;
-
-      this.table = this.modelValue.filter(row => {
-        return Object.keys(this.selectedColumnRowsForFilter).every(columnIndex => {
-          const filterValues = this.selectedColumnRowsForFilter[columnIndex];
-          const columnName = this.fields[columnIndex].name;
-          return filterValues.includes(row[columnName].value);
+        this.modelValue.forEach((rec, i) => {
+          if (!rec.id) rec.id = `${seed}-${('00000' + i).slice(-7)}`;
         });
+
+        let filtered = this.modelValue;
+
+        if (this.showFilteredOnly) {
+          filtered = filtered.filter((row) => {
+            return Object.keys(this.selectedColumnRowsForFilter).every((columnIndex) => {
+              const filterValues = this.selectedColumnRowsForFilter[columnIndex];
+              const columnName = this.fields[columnIndex].name;
+              return filterValues.includes(row[columnName].value);
+            });
+          });
+        }
+
+        const grouped = filtered.filter((rec, i, table) => {
+          if (i === 0) return true;
+
+          const prec = table[i - 1];
+          let result = true;
+
+          this.fields.forEach((field) => {
+            const name = field.name;
+
+            if (field.grouping && rec[name].value === prec[name].value) {
+              if (field.grouping === 'collapse' && this.ungroup[field.name + rec[name].value] !== true) {
+                result = false;
+              } else if (field.grouping === 'expand' && this.ungroup[field.name + rec[name].value]) {
+                result = false;
+              }
+            }
+          });
+
+          return result;
+        });
+        
+        this.table = grouped;
+        this.calculateRowSpans();
+
+
+        this.reviseSelectedAfterTableChange();
+    },
+    calculateRowSpans() {
+    this.rowSpans = {};
+
+    this.fields.forEach((field) => {
+      if (!field.grouping) return;
+
+      let lastValue = null;
+      let spanStart = 0;
+
+      this.table.forEach((row, rowIndex) => {
+        const val = row[field.name]?.value;
+
+        if (val !== lastValue || rowIndex === 0) {
+          if (rowIndex > 0) {
+            const span = rowIndex - spanStart;
+            if (span > 1) {
+              this.rowSpans[`${spanStart}-${field.name}`] = span;
+              for (let i = spanStart + 1; i < rowIndex; i++) {
+                this.rowSpans[`${i}-${field.name}`] = 0;
+              }
+            }
+          }
+
+          spanStart = rowIndex;
+          lastValue = val;
+        }
+
+        if (rowIndex === this.table.length - 1) {
+          const span = rowIndex - spanStart + 1;
+          if (span > 1) {
+            this.rowSpans[`${spanStart}-${field.name}`] = span;
+            for (let i = spanStart + 1; i <= rowIndex; i++) {
+              this.rowSpans[`${i}-${field.name}`] = 0;
+            }
+          }
+        }
       });
-
-      this.selectedColumnRowsForFilter
-
-      this.reviseSelectedAfterTableChange();
+    });
+  },
+    getRowSpan(rowIndex, fieldName) {
+      return this.rowSpans[`${rowIndex}-${fieldName}`] ?? 1;
     },
     filterGrouping(rec, i, table) {
       if (i === 0) return true
@@ -2210,23 +2278,7 @@ export default defineComponent({
         if (this.currentField.listByClick) return this.calAutocompleteList(true)
         if (e.target.offsetWidth - e.offsetX > 25) return
         if (e.target.offsetWidth < e.target.scrollWidth) {
-          this.textTip = this.currentCell.textContent
-          this.$refs.texttip.style.opacity = 0
           const rect = e.target.getBoundingClientRect()
-          setTimeout(() => {
-            const r = this.$refs.texttip.getBoundingClientRect()
-            if (rect.bottom + r.height > window.innerHeight) {
-              this.$refs.texttip.style.top = (rect.top - r.height) + 'px'
-            }
-            else {
-              this.$refs.texttip.style.top = rect.bottom + 'px'
-            }
-            if (rect.left + r.width > window.innerWidth)
-              this.$refs.texttip.style.left = (rect.right - r.width) + 'px'
-            else
-              this.$refs.texttip.style.left = rect.left + 'px'
-            this.$refs.texttip.style.opacity = 1
-          })
         }
         if (this.currentField.readonly) return
         this.inputBox.value = this.currentCell.textContent
@@ -2276,22 +2328,17 @@ export default defineComponent({
       const cell = e.target
       if (!cell.classList.contains('error')) return
       if (this.tipTimeout) clearTimeout(this.tipTimeout)
-      if ((this.tip = this.rowerr[cell.getAttribute('id')]) === '') return
       const rect = cell.getBoundingClientRect()
       this.$refs.tooltip.style.top = (rect.top - 14) + 'px'
       this.$refs.tooltip.style.left = (rect.right + 8) + 'px'
       cell.addEventListener('mouseout', this.cellMouseOut)
     },
     cellMouseOut(e) {
-      this.tipTimeout = setTimeout(() => {
-        this.tip = ''
-      }, 1000)
       e.target.removeEventListener(e.type, this.cellMouseOut)
     },
     /* *** InputBox *****************************************************************************************
      */
     moveInputSquare(rowPos, colPos) {
-      this.textTip = ''
       if (colPos < 0) return false
       const top = this.pageTop
       let row = this.recordBody.children[rowPos]

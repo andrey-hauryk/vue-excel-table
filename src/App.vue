@@ -51,6 +51,7 @@ const columns = computed(() => [
     invisible: false,
     readonly: false,
     autoFillWidth: true,
+    grouping: 'expand',
     // lengthLimit: 2,
     sticky: true,
     noSorting: true,
