@@ -75,38 +75,52 @@
                 <span v-html="recordLabel(pageTop + rowPos + 1, record)"></span>
               </td>
 
-
-              <td v-for="(item, p) in fields" v-show="!item.invisible" :id="`id-${record.id}-${item.name}`"
-                :cell-RC="`${rowPos}-${item.name}`" :class="{
+              <template v-for="(item, p) in fields">
+                <td
+                v-if="getRowSpan(rowPos, item.name) !== 0 && !item.invisible"
+                :rowspan="getRowSpan(rowPos, item.name)"
+                :id="`id-${record.id}-${item.name}`"
+                :cell-RC="`${rowPos}-${item.name}`"
+                :class="{
                   'cell-selected': record[item.name]?.isSelected,
                   readonly: item.readonly,
                   error: errmsg[`id-${record.id}-${item.name}`],
                   link: item.link && item.isLink && item.isLink(record),
                   select: item.options,
                   grouping: item.grouping,
-                  anomaly: record[item.name]?.anomaly,
                   expand: item.grouping && ungroup[item.name + record[item.name]?.value],
                   datepick: item.type == 'date',
-                  'sticky-column': item.sticky,
-                  hideDuplicate: item.hideDuplicate && rowPos > 0 && isSameSinceLeft(p, record, pagingTable[rowPos - 1]),
-                }" :key="p" :style="Object.assign(cellStyle(record, item), renderColumnCellStyle(item, record))"
-                @mouseover="cellMouseOver" @mousemove="cellMouseMove">
-                <!--if slot exist render slot-->
+                  'sticky-column': item.sticky
+                }"
+                :key="p"
+                :style="Object.assign(cellStyle(record, item), renderColumnCellStyle(item, record))"
+                @mouseover="cellMouseOver"
+                @mousemove="cellMouseMove"
+              >
+                <!-- if slot exist render slot -->
                 <template v-if="$slots[`cell-${item.name}`]">
                   <slot :name="`cell-${item.name}`" :record="record" />
                 </template>
-                <!-- if render function exist render render fn-->
+
+                <!-- if render function exist render render fn -->
                 <template v-else-if="typeof item.render === 'function'">
                   <component :is="item.render(record)" />
                 </template>
-                <!-- default standart text -->
+
+                <!-- default text -->
                 <template v-else>
                   <cell-tooltip v-if="record[item.name]?.anomaly" :content="record[item.name].anomaly">
                     {{ item.toText(record[item.name].value) }}
                   </cell-tooltip>
-                  <template v-else>{{ item.toText(record[item.name]?.value, record) }}</template>
+                  <template v-else>
+                    {{ item.toText(record[item.name]?.value, record) }}
+                  </template>
                 </template>
               </td>
+              </template>
+
+
+              
               <td v-if="vScroller.buttonHeight < vScroller.height" class="last-col"></td>
             </tr>
           </tbody>
@@ -429,6 +443,7 @@ export default defineComponent({
   data() {
     const pageSize = this.noPaging ? 999999 : 20
     const dataset = {
+      rowSpans: {},
       version: '1.3',
       tableContent: null,
       systable: null,
@@ -942,10 +957,54 @@ export default defineComponent({
 
           return result;
         });
-
+        
         this.table = grouped;
+        this.calculateRowSpans();
+
 
         this.reviseSelectedAfterTableChange();
+    },
+    calculateRowSpans() {
+    this.rowSpans = {};
+
+    this.fields.forEach((field) => {
+      if (!field.grouping) return;
+
+      let lastValue = null;
+      let spanStart = 0;
+
+      this.table.forEach((row, rowIndex) => {
+        const val = row[field.name]?.value;
+
+        if (val !== lastValue || rowIndex === 0) {
+          if (rowIndex > 0) {
+            const span = rowIndex - spanStart;
+            if (span > 1) {
+              this.rowSpans[`${spanStart}-${field.name}`] = span;
+              for (let i = spanStart + 1; i < rowIndex; i++) {
+                this.rowSpans[`${i}-${field.name}`] = 0;
+              }
+            }
+          }
+
+          spanStart = rowIndex;
+          lastValue = val;
+        }
+
+        if (rowIndex === this.table.length - 1) {
+          const span = rowIndex - spanStart + 1;
+          if (span > 1) {
+            this.rowSpans[`${spanStart}-${field.name}`] = span;
+            for (let i = spanStart + 1; i <= rowIndex; i++) {
+              this.rowSpans[`${i}-${field.name}`] = 0;
+            }
+          }
+        }
+      });
+    });
+  },
+    getRowSpan(rowIndex, fieldName) {
+      return this.rowSpans[`${rowIndex}-${fieldName}`] ?? 1;
     },
     filterGrouping(rec, i, table) {
       if (i === 0) return true
