@@ -89,7 +89,6 @@
                   select: item.options,
                   grouping: item.grouping,
                   expand: item.grouping && ungroup[item.name + record[item.name]?.value],
-                  datepick: item.type == 'date',
                   'sticky-column': item.sticky
                 }"
                 :key="p"
@@ -118,15 +117,11 @@
                 </template>
               </td>
               </template>
-
-
-              
               <td v-if="vScroller.buttonHeight < vScroller.height" class="last-col"></td>
             </tr>
           </tbody>
 
           <tfoot>
-            <!--TotalRow-->
             <tr v-if="pagingTable.length && totalRow">
               <td class="row-summary first-col" :class="{ 'hide': noNumCol }"></td>
               <td v-for="(field, p) in fields" v-show="!field.invisible" class="row-summary"
@@ -148,12 +143,6 @@
               @blur="inputBoxBlur" @mousemove="inputBoxMouseMove" @mousedown="inputBoxMouseDown" @mouseup="mouseUp" trim
               autocomplete="off" autocorrect="off" autocompitaize="off" :spellcheck="spellcheck"></textarea>
           </div>
-        </div>
-
-        <!-- Date Picker -->
-        <div ref="dpContainer" v-show="showDatePicker" style="z-index:20; position:fixed">
-          <date-picker ref="datepicker" inline auto-apply v-model="inputDateTime" @update:modelValue="datepickerClick"
-            valueType="format"></date-picker>
         </div>
 
         <!-- Waiting scene -->
@@ -233,7 +222,6 @@ import VueExcelFilter from './components/VueExcelFilter.vue'
 import PanelFilter from './components/filter/PanelFilter.vue'
 import PanelSetting from './components/settings/PanelSetting.vue'
 import PanelFind from './components/find/PanelFind.vue'
-import DatePicker from '@vuepic/vue-datepicker'
 import CellTooltip from "./components/tooltip/CellTooltip.vue";
 import TableLoading from './components/loading/TableLoading.vue';
 import { cloneDeep, debounce } from 'lodash';
@@ -245,9 +233,6 @@ import IconStepBackward from "./components/svg/IconStepBackward.vue";
 import IconBackward from "./components/svg/IconBackward.vue";
 import IconForward from "./components/svg/IconForward.vue";
 import IconStepForward from "./components/svg/IconStepForward.vue";
-import { RecycleScroller } from 'vue-virtual-scroller'
-
-import '@vuepic/vue-datepicker/dist/main.css'
 
 import { useExcelExport } from '../table/composables/useExportTable'
 import { useExcelImport } from '../table/composables/useImportTable';
@@ -258,7 +243,6 @@ export default defineComponent({
     'panel-filter': PanelFilter,
     'panel-setting': PanelSetting,
     'panel-find': PanelFind,
-    'date-picker': DatePicker,
     "cell-tooltip": CellTooltip,
     "excel-loading": TableLoading,
     'noRecordIndicator': noRecordIndicator,
@@ -460,7 +444,6 @@ export default defineComponent({
       hScroller: {},
       vScroller: {},
       leftMost: 0,
-      showDatePicker: false,
       inputDateTime: new Date(),
       table: [],
       filteredValue: [],
@@ -1088,47 +1071,6 @@ export default defineComponent({
           })
       })
     },
-    /* *** Date Picker *********************************************************************************
-     */
-    showDatePickerDiv() {
-      if (!this.$refs.dpContainer) return
-      const cellRect = this.currentCell.getBoundingClientRect()
-      this.$refs.dpContainer.style.left = (cellRect.left) + 'px'
-      this.$refs.dpContainer.style.top = (cellRect.bottom) + 'px'
-      this.inputDateTime = new Date(this.currentCell.textContent)
-      this.showDatePicker = true
-      this.lazy(() => {
-        if (!this.$refs.dpContainer) return
-        const r = this.$refs.dpContainer.getBoundingClientRect()
-        if (r.bottom > window.innerHeight)
-          this.$refs.dpContainer.style.top = (cellRect.top - r.height) + 'px'
-        if (r.right > window.innerWidth)
-          this.$refs.dpContainer.style.left = (window.innerWidth - r.width) + 'px'
-      })
-    },
-    datepickerClick() {
-      const offset = new Date().getTimezoneOffset() * 60 * 1000
-      switch (this.currentField.type) {
-        case 'date':
-          this.inputBox.value = new Date(new Date(this.inputDateTime) - offset).toISOString().slice(0, 10)
-          break
-        case 'datetime':
-          this.inputBox.value = new Date(new Date(this.inputDateTime) - offset).toISOString().replace('T', ' ').slice(0, 16) + ':00'
-          break
-        case 'datetimesec':
-          this.inputBox.value = new Date(new Date(this.inputDateTime) - offset).toISOString().replace('T', ' ').slice(0, 19)
-          break
-        case 'datetick':
-        case 'datetimetick':
-        case 'datetimesectick':
-          this.inputBox.value = new Date(new Date(this.inputDateTime) - offset).getTime()
-          break
-      }
-      this.inputBoxShow = 0
-      this.inputCellWrite(this.inputBox.value)
-      this.showDatePicker = false
-      this.focused = true
-    },
     /* *** Vertical Scrollbar *********************************************************************************
      */
     calVScroll() {
@@ -1273,8 +1215,6 @@ export default defineComponent({
       return offset
     },
     tableScroll() {
-      // this.showDatePicker = false;
-
       if (this.focused && this.currentField) {
         this.inputSquare.style.marginLeft = (this.currentField.sticky ? this.tableContent.scrollLeft - this.squareSavedLeft: 0) + 'px';
       }
@@ -1454,7 +1394,6 @@ export default defineComponent({
             break
           case 27:
             if (!this.focused) return
-            this.showDatePicker = false
             if (this.inputBoxShow) {
               e.preventDefault()
               this.inputBox.value = this.currentCell.textContent
@@ -1487,10 +1426,6 @@ export default defineComponent({
             if (this.currentField.readonly) return
             if (e.altKey) return
             if (e.key !== 'Process' && e.key.length > 1) return
-            if (!this.inputBoxShow && this.currentField.type === 'date') {
-              this.showDatePickerDiv()
-              return
-            }
             if (this.currentField.allowKeys) {
               if (this.currentField.allowKeys.constructor.name === 'Function') {
                 if (!this.currentField.allowKeys(e.key.toUpperCase())) return e.preventDefault()
@@ -2113,7 +2048,6 @@ export default defineComponent({
         }
         if (this.currentField.readonly) return
         this.inputBox.value = this.currentCell.textContent
-        if (e.target.classList.contains('datepick')) this.showDatePickerDiv()
 
       }
     },
@@ -2232,8 +2166,6 @@ export default defineComponent({
       this.currentCell.classList.add('focus')
       this.lastCell = this.currentCell
 
-      if (this.showDatePicker) this.showDatePicker = false
-
       if (this.currentRowPos >= 0 && this.currentRowPos < this.pagingTable.length) {
         this.inputBox.value = this.currentCell.textContent
         this.inputBox.focus()
@@ -2254,8 +2186,7 @@ export default defineComponent({
     },
     inputBoxMouseMove(e) {
       let cursor = 'text'
-      if (!this.currentField.readonly
-        && (this.currentField.options || this.currentField.type === 'date')
+      if (!this.currentField.readonly && (this.currentField.options)
         && e.target.offsetWidth - e.offsetX < 15)
         cursor = 'pointer'
       e.target.style.cursor = cursor
@@ -2263,9 +2194,6 @@ export default defineComponent({
     inputBoxMouseDown(e) {
       if (e.target.offsetWidth - e.offsetX > 15) return
       if (this.currentField.readonly) return
-      if (this.currentField.type === 'date') {
-        this.showDatePickerDiv()
-      }
     },
     inputCellWrite(setText, colPos, recPos) {
       let field = this.currentField
@@ -2295,7 +2223,6 @@ export default defineComponent({
         this.inputBoxChanged = false
       }
       this.inputBoxShow = 0
-      this.showDatePicker = false
       this.focused = false
       this.focused = true
     },
