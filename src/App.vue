@@ -42,7 +42,7 @@ const tableData = ref(tableDataMock);
 //   pos: { type: Number, default: 0 }, - понятно но работает странно
 
 const columns = computed(() => [
-  // { field: "date_dt", type: "datetick", label: "Дата" },
+  { field: "date_dt", type: "date", label: "Дата" },
   { 
     field: "prod_horizon", 
     label: "Объект работы",
