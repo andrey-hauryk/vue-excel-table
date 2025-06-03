@@ -486,10 +486,6 @@ export default defineComponent({
         this.$emit('update:selectedCount', value)
       }
     },
-    token() {
-      const id = Array.from(document.querySelectorAll('.vue-excel-editor')).indexOf(this.$el)
-      return `vue-excel-editor-${id}`
-    },
     columnFilterString() {
       Object.keys(this.columnFilter).forEach((key) => {
         if (this.columnFilter[key].trim() === '') delete this.columnFilter[key]
@@ -643,14 +639,6 @@ export default defineComponent({
       delete this.columnFilter[columnIndex];
       this.refresh();
     },
-    sortOptions(colPos, sortDir) {
-      if (sortDir > 0)
-        this.sort(-1, colPos)
-      else if (this.sortDir === 0)
-        this.sort(1, colPos)
-      else
-        this.sort(0, colPos)
-    },
     saveState() {
       const lastState = this.undoStack[this.undoStack.length - 1];
       const currentState = {
@@ -724,15 +712,6 @@ export default defineComponent({
       window.removeEventListener('keydown', this.winKeydown)
       window.removeEventListener('keyup', this.winKeyup)
       window.removeEventListener('wheel', this.mousewheel)
-    },
-    isSameSinceLeft(p, rec1, rec2) {
-      for (let i = 0; i <= p; i++) {
-        if (!this.fields[i].invisible && this.fields[i].hideDuplicate) {
-          const name = this.fields[i].name
-          if (rec1[name].value !== rec2[name].value) return false
-        }
-      }
-      return true
     },
     reset() {
       this.errmsg = {}
@@ -942,23 +921,6 @@ export default defineComponent({
     getRowSpan(rowIndex, fieldName) {
       return this.rowSpans[`${rowIndex}-${fieldName}`] ?? 1;
     },
-    filterGrouping(rec, i, table) {
-      if (i === 0) return true
-      const prec = table[i - 1]
-      let result = true
-      this.fields.forEach(field => {
-        const name = field.name
-
-        if (field.grouping && rec[name].value === prec[name].value) {
-          if (field.grouping === 'collapse' && this.ungroup[field.name + rec[name].value] !== true)
-            result = false
-          else
-            if (field.grouping === 'expand' && this.ungroup[field.name + rec[name].value])
-              result = false
-        }
-      })
-      return result
-    },
     calStickyLeft() {
       let left = 0, n = 0
       this.leftMost = -1
@@ -983,74 +945,14 @@ export default defineComponent({
       if (field.left) result.left = field.left
       return result
     },
-    localeDate(d) {
-      if (typeof d === 'undefined') d = new Date()
-      const pad = n => n < 10 ? '0' + n : n;
-      return d.getFullYear() + '-'
-        + pad(d.getMonth() + 1) + '-'
-        + pad(d.getDate()) + ' '
-        + pad(d.getHours()) + ':'
-        + pad(d.getMinutes()) + ':'
-        + pad(d.getSeconds())
-    },
     getKeys(rec) {
       if (!rec) rec = this.currentRecord
       const key = this.fields.filter(field => field.keyField).map(field => rec[field.name].value)
       if (key.length && key.join() !== '') return key
       return [rec.id]
     },
-    getFieldByName(name) {
-      return this.fields.find(f => f.name === name)
-    },
-    getFieldByLabel(label) {
-      return this.fields.find(f => f.label === label)
-    },
     /* *** Customization **************************************************************************************
      */
-    setFilter(name, filterText) {
-      const ref = this.$refs[`filter-${name}`][0]
-      ref.$el.textContent = filterText
-      ref.$emit('update:modelValue', filterText)
-    },
-
-    clearFilter(name) {
-      if (!name) this.columnFilter = {}
-      else this.setFilter(name, '')
-    },
-
-    columnSuppress() {
-      if (this.table.length === 0) return
-      const cols = {}
-      this.table.forEach((row) => {
-        Object.keys(row).forEach((field) => {
-          if (row[field].value) cols[field] = 1
-        })
-      })
-      const showCols = Object.keys(cols)
-      this.fields.forEach((field) => {
-        if (!showCols.includes(field.name))
-          field.invisible = true
-      })
-    },
-    columnAutoWidth(name) {
-      if (this.table.length === 0) return
-      let doFields = this.fields
-      if (name) doFields = [this.fields.find(f => f.name === name)]
-
-      const cols = {}
-      this.table.forEach((row) => {
-        doFields.forEach((field) => {
-          if (row[field.name] && (!cols[field.name] || cols[field.name] < row[field.name].value.length))
-            cols[field.name] = row[field.name].value.length
-        })
-      })
-      doFields.forEach((field) => {
-        let width = cols[field.name] * 12
-        if (width > 450) width = 450
-        field.width = width + 'px'
-      })
-    },
-
     columnFillWidth() {
       if (this.table.length === 0) return
       if (!this.editor) return
@@ -1908,26 +1810,10 @@ export default defineComponent({
       setTimeout(() => this.inputBox.focus())
       return done
     },
-    moveToNorthWest() {
-      let goColPos = 0
-      while (this.fields[goColPos].invisible && goColPos < this.fields.length - 1) goColPos++
-      return this.moveTo(0, goColPos)
-    },
-    moveToNorthEast() {
-      let goColPos = this.fields.length - 1
-      while (this.fields[goColPos].invisible && goColPos > 0) goColPos--
-      return this.moveTo(0, goColPos)
-    },
     moveToSouthWest() {
       let goRowPos = this.table.length - 1
       let goColPos = 0
       while (this.fields[goColPos].invisible && goColPos < this.fields.length - 1) goColPos++
-      return this.moveTo(goRowPos, goColPos)
-    },
-    moveToSouthEast() {
-      let goRowPos = this.table.length - 1
-      let goColPos = this.fields.length - 1
-      while (this.fields[goColPos].invisible && goColPos > 0) goColPos--
       return this.moveTo(goRowPos, goColPos)
     },
     moveToWest() {
@@ -2277,14 +2163,6 @@ export default defineComponent({
         this.moveToSouthWest()
       })
       return rec
-    },
-    deleteSelectedRecords() {
-      Object.values(this.selected).forEach((id) => {
-        const valueRowPos = this.modelValue.findIndex(v => v.id === id)
-        if (valueRowPos >= 0) this.deleteRecord(valueRowPos)
-      })
-      this.selected = {}
-      this.selectedCount = 0
     },
     deleteRecord(valueRowPos, isUndo) {
       if (this.currentRowPos === valueRowPos) this.moveNorth()
