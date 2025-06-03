@@ -67,7 +67,6 @@ export interface ColumnProps {
   autocomplete?: boolean | null;
   pos?: number;
   options?: any[] | Record<string, any> | ((input: any) => any);
-  summary?: string | null;
   sort?: (a: any, b: any) => number;
   sorting?: (data: any[]) => any[];
   noSorting?: boolean | null;

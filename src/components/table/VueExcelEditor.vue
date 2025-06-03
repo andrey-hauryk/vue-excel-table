@@ -127,28 +127,15 @@
 
           <tfoot>
             <!--TotalRow-->
-            <tr v-show="pagingTable.length && summaryRow">
+            <tr v-if="pagingTable.length && totalRow">
               <td class="row-summary first-col" :class="{ 'hide': noNumCol }"></td>
               <td v-for="(field, p) in fields" v-show="!field.invisible" class="row-summary"
                 :colspan="p === fields.length - 1 && vScroller.buttonHeight < vScroller.height ? 2 : 1" :class="{
                   'sticky-column': field.sticky,
-                  'summary-column1': p + 1 < fields.length && fields[p + 1].summary,
-                  'summary-column2': field.summary
                 }" :key="`f${p}`" :style="renderColumnCellStyle(field)">
                 {{ field.toText(totalRow[field.name]?.value) }}
               </td>
             </tr>
-
-
-            <!-- <tr v-show="pagingTable.length && summaryRow">
-              <td class="row-summary first-col" :class="{ 'hide': noNumCol }">&nbsp;</td>
-              <td v-for="(field, p) in fields" v-show="!field.invisible" class="row-summary"
-                :colspan="p === fields.length - 1 && vScroller.buttonHeight < vScroller.height ? 2 : 1" :class="{
-                  'sticky-column': field.sticky,
-                  'summary-column1': p + 1 < fields.length && fields[p + 1].summary,
-                  'summary-column2': field.summary
-                }" :key="`f${p}`" :style="renderColumnCellStyle(field)">{{ summary[field.name] }}</td>
-            </tr> -->
           </tfoot>
           <slot></slot>
         </table>
@@ -436,7 +423,7 @@ export default defineComponent({
     totalRow: {
       type: Array,
       default() {
-        return {}
+        return null
       }
     },
   },
@@ -491,8 +478,6 @@ export default defineComponent({
       table: [],
       filteredValue: [],
       lastFilterTime: '',
-      summaryRow: false,
-      summary: {},
       showFilteredOnly: true,
       showSelectedOnly: false,
       ungroup: {},
@@ -628,13 +613,6 @@ export default defineComponent({
         this.sort(this.sortDir, this.sortPos);
       }
     },
-    totalRow: {
-      handler(newValue) {
-        if (Object.keys(newValue).length) {
-          this.summaryRow = true;
-        }
-      }
-    }
   },
   activated() {
     this.addEventListener()
@@ -827,9 +805,6 @@ export default defineComponent({
       this.fields.splice(pos, 0, field)
       if (this.register) this.register(field, pos)
       if (field.register) field.register(field, pos)
-      if (field.summary || Object.keys(this.totalRow).length) {
-        this.summaryRow = true;
-      }
       this.colHash = this.hashCode(this.version + JSON.stringify(this.fields))
     },
     insertColumn(pos) {
@@ -856,7 +831,6 @@ export default defineComponent({
         readonly: this.readonly,
         pos: 0,
         options: null,
-        summary: null,
         toValue: t => t,
         toText: t => t,
         register: null
@@ -868,9 +842,6 @@ export default defineComponent({
       this.fields.splice(pos, 0, field)
       if (this.register) this.register(field, pos);
       if (field.register) field.register(field, pos);
-      if (field.summary || Object.keys(this.totalRow).length) {
-        this.summaryRow = true;
-      };
       this.colHash = this.hashCode(this.version + JSON.stringify(this.fields))
     },
     autoRegisterAllColumns(rows) {
@@ -900,7 +871,6 @@ export default defineComponent({
           readonly: this.readonly,
           pos: 0,
           options: null,
-          summary: null,
           toValue: t => t,
           toText: t => t,
           valueFormatter: null,
@@ -1056,70 +1026,6 @@ export default defineComponent({
         + pad(d.getHours()) + ':'
         + pad(d.getMinutes()) + ':'
         + pad(d.getSeconds())
-    },
-    calSummary(name) {
-      this.fields.forEach(field => {
-        if (!field.summary) return
-        const i = field.name
-        if (name && name !== i) return
-        let result = ''
-        const currentTick = new Date().getTime()
-        const currentDateTimeSec = this.localeDate()
-        const currentDateTime = currentDateTimeSec.slice(0, 19)
-        const currentDate = currentDateTimeSec.slice(0, 10)
-        switch (field.summary) {
-          case 'sum':
-            result = this.table.reduce((a, b) => (a + Number(b[i].value ? b[i].value : 0)), 0)
-            result = Number(Math.round(result + 'e+5') + 'e-5')
-            break
-          case 'avg':
-            result = this.table.reduce((a, b) => (a + Number(b[i].value ? b[i].value : 0)), 0) / this.table.length
-            result = Number(Math.round(result + 'e+5') + 'e-5')
-            break
-          case 'max':
-            result = this.table.reduce((a, b) => (a > b[i].value ? a : b[i].value), Number.MIN_VALUE)
-            break
-          case 'min':
-            result = this.table.reduce((a, b) => (a < b[i].value ? a : b[i].value), Number.MAX_VALUE)
-            break
-          case 'count':
-            switch (field.type) {
-              case 'checkYN':
-                result = this.table.reduce((a, b) => (a + (b[i].value === 'Y' ? 1 : 0)), 0)
-                break
-              case 'check10':
-                result = this.table.reduce((a, b) => (a + (b[i].value === '1' ? 1 : 0)), 0)
-                break
-              case 'checkTF':
-                result = this.table.reduce((a, b) => (a + (b[i].value === 'T' ? 1 : 0)), 0)
-                break
-              case 'date':
-                result = this.table.reduce((a, b) => (a + (b[i].value >= currentDate ? 1 : 0)), 0)
-                this.summary[i] = result
-                return
-              case 'datetime':
-                result = this.table.reduce((a, b) => (a + (b[i].value >= currentDateTime ? 1 : 0)), 0)
-                this.summary[i] = result
-                return
-              case 'datetimesec':
-                result = this.table.reduce((a, b) => (a + (b[i].value >= currentDateTimeSec ? 1 : 0)), 0)
-                this.summary[i] = result
-                return
-              case 'datetick':
-              case 'datetimetick':
-              case 'datetimesectick':
-                result = this.table.reduce((a, b) => (a + (b[i].value >= currentTick ? 1 : 0)), 0)
-                this.summary[i] = result
-                return
-              default:
-                result = this.table.reduce((a, b) => (a + (b[i].value ? 1 : 0)), 0)
-                break
-            }
-            break
-        }
-        if (field.type === 'number' && isNaN(result)) return
-        this.summary[i] = field.toText(result)
-      })
     },
     getKeys(rec) {
       if (!rec) rec = this.currentRecord
@@ -1380,7 +1286,7 @@ export default defineComponent({
       let offset = this.labelTr?.offsetHeight || 0
       if (this.filterRow) offset += 29
       if (!this.noFooter) offset += 25
-      if (this.summaryRow) offset += 27
+      if (this.totalRow) offset += 27
       return offset
     },
     tableScroll() {
@@ -1880,7 +1786,7 @@ export default defineComponent({
       const outerTop = outerElement?.getBoundingClientRect().top || 0
 
       if (!this.noPaging) {
-        const offset = bottomOffset + (this.summaryRow ? 25 : 0) + (this.noFooter ? 0 : 25)
+        const offset = bottomOffset + (this.totalRow ? 25 : 0) + (this.noFooter ? 0 : 25)
         let controlHeight = outerHeight - (this.recordBody.getBoundingClientRect().top - outerTop) - offset
 
         if (this.height) {
@@ -1900,7 +1806,7 @@ export default defineComponent({
         let h = Math.floor(window.innerHeight - this.tableContent.getBoundingClientRect().top - 25)
         let offset = 4
         if (this.filterRow) offset += 29
-        if (this.summaryRow) offset += 25
+        if (this.totalRow) offset += 25
         if (!this.footerRow) offset += 25
         h = Math.min(24 * (this.table.length - this.pageTop) + offset, h)
         this.systable.parentNode.style.height = h + 'px'
@@ -2607,9 +2513,6 @@ export default defineComponent({
           transaction.rowerr = this.validate(newVal, oldVal.value, row, field)
           this.setRowError(transaction.rowerr, row)
         }
-
-        if (field.summary)
-          this.calSummary(field.name)
 
         this.lazy(transaction, (buf) => {
           this.$emit('update', buf)
