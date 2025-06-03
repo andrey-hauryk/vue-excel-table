@@ -21,7 +21,6 @@ const props = withDefaults(defineProps<{
   grouping?: string | null;
   mandatory?: string;
   lengthLimit?: number;
-  autocomplete?: boolean | null;
   pos?: number;
   noSorting?: boolean | null;
   options?: ColumnProps["options"];
@@ -50,7 +49,6 @@ const props = withDefaults(defineProps<{
   grouping: null,
   mandatory: "",
   lengthLimit: 0,
-  autocomplete: null,
   pos: 0,
   noSorting: null,
   options: null,
@@ -88,7 +86,6 @@ const init = () => {
   }
 
   const style = { ...(typeof props.initStyle === 'function' ? props.initStyle() : props.initStyle) };
-  const _autocomplete = props.autocomplete ?? (props.type === "action");
   const _readonly = props.readonly;
   const _listByClick = props.type === "action";
 
@@ -150,7 +147,6 @@ const init = () => {
     allowKeys: props.allowKeys ?? defaultAllowKeys[props.type],
     mandatory: props.mandatory,
     lengthLimit: Number(props.lengthLimit),
-    autocomplete: _autocomplete ?? parent?.autocomplete,
     initStyle: style,
     invisible: props.invisible,
     readonly: _readonly ?? parent?.readonly,

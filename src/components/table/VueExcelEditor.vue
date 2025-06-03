@@ -170,15 +170,6 @@
         </div>
       </div>
 
-      <!-- Autocomplete List -->
-      <ul ref="autocomplete" v-show="focused && autocompleteInputs.length" class="autocomplete-results">
-        <li v-for="(item, i) in autocompleteInputs" :key="i" :class="{ select: autocompleteSelect === i }"
-          @mousedown.left.prevent="inputAutocompleteText($event.target.textContent, $event)"
-          class="autocomplete-result">
-          {{ item }}
-        </li>
-      </ul>
-
       <!-- Footer -->
       <div ref="footer" class="footer center-text" :class="{ hide: noFooter }" style="position:relative"
         @mousedown="ftMouseDown">
@@ -296,7 +287,6 @@ export default defineComponent({
     noMouseScroll: { type: Boolean, default: false },
     selectable: { type: Boolean, default: false },
     enterToSouth: { type: Boolean, default: false },
-    autocomplete: { type: Boolean, default: false },
     allowAddCol: { type: Boolean, default: false },
     readonly: { type: Boolean, default: false },
     noHeaderEdit: { type: Boolean, default: false },
@@ -331,7 +321,6 @@ export default defineComponent({
     height: { type: String, default: '' },
     width: { type: String, default: '100%' },
     wheelSensitivity: { type: Number, default: 30 },
-    autocompleteCount: { type: Number, default: 50 },
     readonlyStyle: { type: Object, default() { return {} } },
     register: { type: Function, default: null },
     addColumn: { type: Function, default: null },
@@ -454,8 +443,6 @@ export default defineComponent({
       inputBox: null,
       inputBoxShow: 0,
       inputSquare: null,
-      autocompleteInputs: [],
-      autocompleteSelect: -1,
       errmsg: {},
       rowerr: {},
       colHash: '',
@@ -747,14 +734,12 @@ export default defineComponent({
       window.addEventListener('resize', this.winResize)
       window.addEventListener('keydown', this.winKeydown)
       window.addEventListener('keyup', this.winKeyup)
-      window.addEventListener('scroll', this.winScroll)
       window.addEventListener('wheel', this.mousewheel, { passive: false })
     },
     removeEventListener() {
       window.removeEventListener('resize', this.winResize)
       window.removeEventListener('keydown', this.winKeydown)
       window.removeEventListener('keyup', this.winKeyup)
-      window.removeEventListener('scroll', this.winScroll)
       window.removeEventListener('wheel', this.mousewheel)
     },
     isSameSinceLeft(p, rec1, rec2) {
@@ -825,7 +810,6 @@ export default defineComponent({
         mandatory: false,
         lengthLimit: 0,
 
-        autocomplete: this.autocomplete,
         initStyle: 'left',
         invisible: false,
         readonly: this.readonly,
@@ -865,7 +849,6 @@ export default defineComponent({
           allowKeys: null,
           mandatory: false,
           lengthLimit: 0,
-          autocomplete: this.autocomplete,
           initStyle: { textAlign: widths[i] ? 'left' : 'right' },
           invisible: false,
           readonly: this.readonly,
@@ -1291,7 +1274,6 @@ export default defineComponent({
     },
     tableScroll() {
       // this.showDatePicker = false;
-      // this.autocompleteInputs = [];
 
       if (this.focused && this.currentField) {
         this.inputSquare.style.marginLeft = (this.currentField.sticky ? this.tableContent.scrollLeft - this.squareSavedLeft: 0) + 'px';
@@ -1315,10 +1297,6 @@ export default defineComponent({
         }
       }
       this.hScroller.lastLeft = this.tableContent.scrollLeft
-    },
-    winScroll() {
-      // this.showDatePicker = false
-      // this.autocompleteInputs = []
     },
     mousewheel(e) {
       if (this.noMouseScroll || !e.deltaY) return
@@ -1399,10 +1377,6 @@ export default defineComponent({
               e.preventDefault()
             }
             break
-          case 76:
-            e.preventDefault()
-            this.calAutocompleteList(true)
-            break
         }
       else {
         if (this.currentRowPos < 0) return
@@ -1423,19 +1397,7 @@ export default defineComponent({
           case 38:
             if (!this.focused) return
             e.preventDefault()
-            if (this.autocompleteInputs.length === 0)
-              this.moveNorth()
-            else
-              if (this.autocompleteSelect > 0) {
-                this.autocompleteSelect--
-                const showTop = this.autocompleteSelect * 23
-                if (showTop < this.$refs.autocomplete.scrollTop)
-                  this.$refs.autocomplete.scrollTop = showTop
-              }
-              else
-                if (this.autocompleteSelect === -1) {
-                  this.autocompleteSelect = 0
-                }
+            this.moveNorth()
             break
           case 9:
             if (!this.focused) return
@@ -1473,43 +1435,26 @@ export default defineComponent({
           case 40:
             if (!this.focused) return
             e.preventDefault()
-            if (this.autocompleteInputs.length === 0)
-              this.moveSouth(e)
-            else
-              if (this.autocompleteSelect < this.autocompleteInputs.length - 1) {
-                this.autocompleteSelect++
-                if (this.autocompleteSelect >= 10) {
-                  const showTop = this.autocompleteSelect * 23 - 206
-                  const scrollTop = this.$refs.autocomplete.scrollTop
-                  if (scrollTop < showTop)
-                    this.$refs.autocomplete.scrollTop = showTop
-                }
-              }
+            this.moveSouth(e)
             break
           case 13:
             if (!this.focused) return
             e.preventDefault()
-            if (this.autocompleteInputs.length === 0 || this.autocompleteSelect === -1) {
-              if (this.enterToSouth)
+
+            if (this.enterToSouth)
                 this.moveSouth(e)
               else
                 this.moveEast(e)
-            }
-            else if (this.autocompleteSelect !== -1 && this.autocompleteSelect < this.autocompleteInputs.length) {
-              this.inputAutocompleteText(this.autocompleteInputs[this.autocompleteSelect])
-            }
-            else {
+
               this.inputBox.value = this.currentCell.textContent
               this.inputBoxShow = 0
               this.inputBoxChanged = false
-            }
+
             this.inputBoxComplete()
             break
           case 27:
             if (!this.focused) return
             this.showDatePicker = false
-            this.autocompleteInputs = []
-            this.autocompleteSelect = -1
             if (this.inputBoxShow) {
               e.preventDefault()
               this.inputBox.value = this.currentCell.textContent
@@ -1530,11 +1475,9 @@ export default defineComponent({
             if (!this.focused) return
             if (this.inputBoxShow) {
               this.inputBoxChanged = true
-              setTimeout(() => this.calAutocompleteList(true))
               return
             }
             if (this.currentField.readonly) return
-            if (this.autocompleteInputs.length) return
             this.inputBoxChanged = true
             this.inputBox.value = ''
             this.inputBoxComplete()
@@ -1556,23 +1499,6 @@ export default defineComponent({
                 if (this.currentField.allowKeys.indexOf(e.key.toUpperCase()) === -1) return e.preventDefault()
             }
             if (this.inputBoxShow && this.currentField.lengthLimit && this.inputBox.value.length >= this.currentField.lengthLimit) return e.preventDefault()
-            if (!this.inputBoxShow) {
-              if (['select', 'map', 'action'].includes(this.currentField.type)) {
-                setTimeout(() => this.calAutocompleteList(true))
-                if (e.keyCode === 32) return e.preventDefault()
-                this.inputBox.value = ''
-                this.inputBoxShow = 1
-                this.inputBox.focus()
-                return
-              }
-              this.inputBox.value = ''
-              this.inputBoxShow = 1
-              this.inputBox.focus()
-              setTimeout(this.calAutocompleteList)
-            }
-            else {
-              setTimeout(() => this.calAutocompleteList(this.autocompleteInputs.length))
-            }
             this.inputBoxChanged = true
             break
         }
@@ -2181,14 +2107,12 @@ export default defineComponent({
         this.focused = true
         this.moveInputSquare(rowPos, colPos)
 
-        if (this.currentField.listByClick) return this.calAutocompleteList(true)
         if (e.target.offsetWidth - e.offsetX > 25) return
         if (e.target.offsetWidth < e.target.scrollWidth) {
           const rect = e.target.getBoundingClientRect()
         }
         if (this.currentField.readonly) return
         this.inputBox.value = this.currentCell.textContent
-        if (e.target.classList.contains('select')) this.calAutocompleteList(true)
         if (e.target.classList.contains('datepick')) this.showDatePickerDiv()
 
       }
@@ -2309,11 +2233,6 @@ export default defineComponent({
       this.lastCell = this.currentCell
 
       if (this.showDatePicker) this.showDatePicker = false
-      if (this.autocompleteInputs.length) {
-        this.autocompleteInputs = []
-        this.autocompleteSelect = -1
-      }
-      if (this.recalAutoCompleteList) clearTimeout(this.recalAutoCompleteList)
 
       if (this.currentRowPos >= 0 && this.currentRowPos < this.pagingTable.length) {
         this.inputBox.value = this.currentCell.textContent
@@ -2344,9 +2263,6 @@ export default defineComponent({
     inputBoxMouseDown(e) {
       if (e.target.offsetWidth - e.offsetX > 15) return
       if (this.currentField.readonly) return
-      if (this.currentField.options) {
-        this.calAutocompleteList(true)
-      }
       if (this.currentField.type === 'date') {
         this.showDatePickerDiv()
       }
@@ -2566,91 +2482,6 @@ export default defineComponent({
       return Promise.all(this.table.map(row =>
         Promise.all(Object.keys(row).map(name => this.updateCell(row, name, row[name].value, false))
         )))
-    },
-    /* *** Autocomplete ****************************************************************************************
-     */
-    async calAutocompleteList(force) {
-      if (!this.currentField.autocomplete) return
-      if (force || (this.inputBoxChanged && this.inputBox.value.length > 0)) {
-        if (typeof this.recalAutoCompleteList !== 'undefined') clearTimeout(this.recalAutoCompleteList)
-        const doList = async () => {
-          if (!force) {
-            if (!this.focused || !this.inputBoxShow || !this.inputBoxChanged || !this.inputBox.value.length) {
-              this.autocompleteInputs = []
-              return
-            }
-          }
-          const field = this.currentField
-          const name = field.name
-          const value = this.inputBox.value.toUpperCase()
-          const listCount = this.autocompleteCount
-          let list = []
-          if (field.options) {
-            if (field.options.constructor.name.endsWith('Function')) {
-              list = await field.options(value, this.currentRecord)
-              if (field.type === 'map') list = Object.values(list)
-              else list = list.slice()
-              if (this.inputBoxShow)
-                list = list.filter(element => element.toUpperCase().includes(value))
-              list.sort().splice(listCount)
-            }
-            else if (Object.values(field.options).length > 0) {
-              list = field.options
-              if (field.type === 'map') list = Object.values(list)
-              else list = list.slice()
-              if (this.inputBoxShow)
-                list = list.filter(element => element.toUpperCase().includes(value))
-              list.sort().splice(listCount)
-            }
-          }
-          else {
-            for (let i = 0; i < this.modelValue.length; i++) {
-              const rec = this.modelValue[i]
-              if (typeof rec[name] !== 'undefined' && rec[name].toString().toUpperCase().startsWith(value) && list.indexOf(rec[name]) === -1)
-                list.push(rec[name].value)
-              if (list.length >= listCount) break
-            }
-            list.sort()
-          }
-          this.autocompleteSelect = list.findIndex(element => element?.toString().toUpperCase().startsWith(value))
-          this.autocompleteInputs = list
-          const rect = this.currentCell.getBoundingClientRect()
-          this.lazy(() => {
-            if (!this.$refs.autocomplete) return
-            this.$refs.autocomplete.style.minWidth = rect.width + 'px'
-            const r = this.$refs.autocomplete.getBoundingClientRect()
-            if (rect.bottom + r.height > window.innerHeight) {
-              this.autocompleteInputs.reverse()
-              this.autocompleteSelect = this.autocompleteInputs.length - this.autocompleteSelect - 1
-              this.$refs.autocomplete.style.top = (rect.top - r.height) + 'px'
-            }
-            else {
-              this.$refs.autocomplete.style.top = rect.bottom + 'px'
-            }
-            if (rect.left + r.width > window.innerWidth)
-              this.$refs.autocomplete.style.left = (rect.right - r.width) + 'px'
-            else
-              this.$refs.autocomplete.style.left = rect.left + 'px'
-            const showTop = this.autocompleteSelect * 23 - 206
-            this.$refs.autocomplete.scrollTop = showTop > 0 ? showTop : 0
-          })
-          return this.autocompleteSelect
-        }
-        if (force)
-          doList()
-        else
-          this.lazy(doList, 700)
-      }
-    },
-    inputAutocompleteText(text, e) {
-      if (e) e.preventDefault()
-      this.autocompleteInputs = []
-      this.autocompleteSelect = -1
-      this.inputBoxShow = 0
-      this.inputBoxChanged = false
-      setTimeout(() => {
-        this.inputCellWrite(text, this.currentColPos, this.currentRowPos + this.pageTop)
-      })
     },
     /* *** Helper ****************************************************************************************
      */
