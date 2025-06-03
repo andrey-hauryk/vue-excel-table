@@ -9,8 +9,6 @@ export interface TableProps {
   noFinding?: boolean;
   noFindingNext?: boolean;
   freeSelect?: boolean;
-  autocomplete?: boolean;
-  autocompleteCount?: number;
   readonly?: boolean;
   readonlyStyle?: Record<string, any>;
   height?: string;
@@ -64,7 +62,6 @@ export interface ColumnProps {
   allowKeys?: string[] | (() => string[]);
   mandatory?: string;
   lengthLimit?: number;
-  autocomplete?: boolean | null;
   pos?: number;
   options?: any[] | Record<string, any> | ((input: any) => any);
   sort?: (a: any, b: any) => number;
