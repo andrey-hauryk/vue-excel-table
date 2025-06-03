@@ -23,7 +23,6 @@ const props = withDefaults(defineProps<{
   lengthLimit?: number;
   autocomplete?: boolean | null;
   pos?: number;
-  summary?: string | null;
   noSorting?: boolean | null;
   options?: ColumnProps["options"];
   allowKeys?: ColumnProps["allowKeys"];
@@ -53,7 +52,6 @@ const props = withDefaults(defineProps<{
   lengthLimit: 0,
   autocomplete: null,
   pos: 0,
-  summary: null,
   noSorting: null,
   options: null,
   allowKeys: null,
@@ -158,7 +156,6 @@ const init = () => {
     readonly: _readonly ?? parent?.readonly,
     pos: Number(props.pos),
     options: props.options,
-    summary: props.summary,
     toValue: finalToValue,
     toText: (...args) => finalToText(...args) || "",
     valueFormatter: props.valueFormatter || null,
