@@ -4,10 +4,10 @@
         v-model="tableData"
         :columns="columns"
         height="200px"
+        width="600px"
         selectable
         free-select
         no-header-edit
-        no-paging
       ></ExcelTable>
     </div>
 </template>
@@ -20,26 +20,6 @@ import tableDataMock from './mock/data';
 import {computed, ref} from 'vue';
 
 const tableData = ref(tableDataMock);
-
-//   keyField: { type: Boolean, default: false },
-//   mandatory: { type: String, default: "" },
-//   listByClick: { type: Boolean, default: null },
-//   summary: { type: String, default: null },
-
-//   field: { type: String, default: "dummy" },
-//   label: { type: String, default: null },
-//   type: { type: String as PropType<ColumnProps["type"]>, default: "string" },
-//   width: { type: String, default: "100px" },
-//   invisible: { type: Boolean, default: false },
-//   readonly: { type: Boolean, default: null },
-//   sticky: { type: Boolean, default: false },
-//   autoFillWidth: { type: Boolean, default: false },
-//   lengthLimit: { type: Number, default: 0 },
-//   noSorting: { type: Boolean, default: null },
-//   hideDuplicate: { type: Boolean, default: false },
-//   grouping: { type: String, default: null },
-//   autocomplete: { type: Boolean, default: null },
-//   pos: { type: Number, default: 0 }, - понятно но работает странно
 
 const columns = computed(() => [
   { field: "date_dt", type: "date", label: "Дата" },
