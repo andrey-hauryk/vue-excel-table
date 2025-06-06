@@ -48,11 +48,6 @@
             </tr>
           </thead>
 
-          <!--тест виртуализации-->
-
-          
-
-
           <tbody @mousedown="mouseDown" @mouseup="mouseUp">
             <tr v-if="localizedLabel.noRecordIndicator && pagingTable.length == 0">
               <td colspan="100%" style="height:40px; vertical-align: middle; text-align: center"></td>
@@ -164,29 +159,8 @@
         @mousedown="ftMouseDown">
         <div ref="hScroll" class="h-scroll" @mousedown="sbMouseDown" />
         <span class="left-block" :class="{ 'hide': noNumCol }"></span>
-        <span v-show="!noPaging" class="footer-left">
-          <span> {{ localizedLabel.footerLeft(pageTop + 1, pageBottom, table.length) }}</span>
-        </span>
-        <span v-show="!noPaging && pageBottom - pageTop < table.length">
-          <a :class="{ disabled: pageTop <= 0 }" @mousedown="firstPage">
-            <IconStepBackward></IconStepBackward>
-            <span>{{ ' ' + localizedLabel.first + ' | ' }} </span>
-          </a>
-          <a :class="{ disabled: pageTop <= 0 }" @mousedown="prevPage">
-            <IconBackward></IconBackward>
-            <span> {{ ' ' + localizedLabel.previous + ' | ' }}</span>
-          </a>
-          <a :class="{ disabled: pageTop + pageSize >= table.length }" @mousedown="nextPage">
-            <IconForward></IconForward>
-            <span>{{ ' ' + localizedLabel.next + ' | ' }}</span>
-          </a>
-          <a :class="{ disabled: pageTop + pageSize >= table.length }" @mousedown="lastPage">
-            <span>{{ localizedLabel.last + ' ' }}</span>
-            <IconStepForward></IconStepForward>
-          </a>
-        </span>
         <span class="footer-right">
-          <a :class="{ disabled: !showSelectedOnly && selectedCount <= 1 }" @mousedown="toggleSelectView">
+          <a :class="{ disabled: !showSelectedOnly && selectedCount <= 1 }">
             <span>{{ localizedLabel.footerRight.selected }}</span>
             <span :style="{ color: selectedCount > 0 ? 'red' : 'inherit' }">{{ selectedCount }}</span>
             <span>{{ ' | ' }}</span>
@@ -195,11 +169,6 @@
             <span>{{ localizedLabel.footerRight.filtered }}</span>
             <span :style="{ color: table.length !== filteredValue.length ? 'red' : 'inherit' }">{{ table.length
             }}</span>
-            <span>{{ ' | ' }}</span>
-          </a>
-          <a :class="{ disabled: true }">
-            <span>{{ localizedLabel.footerRight.loaded }}</span>
-            <span>{{ filteredValue.length }}</span>
           </a>
         </span>
       </div>
@@ -229,10 +198,6 @@ import noRecordIndicator from './components/NoRecordIndicator.vue';
 import IconClose from './components/svg/IconClose.vue';
 import IconBars from './components/svg/IconBars.vue';
 import IconEraser from './components/svg/IconEraser.vue';
-import IconStepBackward from "./components/svg/IconStepBackward.vue";
-import IconBackward from "./components/svg/IconBackward.vue";
-import IconForward from "./components/svg/IconForward.vue";
-import IconStepForward from "./components/svg/IconStepForward.vue";
 
 import { useExcelExport } from '../table/composables/useExportTable'
 import { useExcelImport } from '../table/composables/useImportTable';
@@ -249,10 +214,6 @@ export default defineComponent({
     'IconClose': IconClose,
     'IconBars': IconBars,
     'IconEraser': IconEraser,
-    'IconStepBackward': IconStepBackward,
-    'IconBackward': IconBackward,
-    'IconForward': IconForward,
-    'IconStepForward': IconStepForward,
   },
   props: {
     disablePanelSetting: { type: Boolean, default: false },
@@ -266,7 +227,6 @@ export default defineComponent({
     filterRow: { type: Boolean, default: false },
     freeSelect: { type: Boolean, default: false },
     noFooter: { type: Boolean, default: false },
-    noPaging: { type: Boolean, default: false },
     noNumCol: { type: Boolean, default: false },
     noMouseScroll: { type: Boolean, default: false },
     selectable: { type: Boolean, default: false },
@@ -313,12 +273,6 @@ export default defineComponent({
       type: Object,
       default() {
         return {
-          footerLeft: (top, bottom, total) =>
-            `Записи ${top} до ${bottom} из ${total}`,
-          first: "В начало",
-          previous: "Назад",
-          next: "Далее",
-          last: "В конец",
           footerRight: {
             selected: "Выбрано:",
             filtered: "Отфильтровано:",
@@ -401,7 +355,7 @@ export default defineComponent({
     },
   },
   data() {
-    const pageSize = this.noPaging ? 999999 : 20
+    const pageSize = 999999
     const dataset = {
       rowSpans: {},
       version: '1.3',
@@ -475,7 +429,7 @@ export default defineComponent({
   computed: {
     numColWidth() {
       if (this.noNumCol) return 0
-      else return 40
+      else return 25
     },
     selectedCount: {
       get() {
@@ -530,8 +484,6 @@ export default defineComponent({
     modelValue() {
       this.lazy(() => {
         this.refresh()
-        if (this.pageTop > this.table.length)
-          this.lastPage()
       })
     },
     fields: {
@@ -729,12 +681,6 @@ export default defineComponent({
       this.localLoading = false
       this.rowIndex = {}
       this.refresh()
-    },
-    toggleSelectView(e) {
-      if (e) e.stopPropagation()
-      this.showSelectedOnly = !this.showSelectedOnly
-      this.firstPage()
-      return this.refresh()
     },
     toggleFilterView(e) {
       if (e) e.stopPropagation()
@@ -1002,13 +948,7 @@ export default defineComponent({
       let ratio = Math.max(0, pos)
       ratio = Math.min(ratio, this.vScroller.height - this.vScroller.buttonHeight)
       ratio = ratio / (this.vScroller.height - this.vScroller.buttonHeight)
-      if (this.noPaging)
-        this.tableContent.scrollTo(this.tableContent.scrollLeft, this.table.length * 24 * ratio)
-      else {
-        this.vScroller.buttonTop = ratio * (this.vScroller.height - this.vScroller.buttonHeight)
-        this.$refs.vScrollButton.style.marginTop = this.vScroller.buttonTop + 'px'
-        this.pageTop = Math.round((this.table.length - this.pageSize) * ratio)
-      }
+      this.tableContent.scrollTo(this.tableContent.scrollLeft, this.table.length * 24 * ratio)
     },
     vsbMouseDown(e) {
       e.stopPropagation()
@@ -1028,10 +968,6 @@ export default defineComponent({
         this.$refs.vScrollButton.classList.remove('focus')
       })
       this.vScroller.mouseY = 0
-      if (!this.noPaging) {
-        const ratio = this.vScroller.buttonTop / (this.vScroller.height - this.vScroller.buttonHeight)
-        this.pageTop = Math.round((this.table.length - this.pageSize) * ratio)
-      }
       this.vScroller.runner = ''
       const instance = getCurrentInstance()
       instance?.proxy?.$forceUpdate()
@@ -1041,29 +977,8 @@ export default defineComponent({
         this.vsbMouseUp()
       else {
         const diff = e.clientY - this.vScroller.mouseY
-        if (this.noPaging) {
           const ratio = (this.vScroller.saveButtonTop + diff) / (this.vScroller.height - this.vScroller.buttonHeight)
           this.tableContent.scrollTo(this.tableContent.scrollLeft, this.table.length * 24 * ratio)
-        }
-        else {
-          this.vScroller.buttonTop = Math.max(0, Math.min(this.vScroller.height - this.vScroller.buttonHeight, this.vScroller.saveButtonTop + diff))
-          this.$refs.vScrollButton.style.marginTop = this.vScroller.buttonTop + 'px'
-
-          const ratio = this.vScroller.buttonTop / (this.vScroller.height - this.vScroller.buttonHeight)
-          const recPos = Math.round((this.table.length - this.pageSize) * ratio) + 1
-          const rec = this.table[recPos]
-          if (rec) {
-            this.vScroller.runner = recPos + '<br>' + this.fields
-              .filter((field, i) => field.keyField || field.sticky || this.sortPos === i)
-              .map(field => field.label + ': ' + (rec[field.name]?.value ?? ''))
-              .join('<br>')
-          }
-          else {
-            this.vScroller.runner = ''
-          }
-          const instance = getCurrentInstance()
-          instance?.proxy?.$forceUpdate()
-        }
       }
     },
     /* *** Horizontal Scrollbar *********************************************************************************
@@ -1303,14 +1218,6 @@ export default defineComponent({
               this.inputBoxChanged = false
             }
             break
-          case 33:
-            this.prevPage()
-            e.preventDefault()
-            break
-          case 34:
-            this.nextPage()
-            e.preventDefault()
-            break
           case 8:
           case 46:
             if (!this.focused) return
@@ -1548,24 +1455,7 @@ export default defineComponent({
       const outerHeight = outerElement?.clientHeight || window.innerHeight
       const outerTop = outerElement?.getBoundingClientRect().top || 0
 
-      if (!this.noPaging) {
-        const offset = bottomOffset + (this.totalRow ? 25 : 0) + (this.noFooter ? 0 : 25)
-        let controlHeight = outerHeight - (this.recordBody.getBoundingClientRect().top - outerTop) - offset
-
-        if (this.height) {
-          if (this.height === 'auto') {
-            const p = this.editor.parentElement
-            if (p && p.scrollHeight > p.clientHeight)
-              controlHeight += p.clientHeight - p.scrollHeight
-          }
-          else {
-            const height = parseInt(this.height) + this.systable.getBoundingClientRect().top - this.recordBody.getBoundingClientRect().top
-            if (controlHeight > height) controlHeight = height
-          }
-        }
-        this.pageSize = this.page || Math.floor(controlHeight / 24)
-      }
-      else if (this.height === 'auto') {
+      if (this.height === 'auto') {
         let h = Math.floor(window.innerHeight - this.tableContent.getBoundingClientRect().top - 25)
         let offset = 4
         if (this.filterRow) offset += 29
@@ -1576,63 +1466,6 @@ export default defineComponent({
       }
       this.columnFillWidth()
       setTimeout(this.calVScroll)
-    },
-    firstPage(e) {
-      if (e) e.stopPropagation()
-      this.pageTop = 0
-      this.calVScroll()
-      if (this.$refs.vScrollButton) {
-        setTimeout(() => {
-          this.$refs.vScrollButton.classList.add('focus')
-          this.lazy(() => {
-            if (!this.$refs.vScrollButton) return
-            this.$refs.vScrollButton.classList.remove('focus')
-          }, 1000)
-        })
-      }
-    },
-    lastPage(e) {
-      if (e) e.stopPropagation()
-      this.pageTop = this.table.length - this.pageSize < 0 ? 0 : this.table.length - this.pageSize
-      this.calVScroll()
-      if (this.$refs.vScrollButton) {
-        setTimeout(() => {
-          this.$refs.vScrollButton.classList.add('focus')
-          this.lazy(() => {
-            if (!this.$refs.vScrollButton) return
-            this.$refs.vScrollButton.classList.remove('focus')
-          }, 1000)
-        })
-      }
-    },
-    prevPage(e) {
-      if (e) e.stopPropagation()
-      this.pageTop = this.pageTop < this.pageSize ? 0 : this.pageTop - this.pageSize
-      this.calVScroll()
-      if (this.$refs.vScrollButton) {
-        setTimeout(() => {
-          this.$refs.vScrollButton.classList.add('focus')
-          this.lazy(() => {
-            if (!this.$refs.vScrollButton) return
-            this.$refs.vScrollButton.classList.remove('focus')
-          }, 1000)
-        })
-      }
-    },
-    nextPage(e) {
-      if (e) e.stopPropagation()
-      if (this.pageTop + this.pageSize < this.table.length)
-        this.pageTop = Math.min(this.pageTop + this.pageSize, this.table.length - this.pageSize)
-      this.calVScroll()
-      if (this.$refs.vScrollButton) {
-        setTimeout(() => {
-          this.$refs.vScrollButton.classList.add('focus')
-          this.lazy(() => {
-            if (!this.$refs.vScrollButton) return
-            this.$refs.vScrollButton.classList.remove('focus')
-          }, 1000)
-        })
-      }
     },
     /* *** Setting *******************************************************************************************
      */
@@ -2157,10 +1990,6 @@ export default defineComponent({
       Object.keys(rec).forEach(name => {
         const field = this.fields.find(f => f.name === name)
         if (field) this.updateCell(rec, field, rec[name].value, isUndo)
-      })
-      if (!noLastPage) this.lazy(() => {
-        this.lastPage()
-        this.moveToSouthWest()
       })
       return rec
     },
