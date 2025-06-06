@@ -160,7 +160,7 @@
         <div ref="hScroll" class="h-scroll" @mousedown="sbMouseDown" />
         <span class="left-block" :class="{ 'hide': noNumCol }"></span>
         <span class="footer-right">
-          <a :class="{ disabled: !showSelectedOnly && selectedCount <= 1 }">
+          <a :class="{ disabled: selectedCount <= 1 }">
             <span>{{ localizedLabel.footerRight.selected }}</span>
             <span :style="{ color: selectedCount > 0 ? 'red' : 'inherit' }">{{ selectedCount }}</span>
             <span>{{ ' | ' }}</span>
@@ -239,7 +239,6 @@ export default defineComponent({
     singleSelect: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     disableSelection: { type: Boolean, default: false },
-
     columns: {
       type: Array,
       default() {
@@ -363,7 +362,6 @@ export default defineComponent({
       systable: null,
       colgroupTr: null,
       labelTr: null,
-      filterTr: null,
       recordBody: null,
       footer: null,
       pageSize: pageSize,
@@ -398,12 +396,9 @@ export default defineComponent({
       hScroller: {},
       vScroller: {},
       leftMost: 0,
-      inputDateTime: new Date(),
       table: [],
       filteredValue: [],
-      lastFilterTime: '',
       showFilteredOnly: true,
-      showSelectedOnly: false,
       ungroup: {},
       showPanelFind: false,
       showPanelSetting: false,
@@ -547,7 +542,6 @@ export default defineComponent({
     this.systable = this.$refs.systable
     this.colgroupTr = this.systable.children[0]
     this.labelTr = this.systable.children[1].children[0]
-    this.filterTr = this.systable.children[1].children[1]
     this.recordBody = this.systable.children[2]
     this.footer = this.$refs.footer
     this.inputSquare = this.$refs.inputSquare
@@ -669,7 +663,6 @@ export default defineComponent({
       this.errmsg = {}
       this.redo = []
       this.showFilteredOnly = true
-      this.showSelectedOnly = false
       this.columnFilter = {}
       this.sortPos = 0
       this.sortDir = 0
