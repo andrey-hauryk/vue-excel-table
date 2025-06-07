@@ -57,7 +57,6 @@
 
               <td v-if="selectable" class="center-text first-col-selectable" :id="`rid-${record.id}`" :class="{
                 hide: noNumCol,
-                error: rowerr[`rid-${record.id}`],
               }" :pos="rowPos">
                 <input class="table__checkbox" type="checkbox" :checked="selected[rowPos] === record.id"
                   :class="{ 'table__checkbox--disabled': disableSelection }" @click="rowLabelClick" />
@@ -65,7 +64,6 @@
 
               <td v-else class="center-text first-col" :id="`rid-${record.id}`" :class="{
                 hide: noNumCol,
-                error: rowerr[`rid-${record.id}`]
               }" :pos="rowPos" @mouseover="numcolMouseOver" @click="rowLabelClick">
                 <span v-html="recordLabel(pageTop + rowPos + 1, record)"></span>
               </td>
@@ -79,7 +77,6 @@
                 :class="{
                   'cell-selected': record[item.name]?.isSelected,
                   readonly: item.readonly,
-                  error: errmsg[`id-${record.id}-${item.name}`],
                   link: item.link && item.isLink && item.isLink(record),
                   select: item.options,
                   grouping: item.grouping,
@@ -202,7 +199,18 @@ import IconEraser from './components/svg/IconEraser.vue';
 import { useExcelExport } from '../table/composables/useExportTable'
 import { useExcelImport } from '../table/composables/useImportTable';
 
+import {ref} from 'vue';
+
 export default defineComponent({
+  setup(props) {
+    const test = ref('Тестирую');
+
+    console.log(props);
+
+    return {
+      test,
+    }
+  },
   components: {
     'vue-excel-filter': VueExcelFilter,
     'panel-filter': PanelFilter,
@@ -223,7 +231,6 @@ export default defineComponent({
     noFinding: { type: Boolean, default: false },
     noSorting: { type: Boolean, default: false },
     noMassUpdate: { type: Boolean, default: false },
-
     filterRow: { type: Boolean, default: false },
     freeSelect: { type: Boolean, default: false },
     noFooter: { type: Boolean, default: false },
@@ -259,14 +266,12 @@ export default defineComponent({
         return pos
       }
     },
-    page: { type: Number, default: 0 },
     height: { type: String, default: '' },
     width: { type: String, default: '100%' },
     wheelSensitivity: { type: Number, default: 30 },
     readonlyStyle: { type: Object, default() { return {} } },
     register: { type: Function, default: null },
     addColumn: { type: Function, default: null },
-    validate: { type: Function, default: null },
     localizedLabel: {
       type: Object,
       default() {
@@ -378,8 +383,6 @@ export default defineComponent({
       inputBox: null,
       inputBoxShow: 0,
       inputSquare: null,
-      errmsg: {},
-      rowerr: {},
       colHash: '',
       fields: [],
       focused: false,
@@ -491,12 +494,6 @@ export default defineComponent({
     },
     loading(newVal) {
       this.localLoading = newVal;
-    },
-    pageTop(newVal) {
-      this.$emit('page-changed', newVal, newVal + this.pageSize - 1)
-    },
-    pageSize(newVal) {
-      this.$emit('page-changed', this.pageTop, this.pageTop + newVal - 1)
     },
     selectable(newValue) {
       if (newValue) this.noNumCol = false;
@@ -659,7 +656,6 @@ export default defineComponent({
       window.removeEventListener('wheel', this.mousewheel)
     },
     reset() {
-      this.errmsg = {}
       this.redo = []
       this.showFilteredOnly = true
       this.columnFilter = {}
@@ -700,7 +696,6 @@ export default defineComponent({
         type: 'string',
         width: '100px',
 
-        validate: null,
         change: null,
         link: null,
 
@@ -740,7 +735,6 @@ export default defineComponent({
           label: col,
           type: widths[i] ? 'string' : 'number',
           width: (widths[i] ? widths[i] : 75) + 'px',
-          validate: null,
           change: null,
           link: null,
           keyField: false,
@@ -1982,13 +1976,9 @@ export default defineComponent({
           err: ''
         }
 
-        if (field.validate !== null) transaction.err = field.validate(newVal, oldVal, row, field)
         if (field.mandatory && newVal.value === '')
           transaction.err += (transaction.err ? '\n' : '') + field.mandatory
 
-        if (this.validate !== null) {
-          transaction.rowerr = this.validate(newVal, oldVal.value, row, field)
-        }
 
         this.lazy(transaction, (buf) => {
           this.$emit('update', buf)

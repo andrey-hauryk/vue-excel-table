@@ -26,7 +26,6 @@ const props = withDefaults(defineProps<{
   options?: ColumnProps["options"];
   allowKeys?: ColumnProps["allowKeys"];
   initStyle?: ColumnProps["initStyle"];
-  validate?: ColumnProps["validate"];
   link?: ColumnProps["link"];
   isLink?: ColumnProps["isLink"];
   valueFormatter?: ColumnProps["valueFormatter"];
@@ -54,7 +53,6 @@ const props = withDefaults(defineProps<{
   options: null,
   allowKeys: null,
   initStyle: null,
-  validate: null,
   link: null,
   isLink: null,
   valueFormatter: null,
@@ -138,7 +136,6 @@ const init = () => {
     width: props.width,
     origWidth: props.width,
     autoFillWidth: props.autoFillWidth,
-    validate: props.validate,
     link: props.link,
     isLink: props.isLink ?? (props.link ? () => true : null),
     noSorting: props.noSorting !== null ?? parent?.noSorting,
