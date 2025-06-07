@@ -57,7 +57,6 @@
 
               <td v-if="selectable" class="center-text first-col-selectable" :id="`rid-${record.id}`" :class="{
                 hide: noNumCol,
-                error: rowerr[`rid-${record.id}`],
               }" :pos="rowPos">
                 <input class="table__checkbox" type="checkbox" :checked="selected[rowPos] === record.id"
                   :class="{ 'table__checkbox--disabled': disableSelection }" @click="rowLabelClick" />
@@ -65,7 +64,6 @@
 
               <td v-else class="center-text first-col" :id="`rid-${record.id}`" :class="{
                 hide: noNumCol,
-                error: rowerr[`rid-${record.id}`]
               }" :pos="rowPos" @mouseover="numcolMouseOver" @click="rowLabelClick">
                 <span v-html="recordLabel(pageTop + rowPos + 1, record)"></span>
               </td>
@@ -79,7 +77,6 @@
                 :class="{
                   'cell-selected': record[item.name]?.isSelected,
                   readonly: item.readonly,
-                  error: errmsg[`id-${record.id}-${item.name}`],
                   link: item.link && item.isLink && item.isLink(record),
                   select: item.options,
                   grouping: item.grouping,
@@ -202,7 +199,18 @@ import IconEraser from './components/svg/IconEraser.vue';
 import { useExcelExport } from '../table/composables/useExportTable'
 import { useExcelImport } from '../table/composables/useImportTable';
 
+import {ref} from 'vue';
+
 export default defineComponent({
+  setup(props) {
+    const test = ref('Тестирую');
+
+    console.log(props);
+
+    return {
+      test,
+    }
+  },
   components: {
     'vue-excel-filter': VueExcelFilter,
     'panel-filter': PanelFilter,
@@ -223,7 +231,6 @@ export default defineComponent({
     noFinding: { type: Boolean, default: false },
     noSorting: { type: Boolean, default: false },
     noMassUpdate: { type: Boolean, default: false },
-
     filterRow: { type: Boolean, default: false },
     freeSelect: { type: Boolean, default: false },
     noFooter: { type: Boolean, default: false },
@@ -235,7 +242,6 @@ export default defineComponent({
     readonly: { type: Boolean, default: false },
     noHeaderEdit: { type: Boolean, default: false },
     spellcheck: { type: Boolean, default: false },
-    newIfBottom: { type: Boolean, default: false },
     singleSelect: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
     disableSelection: { type: Boolean, default: false },
@@ -260,14 +266,12 @@ export default defineComponent({
         return pos
       }
     },
-    page: { type: Number, default: 0 },
     height: { type: String, default: '' },
     width: { type: String, default: '100%' },
     wheelSensitivity: { type: Number, default: 30 },
     readonlyStyle: { type: Object, default() { return {} } },
     register: { type: Function, default: null },
     addColumn: { type: Function, default: null },
-    validate: { type: Function, default: null },
     localizedLabel: {
       type: Object,
       default() {
@@ -379,8 +383,6 @@ export default defineComponent({
       inputBox: null,
       inputBoxShow: 0,
       inputSquare: null,
-      errmsg: {},
-      rowerr: {},
       colHash: '',
       fields: [],
       focused: false,
@@ -492,12 +494,6 @@ export default defineComponent({
     },
     loading(newVal) {
       this.localLoading = newVal;
-    },
-    pageTop(newVal) {
-      this.$emit('page-changed', newVal, newVal + this.pageSize - 1)
-    },
-    pageSize(newVal) {
-      this.$emit('page-changed', this.pageTop, this.pageTop + newVal - 1)
     },
     selectable(newValue) {
       if (newValue) this.noNumCol = false;
@@ -660,7 +656,6 @@ export default defineComponent({
       window.removeEventListener('wheel', this.mousewheel)
     },
     reset() {
-      this.errmsg = {}
       this.redo = []
       this.showFilteredOnly = true
       this.columnFilter = {}
@@ -701,7 +696,6 @@ export default defineComponent({
         type: 'string',
         width: '100px',
 
-        validate: null,
         change: null,
         link: null,
 
@@ -741,7 +735,6 @@ export default defineComponent({
           label: col,
           type: widths[i] ? 'string' : 'number',
           width: (widths[i] ? widths[i] : 75) + 'px',
-          validate: null,
           change: null,
           link: null,
           keyField: false,
@@ -1095,13 +1088,11 @@ export default defineComponent({
               this.redoHistory();
             } else {
               this.undoHistory();
-              this.undoTransaction();
             }
             e.preventDefault()
             break
           case 89:
             this.redoHistory();
-            this.undoTransaction()
             e.preventDefault()
             break
           case 65:
@@ -1693,8 +1684,6 @@ export default defineComponent({
       if (this.focused) {
         if (this.currentRowPos + 1 >= (this.pageBottom - this.pageTop) && this.pageBottom >= this.table.length) {
           if (this.readonly) return false
-          if (!this.newIfBottom) return false
-          this.newRecord({}, false, true)
           setTimeout(this.moveSouth, 0)
           return true
         }
@@ -1940,66 +1929,6 @@ export default defineComponent({
     },
     /* *** Update *******************************************************************************************
      */
-    undoTransaction(e) {
-      if (e) e.preventDefault()
-      if (this.redo.length === 0) return
-      const transaction = this.redo.pop()
-      transaction.every((t) => {
-        try {
-          if (t.type === 'd') {
-            this.newRecord(t.rec, false, true, true)
-          }
-          else if (t.field && t.field.keyField && t.oldKeys.includes(t.newVal)) {
-            const valueRowPos = this.modelValue.findIndex(v => v.id === t.id)
-            if (valueRowPos >= 0) {
-              this.deleteRecord(valueRowPos, true)
-            }
-          }
-          else
-            this.updateCell(t.id, t.field.name, t.oldVal.value, true)
-
-          return true
-        }
-        catch (e) {
-          return false
-        }
-      })
-    },
-    newRecord(rec, selectAfterDone, noLastPage, isUndo) {
-      if (typeof rec === 'undefined') rec = {}
-      this.fields.map(f => {
-        if (typeof rec[f.name] === 'undefined') {
-          if (f.keyField)
-            rec[f.name] = { value: '§' + this.tempKey(), anomaly: false, isSelected: false };
-          else
-            rec[f.name] = { value: null, anomaly: false, isSelected: false };
-        }
-      })
-      const id = rec.id || this.tempKey()
-      rec.id = id
-      this.modelValue.push(rec)
-      const rowPos = this.table.push(rec) - 1
-      if (selectAfterDone) this.selected[rowPos] = id
-      Object.keys(rec).forEach(name => {
-        const field = this.fields.find(f => f.name === name)
-        if (field) this.updateCell(rec, field, rec[name].value, isUndo)
-      })
-      return rec
-    },
-    deleteRecord(valueRowPos, isUndo) {
-      if (this.currentRowPos === valueRowPos) this.moveNorth()
-      const rec = this.modelValue.splice(valueRowPos, 1)[0]
-      setTimeout(() => {
-        this.lazy(rec, (buf) => {
-          this.$emit('delete', buf)
-          if (!isUndo) this.redo.push(buf.map(t => ({
-            type: 'd',
-            rec: t
-          })))
-          this.refresh()
-        })
-      }, 100)
-    },
     async updateCell(row, field, newVal, isUndo) {
       const rowIndex = row;
       switch (row.constructor.name) {
@@ -2047,15 +1976,9 @@ export default defineComponent({
           err: ''
         }
 
-        if (field.validate !== null) transaction.err = field.validate(newVal, oldVal, row, field)
         if (field.mandatory && newVal.value === '')
           transaction.err += (transaction.err ? '\n' : '') + field.mandatory
-        this.setFieldError(transaction.err, row, field)
 
-        if (this.validate !== null) {
-          transaction.rowerr = this.validate(newVal, oldVal.value, row, field)
-          this.setRowError(transaction.rowerr, row)
-        }
 
         this.lazy(transaction, (buf) => {
           this.$emit('update', buf)
@@ -2073,48 +1996,8 @@ export default defineComponent({
         this.localLoading = false
       }, 0)
     },
-    setFieldError(error, row, field) {
-      const id = `id-${row.id}-${field.name}`
-      const selector = this.systable.querySelector('td#' + id)
-      if (error) {
-        this.errmsg[id] = error
-        this.$emit('validate-error', error, row, field)
-        if (selector) selector.classList.add('error')
-      }
-      else
-        if (this.errmsg[id]) {
-          delete this.errmsg[id]
-          this.$emit('validate-error', '', row, field)
-          if (selector) selector.classList.remove('error')
-        }
-    },
-    setRowError(error, row) {
-      const rid = `rid-${row.id}`
-      const selector = this.systable.querySelector('td#' + rid)
-      if (error) {
-        this.rowerr[rid] = error
-        this.$emit('validate-error', error, row)
-        if (selector) selector.classList.add('error')
-      }
-      else
-        if (this.rowerr[rid]) {
-          delete this.rowerr[rid]
-          this.$emit('validate-error', '', row)
-          if (selector) selector.classList.remove('error')
-        }
-    },
-    validateAll() {
-      this.errmsg = {}
-      this.rowerr = {}
-      return Promise.all(this.table.map(row =>
-        Promise.all(Object.keys(row).map(name => this.updateCell(row, name, row[name].value, false))
-        )))
-    },
     /* *** Helper ****************************************************************************************
      */
-    tempKey() {
-      return (new Date().getTime() % 1e8) + '-' + Math.random().toString().slice(2, 7)
-    },
     hashCode(s) {
       return s.split('').reduce((a, b) => {
         return a = ((a << 5) - a) + b.charCodeAt(0) | 0
