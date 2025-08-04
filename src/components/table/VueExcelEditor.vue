@@ -568,7 +568,11 @@ export default defineComponent({
     if (ResizeObserver) new ResizeObserver(this.winResize).observe(this.editor)
     this.addEventListener()
 
-    this.$emit('ready');
+    const api = {
+      exportTable: this.exportTable,
+    }
+
+    this.$emit('ready', api);
   },
   methods: {
     applyFilter(rowsForFilter, columnIndex) {
@@ -1497,28 +1501,29 @@ export default defineComponent({
         console.log('tableData', this.table);
       })
     },
-    async exportTable(options) {
+    async exportTable(options = ref({})) {
       const { exportTable } = useExcelExport();
+
       let tableData = [];
-      if (options.value.filteredValues) {
+      const opts = options.value ?? {};
+
+      if (opts.filteredValues) {
         tableData = this.table;
       } else {
         tableData = this.modelValue;
       }
 
-      if (options.value.selectedRows) {
+      if (opts.selectedRows) {
         const selectedIds = Object.values(this.selected);
-        tableData = tableData.filter((row) => {
-          return selectedIds.includes(row.id);
-        });
+        tableData = tableData.filter((row) => selectedIds.includes(row.id));
       }
 
       exportTable(tableData, this.fields, {
-        delimiter: options.value.delimiter,
-        formattedValues: options.value.formattedValues,
-        fileName: options.value.fileName,
+        delimiter: opts.delimiter ?? ',',
+        formattedValues: opts.formattedValues ?? false,
+        fileName: opts.fileName ?? 'export',
         editor: this.editor,
-      })
+      });
     },
     /* *** Select *******************************************************************************************
      */

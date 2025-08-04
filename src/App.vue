@@ -1,5 +1,6 @@
 <template>
     <div class="table">
+      <button @click="exportTable">Эксопрт</button>
       <ExcelTable
         v-model="tableData"
         :columns="columns"
@@ -8,6 +9,7 @@
         selectable
         free-select
         no-header-edit
+        @onReady="handleTableReady"
       ></ExcelTable>
     </div>
 </template>
@@ -20,6 +22,15 @@ import tableDataMock from './mock/data';
 import {computed, ref} from 'vue';
 
 const tableData = ref(tableDataMock);
+const tableApi = ref<any>(null);
+
+const handleTableReady = (api: any) => {
+  tableApi.value = api;
+};
+
+const exportTable = () => {
+  tableApi.value?.exportTable();
+};
 
 const columns = computed(() => [
   { field: "date_dt", type: "date", label: "Дата" },

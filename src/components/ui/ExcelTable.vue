@@ -59,10 +59,10 @@ const handleCellClick = (position, text, record, currentField, context) => {
   emit('cell-click', position, text, record, currentField, context);
 }
 
-const setProps = () => {
+const setProps = (api: any) => {
   localSelectedWells.value = props.selectedRows || [];
   allSelectedIds.value = localSelectedWells.value;
-  emit('onReady');
+  emit('onReady', api);
 }
 
 watch(() => props.selectedRows, () => setProps())
