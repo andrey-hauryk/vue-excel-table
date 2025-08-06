@@ -1575,7 +1575,7 @@ export default defineComponent({
 
       const currentRowsData = Object.keys(this.selected).map(i => this.table[i]);
 
-      this.$emit('select', [this.getSelectionFieldValue(row)], true, currentRowsData);
+      this.$emit('select', [this.getSelectionFieldValue(row)], true, currentRowsData, this.selected);
     },
     unSelectRecord(rowPos) {
       if (!this.selected[rowPos]) return;

@@ -37,7 +37,7 @@ const localSelectedWells = ref([]);
 
 const emit = defineEmits(['update:modelValue', 'selected', "onReady", 'cell-click']);
 
-const handleSelect = (selectedId: string[], status: boolean, currentRowsData: any): void => {
+const handleSelect = (selectedId: string[], status: boolean, currentRowsData: any, selected: any): void => {
   if (props.singleSelect) {
     allSelectedIds.value = status ? [...selectedId] : [];
   } else {
@@ -52,7 +52,7 @@ const handleSelect = (selectedId: string[], status: boolean, currentRowsData: an
       }
     });
   }
-  emit('selected', [...allSelectedIds.value], currentRowsData, status);
+  emit('selected', [...allSelectedIds.value], currentRowsData, status, selected);
 };
 
 const handleCellClick = (position, text, record, currentField, context) => {
