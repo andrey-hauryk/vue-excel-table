@@ -19,6 +19,9 @@
       auto-fill-width
     >
     </VueExcelColumn>
+    <template #LastRow>
+        <slot name="LastRow"></slot>
+      </template>
   </VueExcelEditor>
 </template>
 

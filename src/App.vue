@@ -4,13 +4,13 @@
       <ExcelTable
         v-model="tableData"
         :columns="columns"
-        height="200px"
-        width="600px"
-        selectable
-        free-select
         no-header-edit
         @onReady="handleTableReady"
-      ></ExcelTable>
+      >
+      <template #LastRow>
+        <div style="color: red">проверка — пришло из App.vue</div>
+      </template>
+    </ExcelTable>
     </div>
 </template>
 

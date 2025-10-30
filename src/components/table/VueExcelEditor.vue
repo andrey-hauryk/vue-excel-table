@@ -111,6 +111,12 @@
               </template>
               <td v-if="vScroller.buttonHeight < vScroller.height" class="last-col"></td>
             </tr>
+            <template v-if="$slots.LastRow">
+              <tr>
+                <td></td>
+                <td><slot name="LastRow"></slot></td>
+              </tr>
+            </template>
           </tbody>
 
           <tfoot>
