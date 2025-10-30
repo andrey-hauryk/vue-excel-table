@@ -33,6 +33,7 @@ const exportTable = () => {
 };
 
 const columns = computed(() => [
+  { field: "groupKey", type: "string", label: "Группа", grouping: 'expand' },
   { field: "date_dt", type: "date", label: "Дата" },
   { 
     field: "prod_horizon", 

@@ -1,5 +1,8 @@
 export default [
     {
+        groupKey: {
+            value: 'A'
+        },
         "id": "97dbac74-45ab-41f6-a440-de08bc5017c9",
         "date_dt": {
             "value": "2024-11-01T00:00:00.000",
@@ -91,6 +94,9 @@ export default [
         }
     },
     {
+        groupKey: {
+            value: 'A'
+        },
         "id": "c2817d1a-091b-4ad4-9c1f-107b37a6154a",
         "date_dt": {
             "value": "2024-10-01T00:00:00.000",
@@ -182,6 +188,9 @@ export default [
         }
     },
     {
+        groupKey: {
+            value: 'A'
+        },
         "id": "82fdf83f-a02f-4ea6-997d-0eee043c55d9",
         "date_dt": {
             "value": "2024-09-01T00:00:00.000",
@@ -273,6 +282,9 @@ export default [
         }
     },
     {
+        groupKey: {
+            value: 'A'
+        },
         "id": "2863d175-162e-4f71-a8ca-249fa0e6ce21",
         "date_dt": {
             "value": "2024-08-01T00:00:00.000",
@@ -364,6 +376,9 @@ export default [
         }
     },
     {
+        groupKey: {
+            value: 'B'
+        },
         "id": "a58bdac9-fb85-48c1-a64c-bb494c8d66bd",
         "date_dt": {
             "value": "2024-07-01T00:00:00.000",
@@ -455,6 +470,9 @@ export default [
         }
     },
     {
+        groupKey: {
+            value: 'B'
+        },
         "id": "432ff888-b217-4281-a040-b495006fb77f",
         "date_dt": {
             "value": "2024-06-01T00:00:00.000",
@@ -546,6 +564,9 @@ export default [
         }
     },
     {
+        groupKey: {
+            value: 'B'
+        },
         "id": "3f016e6c-7d73-44ec-963e-fadf87587dd4",
         "date_dt": {
             "value": "2024-05-01T00:00:00.000",
@@ -637,6 +658,9 @@ export default [
         }
     },
     {
+        groupKey: {
+            value: 'B'
+        },
         "id": "45a593df-74e2-4dfd-adfc-03b1b9ca7eff",
         "date_dt": {
             "value": "2024-04-01T00:00:00.000",
@@ -728,6 +752,9 @@ export default [
         }
     },
     {
+        groupKey: {
+            value: 'B'
+        },
         "id": "17eabb22-b334-46b6-bdc7-5e6267383366",
         "date_dt": {
             "value": "2024-03-01T00:00:00.000",
@@ -819,6 +846,9 @@ export default [
         }
     },
     {
+        groupKey: {
+            value: 'B'
+        },
         "id": "630b1196-5b05-4c94-9f90-38bb30b12760",
         "date_dt": {
             "value": "2024-02-01T00:00:00.000",
@@ -910,6 +940,9 @@ export default [
         }
     },
     {
+         groupKey: {
+            value: 'B'
+        },
         "id": "e937914a-f9ff-490e-bab6-02e39284ec1e",
         "date_dt": {
             "value": "2024-01-01T00:00:00.000",
@@ -1001,6 +1034,9 @@ export default [
         }
     },
     {
+         groupKey: {
+            value: 'C'
+        },
         "id": "132c34aa-4c9f-4175-bc34-f2c415a1f9f2",
         "date_dt": {
             "value": "2023-12-01T00:00:00.000",
@@ -1092,6 +1128,9 @@ export default [
         }
     },
     {
+         groupKey: {
+            value: 'C'
+        },
         "id": "ab1017f2-3222-44b0-a61d-99a48ddbfca3",
         "date_dt": {
             "value": "2023-11-01T00:00:00.000",
@@ -1183,6 +1222,9 @@ export default [
         }
     },
     {
+         groupKey: {
+            value: 'C'
+        },
         "id": "884a9f29-ed32-4ba6-8aa4-cd645826856b",
         "date_dt": {
             "value": "2023-10-01T00:00:00.000",
@@ -1274,6 +1316,9 @@ export default [
         }
     },
     {
+         groupKey: {
+            value: 'C'
+        },
         "id": "a07c3eee-c35c-4482-9556-e9b55049d7d0",
         "date_dt": {
             "value": "2023-09-01T00:00:00.000",
@@ -1365,6 +1410,9 @@ export default [
         }
     },
     {
+        groupKey: {
+            value: 'C'
+        },
         "id": "cd4d8e29-0e1f-429f-b406-9fb0acfe0eb6",
         "date_dt": {
             "value": "2023-08-01T00:00:00.000",
