@@ -23,10 +23,10 @@
       auto-fill-width
     >
     </VueExcelColumn>
-    <template #afterGroup>
+    <template v-if="$slots.afterGroup" #afterGroup>
       <slot name="afterGroup"></slot>
     </template>
-    <template #LastRow>
+    <template v-if="$slots.LastRow"  #LastRow>
       <slot name="LastRow"></slot>
     </template>
   </VueExcelEditor>
