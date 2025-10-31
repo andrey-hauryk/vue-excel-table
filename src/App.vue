@@ -7,8 +7,11 @@
         no-header-edit
         @onReady="handleTableReady"
       >
+      <template #afterGroup>
+        <div style="color: red">Строка после группы</div>
+      </template>
       <template #LastRow>
-        <div style="color: red">проверка — пришло из App.vue</div>
+        <div style="color: red">Последняя строка</div>
       </template>
     </ExcelTable>
     </div>

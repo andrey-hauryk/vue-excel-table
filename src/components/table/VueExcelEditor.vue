@@ -1,131 +1,265 @@
 <template>
-  <div ref="editor" class="vue-excel-editor" :style="{ display: 'inline-block', width }" @paste="handlePaste"
-    @copy="handleCopy">
+  <div
+    ref="editor"
+    class="vue-excel-editor"
+    :style="{ display: 'inline-block', width }"
+    @paste="handlePaste"
+    @copy="handleCopy"
+  >
     <div class="component-content">
-      <noRecordIndicator v-if="!pagingTable.length" :localizedLabel="localizedLabel" :noFooter="noFooter">
+      <noRecordIndicator
+        v-if="!pagingTable.length"
+        :localizedLabel="localizedLabel"
+        :noFooter="noFooter"
+      >
       </noRecordIndicator>
 
-      <div ref="tableContent" class="table-content" :class="{ 'no-footer': noFooter }" @scroll="tableScroll">
-        <table ref="systable" id="systable" style="table-layout: fixed; width: 0" class="systable"
-          :class="{ 'no-number': noNumCol }">
+      <div
+        ref="tableContent"
+        class="table-content"
+        :class="{ 'no-footer': noFooter }"
+        @scroll="tableScroll"
+      >
+        <table
+          ref="systable"
+          id="systable"
+          style="table-layout: fixed; width: 0"
+          class="systable"
+          :class="{ 'no-number': noNumCol }"
+        >
           <colgroup>
-            <col v-if="!noNumCol" style="width:40px">
-            <col v-for="(item, p) in fields" v-show="!item.invisible" :key="p" :style="{ width: item.width }">
-            <col v-if="vScroller.buttonHeight < vScroller.height" style="width:12px">
+            <col v-if="!noNumCol" style="width: 40px" />
+            <col
+              v-for="(item, p) in fields"
+              v-show="!item.invisible"
+              :key="p"
+              :style="{ width: item.width }"
+            />
+            <col
+              v-if="vScroller.buttonHeight < vScroller.height"
+              style="width: 12px"
+            />
           </colgroup>
           <thead class="center-text">
             <tr>
-              <th class="center-text first-col tl-setting" :class="{ hide: noNumCol }" style="top: 0"
-                @mousedown.left="selectAllClick" @contextmenu.prevent="settingClick">
+              <th
+                class="center-text first-col tl-setting"
+                :class="{ hide: noNumCol }"
+                style="top: 0"
+                @mousedown.left="selectAllClick"
+                @contextmenu.prevent="settingClick"
+              >
                 <IconClose v-if="selectedCount > 0" />
                 <IconBars v-else />
               </th>
-              <th v-for="(item, p) in fields" v-show="!item.invisible" :key="`th-${p}`"
-                :colspan="p === fields.length - 1 && vScroller.buttonHeight < vScroller.height ? 2 : 1" :class="{
+              <th
+                v-for="(item, p) in fields"
+                v-show="!item.invisible"
+                :key="`th-${p}`"
+                :colspan="
+                  p === fields.length - 1 &&
+                  vScroller.buttonHeight < vScroller.height
+                    ? 2
+                    : 1
+                "
+                :class="{
                   'sort-asc-sign': sortPos == p && sortDir == 1,
                   'sort-des-sign': sortPos == p && sortDir == -1,
                   'sticky-column': item.sticky,
-                  'no-sorting': item.noSorting
-                }" :style="{ left: item.left }" @mousedown="headerClick($event, p)"
-                @contextmenu.prevent="panelFilterClick(item, p)">
+                  'no-sorting': item.noSorting,
+                }"
+                :style="{ left: item.left }"
+                @mousedown="headerClick($event, p)"
+                @contextmenu.prevent="panelFilterClick(item, p)"
+              >
                 <div :class="{ 'filter-sign': columnFilter[p] }">
-                  <span :class="{ 'table-col-header': !noHeaderEdit }" v-html="headerLabel(item.label, item)"></span>
+                  <span
+                    :class="{ 'table-col-header': !noHeaderEdit }"
+                    v-html="headerLabel(item.label, item)"
+                  ></span>
                 </div>
-                <div class="col-sep" @mousedown="colSepMouseDown" @mouseover="colSepMouseOver"
-                  @mouseout="colSepMouseOut">
-                </div>
+                <div
+                  class="col-sep"
+                  @mousedown="colSepMouseDown"
+                  @mouseover="colSepMouseOver"
+                  @mouseout="colSepMouseOut"
+                ></div>
               </th>
             </tr>
             <tr :class="{ hide: !filterRow }">
-              <td class="center-text first-col tl-filter" :class="{ hide: noNumCol }"
-                style="vertical-align: middle; padding: 0" :style="{ top: calCellTop2 + 'px' }"
-                @click="columnFilter = {}">
+              <td
+                class="center-text first-col tl-filter"
+                :class="{ hide: noNumCol }"
+                style="vertical-align: middle; padding: 0"
+                :style="{ top: calCellTop2 + 'px' }"
+                @click="columnFilter = {}"
+              >
                 <IconEraser v-if="Object.keys(columnFilter).length > 0" />
               </td>
-              <vue-excel-filter v-for="(item, p) in fields" v-show="!item.invisible" :ref="`filter-${item.name}`"
-                :key="`th2-${p}`" v-model="columnFilter[p]" :class="{ 'sticky-column': item.sticky }"
-                :style="{ left: item.left }" class="column-filter" />
+              <vue-excel-filter
+                v-for="(item, p) in fields"
+                v-show="!item.invisible"
+                :ref="`filter-${item.name}`"
+                :key="`th2-${p}`"
+                v-model="columnFilter[p]"
+                :class="{ 'sticky-column': item.sticky }"
+                :style="{ left: item.left }"
+                class="column-filter"
+              />
             </tr>
           </thead>
 
           <tbody @mousedown="mouseDown" @mouseup="mouseUp">
-            <tr v-if="localizedLabel.noRecordIndicator && pagingTable.length == 0">
-              <td colspan="100%" style="height:40px; vertical-align: middle; text-align: center"></td>
+            <tr
+              v-if="localizedLabel.noRecordIndicator && pagingTable.length == 0"
+            >
+              <td
+                colspan="100%"
+                style="height: 40px; vertical-align: middle; text-align: center"
+              ></td>
             </tr>
-            <tr v-else v-for="(record, rowPos) in pagingTable" :key="rowPos"
-              :class="{ select: typeof selected[pageTop + rowPos] !== 'undefined' }" :style="rowStyle(record)">
-
-              <td v-if="selectable" class="center-text first-col-selectable" :id="`rid-${record.id}`" :class="{
-                hide: noNumCol,
-              }" :pos="rowPos">
-                <input class="table__checkbox" type="checkbox" :checked="selected[rowPos] === record.id"
-                  :class="{ 'table__checkbox--disabled': disableSelection }" @click="rowLabelClick" />
-              </td>
-
-              <td v-else class="center-text first-col" :id="`rid-${record.id}`" :class="{
-                hide: noNumCol,
-              }" :pos="rowPos" @mouseover="numcolMouseOver" @click="rowLabelClick">
-                <span v-html="recordLabel(pageTop + rowPos + 1, record)"></span>
-              </td>
-
-              <template v-for="(item, p) in fields">
-                <td
-                v-if="getRowSpan(rowPos, item.name) !== 0 && !item.invisible"
-                :rowspan="getRowSpan(rowPos, item.name)"
-                :id="`id-${record.id}-${item.name}`"
-                :cell-RC="`${rowPos}-${item.name}`"
+            <template
+              v-else
+              v-for="(record, rowPos) in pagingTable"
+              :key="rowPos"
+            >
+              <tr
                 :class="{
-                  'cell-selected': record[item.name]?.isSelected,
-                  readonly: item.readonly,
-                  link: item.link && item.isLink && item.isLink(record),
-                  select: item.options,
-                  grouping: item.grouping,
-                  expand: item.grouping && ungroup[item.name + record[item.name]?.value],
-                  'sticky-column': item.sticky
+                  select: typeof selected[pageTop + rowPos] !== 'undefined',
                 }"
-                :key="p"
-                :style="Object.assign(cellStyle(record, item), renderColumnCellStyle(item, record))"
-                @mouseover="cellMouseOver"
-                @mousemove="cellMouseMove"
+                :style="rowStyle(record)"
               >
-                <!-- if slot exist render slot -->
-                <template v-if="$slots[`cell-${item.name}`]">
-                  <slot :name="`cell-${item.name}`" :record="record" />
-                </template>
+                <td
+                  v-if="selectable"
+                  class="center-text first-col-selectable"
+                  :id="`rid-${record.id}`"
+                  :class="{
+                    hide: noNumCol,
+                  }"
+                  :pos="rowPos"
+                >
+                  <input
+                    class="table__checkbox"
+                    type="checkbox"
+                    :checked="selected[rowPos] === record.id"
+                    :class="{ 'table__checkbox--disabled': disableSelection }"
+                    @click="rowLabelClick"
+                  />
+                </td>
 
-                <!-- if render function exist render render fn -->
-                <template v-else-if="typeof item.render === 'function'">
-                  <component :is="item.render(record)" />
-                </template>
+                <td
+                  v-else
+                  class="center-text first-col"
+                  :id="`rid-${record.id}`"
+                  :class="{
+                    hide: noNumCol,
+                  }"
+                  :pos="rowPos"
+                  @mouseover="numcolMouseOver"
+                  @click="rowLabelClick"
+                >
+                  <span
+                    v-html="recordLabel(pageTop + rowPos + 1, record)"
+                  ></span>
+                </td>
 
-                <!-- default text -->
-                <template v-else>
-                  <cell-tooltip v-if="record[item.name]?.anomaly" :content="record[item.name].anomaly">
-                    {{ item.toText(record[item.name].value) }}
-                  </cell-tooltip>
-                  <template v-else>
-                    {{ item.toText(record[item.name]?.value, record) }}
-                  </template>
+                <template v-for="(item, p) in fields">
+                  <td
+                    v-if="
+                      getRowSpan(rowPos, item.name) !== 0 && !item.invisible
+                    "
+                    :rowspan="getRowSpan(rowPos, item.name)"
+                    :id="`id-${record.id}-${item.name}`"
+                    :cell-RC="`${rowPos}-${item.name}`"
+                    :class="{
+                      'cell-selected': record[item.name]?.isSelected,
+                      readonly: item.readonly,
+                      link: item.link && item.isLink && item.isLink(record),
+                      select: item.options,
+                      grouping: item.grouping,
+                      expand:
+                        item.grouping &&
+                        ungroup[item.name + record[item.name]?.value],
+                      'sticky-column': item.sticky,
+                    }"
+                    :key="p"
+                    :style="
+                      Object.assign(
+                        cellStyle(record, item),
+                        renderColumnCellStyle(item, record)
+                      )
+                    "
+                    @mouseover="cellMouseOver"
+                    @mousemove="cellMouseMove"
+                  >
+                    <!-- if slot exist render slot -->
+                    <template v-if="$slots[`cell-${item.name}`]">
+                      <slot :name="`cell-${item.name}`" :record="record" />
+                    </template>
+
+                    <!-- if render function exist render render fn -->
+                    <template v-else-if="typeof item.render === 'function'">
+                      <component :is="item.render(record)" />
+                    </template>
+
+                    <!-- default text -->
+                    <template v-else>
+                      <cell-tooltip
+                        v-if="record[item.name]?.anomaly"
+                        :content="record[item.name].anomaly"
+                      >
+                        {{ item.toText(record[item.name].value) }}
+                      </cell-tooltip>
+                      <template v-else>
+                        {{ item.toText(record[item.name]?.value, record) }}
+                      </template>
+                    </template>
+                  </td>
                 </template>
-              </td>
+                <td
+                  v-if="vScroller.buttonHeight < vScroller.height"
+                  class="last-col"
+                ></td>
+              </tr>
+              <template v-if="$slots.afterGroup">
+                <tr v-if="isGroupEnd(rowPos)">
+                  <td class="center-text first-col"></td>
+                  <td :colspan="fields.length">
+                    <slot name="afterGroup"></slot>
+                  </td>
+                </tr>
               </template>
-              <td v-if="vScroller.buttonHeight < vScroller.height" class="last-col"></td>
-            </tr>
+            </template>
             <template v-if="$slots.LastRow">
               <tr>
                 <td class="center-text first-col"></td>
-                <td :colspan="fields.length"><slot name="LastRow"></slot></td>
+                <td :colspan="fields.length"><slot name="LastRow">{{  }}</slot></td>
               </tr>
             </template>
           </tbody>
 
           <tfoot>
             <tr v-if="pagingTable.length && totalRow">
-              <td class="row-summary first-col" :class="{ 'hide': noNumCol }"></td>
-              <td v-for="(field, p) in fields" v-show="!field.invisible" class="row-summary"
-                :colspan="p === fields.length - 1 && vScroller.buttonHeight < vScroller.height ? 2 : 1" :class="{
+              <td
+                class="row-summary first-col"
+                :class="{ hide: noNumCol }"
+              ></td>
+              <td
+                v-for="(field, p) in fields"
+                v-show="!field.invisible"
+                class="row-summary"
+                :colspan="
+                  p === fields.length - 1 &&
+                  vScroller.buttonHeight < vScroller.height
+                    ? 2
+                    : 1
+                "
+                :class="{
                   'sticky-column': field.sticky,
-                }" :key="`f${p}`" :style="renderColumnCellStyle(field)">
+                }"
+                :key="`f${p}`"
+                :style="renderColumnCellStyle(field)"
+              >
                 {{ field.toText(totalRow[field.name]?.value) }}
               </td>
             </tr>
@@ -134,12 +268,31 @@
         </table>
 
         <!-- Editor Square -->
-        <div v-show="focused" ref="inputSquare" class="input-square" @mousedown="inputSquareClick" @mouseup="mouseUp">
+        <div
+          v-show="focused"
+          ref="inputSquare"
+          class="input-square"
+          @mousedown="inputSquareClick"
+          @mouseup="mouseUp"
+        >
           <div style="position: relative; height: 100%; padding: 2px 2px 1px">
             <div class="rb-square" />
-            <textarea ref="inputBox" id="inputBox" name="inputBox" class="input-box" :style="{ opacity: inputBoxShow }"
-              @blur="inputBoxBlur" @mousemove="inputBoxMouseMove" @mousedown="inputBoxMouseDown" @mouseup="mouseUp" trim
-              autocomplete="off" autocorrect="off" autocompitaize="off" :spellcheck="spellcheck"></textarea>
+            <textarea
+              ref="inputBox"
+              id="inputBox"
+              name="inputBox"
+              class="input-box"
+              :style="{ opacity: inputBoxShow }"
+              @blur="inputBoxBlur"
+              @mousemove="inputBoxMouseMove"
+              @mousedown="inputBoxMouseDown"
+              @mouseup="mouseUp"
+              trim
+              autocomplete="off"
+              autocorrect="off"
+              autocompitaize="off"
+              :spellcheck="spellcheck"
+            ></textarea>
           </div>
         </div>
 
@@ -148,86 +301,137 @@
       </div>
 
       <!-- Vertical Scroll Bar -->
-      <div v-show="vScroller.buttonHeight < vScroller.height" ref="vScroll" class="v-scroll"
-        :style="{ top: `${vScroller.top}px`, height: `${vScroller.height}px` }" @mousedown="vsMouseDown">
-        <div ref="vScrollButton" class="v-scroll-button"
-          :style="{ marginTop: `${vScroller.buttonTop}px`, height: `${vScroller.buttonHeight}px` }"
-          @mousedown="vsbMouseDown">
-          <div v-show="vScroller.runner" class="runner" v-html="vScroller.runner" />
+      <div
+        v-show="vScroller.buttonHeight < vScroller.height"
+        ref="vScroll"
+        class="v-scroll"
+        :style="{ top: `${vScroller.top}px`, height: `${vScroller.height}px` }"
+        @mousedown="vsMouseDown"
+      >
+        <div
+          ref="vScrollButton"
+          class="v-scroll-button"
+          :style="{
+            marginTop: `${vScroller.buttonTop}px`,
+            height: `${vScroller.buttonHeight}px`,
+          }"
+          @mousedown="vsbMouseDown"
+        >
+          <div
+            v-show="vScroller.runner"
+            class="runner"
+            v-html="vScroller.runner"
+          />
         </div>
       </div>
 
       <!-- Footer -->
-      <div ref="footer" class="footer center-text" :class="{ hide: noFooter }" style="position:relative"
-        @mousedown="ftMouseDown">
+      <div
+        ref="footer"
+        class="footer center-text"
+        :class="{ hide: noFooter }"
+        style="position: relative"
+        @mousedown="ftMouseDown"
+      >
         <div ref="hScroll" class="h-scroll" @mousedown="sbMouseDown" />
-        <span class="left-block" :class="{ 'hide': noNumCol }"></span>
+        <span class="left-block" :class="{ hide: noNumCol }"></span>
         <span class="footer-right">
           <a :class="{ disabled: selectedCount <= 1 }">
             <span>{{ localizedLabel.footerRight.selected }}</span>
-            <span :style="{ color: selectedCount > 0 ? 'red' : 'inherit' }">{{ selectedCount }}</span>
-            <span>{{ ' | ' }}</span>
-          </a>
-          <a :class="{ disabled: columnFilterString === '{}' }" @mousedown="toggleFilterView">
-            <span>{{ localizedLabel.footerRight.filtered }}</span>
-            <span :style="{ color: table.length !== filteredValue.length ? 'red' : 'inherit' }">{{ table.length
+            <span :style="{ color: selectedCount > 0 ? 'red' : 'inherit' }">{{
+              selectedCount
             }}</span>
+            <span>{{ " | " }}</span>
+          </a>
+          <a
+            :class="{ disabled: columnFilterString === '{}' }"
+            @mousedown="toggleFilterView"
+          >
+            <span>{{ localizedLabel.footerRight.filtered }}</span>
+            <span
+              :style="{
+                color:
+                  table.length !== filteredValue.length ? 'red' : 'inherit',
+              }"
+              >{{ table.length }}</span
+            >
           </a>
         </span>
       </div>
-      <panel-filter ref="panelFilter" v-model="columnFilter[filterColumnPosition]" :localized-label="localizedLabel"
-        :show="showPanelFilter" :filterColumnPosition="filterColumnPosition" :filterColumnsRows="filterColumnsRows"
-        :selectedColumnRowsForFilter="selectedColumnRowsForFilter" :columnType="fields[filterColumnPosition]?.type"
-        @close="showPanelFilter = false" @sort="sort" @applyFilter="applyFilter" @removeFilter="removeFilter" />
-      <panel-setting :show="showPanelSetting" v-model="fields" :localized-label="localizedLabel"
-        @close="showPanelSetting = false" @import="importTable" @export="exportTable" @resetColumn="resetColumn"
-        @calStickyLeft="calStickyLeft" />
-      <panel-find :show="showPanelFind" :localized-label="localizedLabel" @doFind="doFind"
-        @close="showPanelFind = false" />
+      <panel-filter
+        ref="panelFilter"
+        v-model="columnFilter[filterColumnPosition]"
+        :localized-label="localizedLabel"
+        :show="showPanelFilter"
+        :filterColumnPosition="filterColumnPosition"
+        :filterColumnsRows="filterColumnsRows"
+        :selectedColumnRowsForFilter="selectedColumnRowsForFilter"
+        :columnType="fields[filterColumnPosition]?.type"
+        @close="showPanelFilter = false"
+        @sort="sort"
+        @applyFilter="applyFilter"
+        @removeFilter="removeFilter"
+      />
+      <panel-setting
+        :show="showPanelSetting"
+        v-model="fields"
+        :localized-label="localizedLabel"
+        @close="showPanelSetting = false"
+        @import="importTable"
+        @export="exportTable"
+        @resetColumn="resetColumn"
+        @calStickyLeft="calStickyLeft"
+      />
+      <panel-find
+        :show="showPanelFind"
+        :localized-label="localizedLabel"
+        @doFind="doFind"
+        @close="showPanelFind = false"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { getCurrentInstance, defineComponent } from 'vue'
-import VueExcelFilter from './components/VueExcelFilter.vue'
-import PanelFilter from './components/filter/PanelFilter.vue'
-import PanelSetting from './components/settings/PanelSetting.vue'
-import PanelFind from './components/find/PanelFind.vue'
+import { getCurrentInstance, defineComponent } from "vue";
+import VueExcelFilter from "./components/VueExcelFilter.vue";
+import PanelFilter from "./components/filter/PanelFilter.vue";
+import PanelSetting from "./components/settings/PanelSetting.vue";
+import PanelFind from "./components/find/PanelFind.vue";
 import CellTooltip from "./components/tooltip/CellTooltip.vue";
-import TableLoading from './components/loading/TableLoading.vue';
-import { cloneDeep, debounce } from 'lodash';
-import noRecordIndicator from './components/NoRecordIndicator.vue';
-import IconClose from './components/svg/IconClose.vue';
-import IconBars from './components/svg/IconBars.vue';
-import IconEraser from './components/svg/IconEraser.vue';
+import TableLoading from "./components/loading/TableLoading.vue";
+import { cloneDeep, debounce } from "lodash";
+import noRecordIndicator from "./components/NoRecordIndicator.vue";
+import IconClose from "./components/svg/IconClose.vue";
+import IconBars from "./components/svg/IconBars.vue";
+import IconEraser from "./components/svg/IconEraser.vue";
 
-import { useExcelExport } from '../table/composables/useExportTable'
-import { useExcelImport } from '../table/composables/useImportTable';
+import { useExcelExport } from "../table/composables/useExportTable";
+import { useExcelImport } from "../table/composables/useImportTable";
 
-import {ref} from 'vue';
+import { ref } from "vue";
 
 export default defineComponent({
   setup(props) {
-    const test = ref('Тестирую');
+    const test = ref("Тестирую");
 
     console.log(props);
 
     return {
       test,
-    }
+    };
   },
   components: {
-    'vue-excel-filter': VueExcelFilter,
-    'panel-filter': PanelFilter,
-    'panel-setting': PanelSetting,
-    'panel-find': PanelFind,
+    "vue-excel-filter": VueExcelFilter,
+    "panel-filter": PanelFilter,
+    "panel-setting": PanelSetting,
+    "panel-find": PanelFind,
     "cell-tooltip": CellTooltip,
     "excel-loading": TableLoading,
-    'noRecordIndicator': noRecordIndicator,
-    'IconClose': IconClose,
-    'IconBars': IconBars,
-    'IconEraser': IconEraser,
+    noRecordIndicator: noRecordIndicator,
+    IconClose: IconClose,
+    IconBars: IconBars,
+    IconEraser: IconEraser,
   },
   props: {
     disablePanelSetting: { type: Boolean, default: false },
@@ -257,25 +461,45 @@ export default defineComponent({
         return [];
       },
     },
-    modelValue: { type: Array, default() { return [] } },
-    rowStyle: { type: Function, default() { return {} } },
-    cellStyle: { type: Function, default() { return {} } },
+    modelValue: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+    rowStyle: {
+      type: Function,
+      default() {
+        return {};
+      },
+    },
+    cellStyle: {
+      type: Function,
+      default() {
+        return {};
+      },
+    },
     headerLabel: {
       type: Function,
       default(label) {
-        return label
-      }
+        return label;
+      },
     },
     recordLabel: {
       type: Function,
       default(pos) {
-        return pos
-      }
+        return pos;
+      },
     },
-    height: { type: String, default: '' },
-    width: { type: String, default: '100%' },
+    height: { type: String, default: "" },
+    width: { type: String, default: "100%" },
     wheelSensitivity: { type: Number, default: 30 },
-    readonlyStyle: { type: Object, default() { return {} } },
+    readonlyStyle: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
     register: { type: Function, default: null },
     addColumn: { type: Function, default: null },
     localizedLabel: {
@@ -317,35 +541,35 @@ export default defineComponent({
           invalidInputValue: "Некорректное значение ввода",
           missingKeyColumn: "Отсутсвует ключевая колонка",
           noRecordIndicator: "Нет записей",
-          deleteFilter: 'Удалить фильтр',
-          findOnPage: 'Найти в таблице',
-          selectAll: 'Выделить все',
-          selectAllSearchResults: 'Выделить все(результат поиска)',
-          basicFilter: 'Основной фильтр',
-          filterOrText: 'Или',
-          filterAndText: 'И',
-          enterValue: 'Введите значение...',
-          select: 'Выбрать',
-          settings: 'Настройки',
-          moveFileOrSelect: 'Перетащите файл сюда или выберите файл',
-          importFile: 'Импортировать',
-          chooseFile: 'Выберите файл',
-          delimiter: 'Символ разделения',
-          fileName: 'Имя файла',
+          deleteFilter: "Удалить фильтр",
+          findOnPage: "Найти в таблице",
+          selectAll: "Выделить все",
+          selectAllSearchResults: "Выделить все(результат поиска)",
+          basicFilter: "Основной фильтр",
+          filterOrText: "Или",
+          filterAndText: "И",
+          enterValue: "Введите значение...",
+          select: "Выбрать",
+          settings: "Настройки",
+          moveFileOrSelect: "Перетащите файл сюда или выберите файл",
+          importFile: "Импортировать",
+          chooseFile: "Выберите файл",
+          delimiter: "Символ разделения",
+          fileName: "Имя файла",
         };
       },
     },
     selectedRows: {
       type: Array,
       default() {
-        return []
-      }
+        return [];
+      },
     },
     selectionField: {
       type: String,
       default() {
-        return 'id'
-      }
+        return "id";
+      },
     },
     sortingByDefault: {
       type: Object,
@@ -353,21 +577,21 @@ export default defineComponent({
         return {
           sortPos: 0,
           sortDir: 0,
-        }
-      }
+        };
+      },
     },
     totalRow: {
       type: Array,
       default() {
-        return null
-      }
+        return null;
+      },
     },
   },
   data() {
-    const pageSize = 999999
+    const pageSize = 999999;
     const dataset = {
       rowSpans: {},
-      version: '1.3',
+      version: "1.3",
       tableContent: null,
       systable: null,
       colgroupTr: null,
@@ -389,12 +613,12 @@ export default defineComponent({
       inputBox: null,
       inputBoxShow: 0,
       inputSquare: null,
-      colHash: '',
+      colHash: "",
       fields: [],
       focused: false,
       inputBoxChanged: false,
       columnFilter: {},
-      inputFind: '',
+      inputFind: "",
       calCellTop2: 29,
       sortPos: 0,
       sortDir: 0,
@@ -426,77 +650,83 @@ export default defineComponent({
       maxHistorySteps: 50,
       clearVScrollFocus: () => {},
       clearHScrollFocus: () => {},
-    }
-    return dataset
+    };
+    return dataset;
   },
   computed: {
     numColWidth() {
-      if (this.noNumCol) return 0
-      else return 25
+      if (this.noNumCol) return 0;
+      else return 25;
     },
     selectedCount: {
       get() {
-        return this._selectedCount
+        return this._selectedCount;
       },
       set(value) {
-        this._selectedCount = value
-        this.$emit('update:selectedCount', value)
-      }
+        this._selectedCount = value;
+        this.$emit("update:selectedCount", value);
+      },
     },
     columnFilterString() {
       Object.keys(this.columnFilter).forEach((key) => {
-        if (this.columnFilter[key].trim() === '') delete this.columnFilter[key]
-      })
-      return JSON.stringify(this.columnFilter)
+        if (this.columnFilter[key].trim() === "") delete this.columnFilter[key];
+      });
+      return JSON.stringify(this.columnFilter);
     },
     pagingTable() {
-      return this.table.slice(this.pageTop, this.pageTop + this.pageSize)
+      return this.table.slice(this.pageTop, this.pageTop + this.pageSize);
     },
     pageBottom() {
-      if (this.filteredValue.length === 0) return 0
-      else return this.pageTop + this.pageSize > this.table.length ? this.table.length : this.pageTop + this.pageSize
+      if (this.filteredValue.length === 0) return 0;
+      else
+        return this.pageTop + this.pageSize > this.table.length
+          ? this.table.length
+          : this.pageTop + this.pageSize;
     },
     setting: {
       get() {
-        return null
+        return null;
       },
       set(setter) {
         if (setter.fields) {
-          if (setter.fields.length !== this.fields.length) return
-          let valid = true
-          const newFields = setter.fields.map(local => {
-            const current = this.fields.find(f => f.name === local.name)
-            if (!current) valid = false
+          if (setter.fields.length !== this.fields.length) return;
+          let valid = true;
+          const newFields = setter.fields.map((local) => {
+            const current = this.fields.find((f) => f.name === local.name);
+            if (!current) valid = false;
             else {
-              if (typeof local.invisible !== 'undefined') current.invisible = local.invisible
-              if (typeof local.width !== 'undefined') current.width = local.width
-              if (typeof local.label !== 'undefined') current.label = local.label
+              if (typeof local.invisible !== "undefined")
+                current.invisible = local.invisible;
+              if (typeof local.width !== "undefined")
+                current.width = local.width;
+              if (typeof local.label !== "undefined")
+                current.label = local.label;
             }
-            return current
-          })
+            return current;
+          });
           if (valid) {
-            this.fields = newFields
-            const instance = getCurrentInstance()
-            instance?.proxy?.$forceUpdate()
+            this.fields = newFields;
+            const instance = getCurrentInstance();
+            instance?.proxy?.$forceUpdate();
           }
         }
-      }
+      },
     },
   },
   watch: {
     modelValue() {
       this.lazy(() => {
-        this.refresh()
-      })
+        this.refresh();
+      });
     },
     fields: {
       handler() {
         this.lazy(() => {
-          const setting = this.getSetting()
-          this.$emit('setting', setting)
-        })
+          const setting = this.getSetting();
+          this.$emit("setting", setting);
+        });
       },
-      deep: true
+      deep: true,
     },
     loading(newVal) {
       this.localLoading = newVal;
@@ -509,8 +739,10 @@ export default defineComponent({
         this.clearSelection();
         this.selected = {};
         newValue.forEach((field) => {
-          const rowPos = this.modelValue.findIndex((el) =>
-            el[this.selectionField] == field || el[this.selectionField]?.value == field
+          const rowPos = this.modelValue.findIndex(
+            (el) =>
+              el[this.selectionField] == field ||
+              el[this.selectionField]?.value == field
           );
 
           if (rowPos >= 0) {
@@ -526,64 +758,63 @@ export default defineComponent({
         this.sortPos = defaultSort?.colPos || 0;
         this.sortDir = defaultSort?.dir || 0;
         this.sort(this.sortDir, this.sortPos);
-      }
+      },
     },
   },
   activated() {
-    this.addEventListener()
+    this.addEventListener();
   },
   deactivated() {
-    this.removeEventListener()
+    this.removeEventListener();
   },
   beforeUnmount() {
-    this.removeEventListener()
+    this.removeEventListener();
   },
   mounted() {
-    this.editor = this.$refs.editor
-    this.tableContent = this.$refs.tableContent
-    this.systable = this.$refs.systable
-    this.colgroupTr = this.systable.children[0]
-    this.labelTr = this.systable.children[1].children[0]
-    this.recordBody = this.systable.children[2]
-    this.footer = this.$refs.footer
-    this.inputSquare = this.$refs.inputSquare
-    this.inputBox = this.$refs.inputBox
+    this.editor = this.$refs.editor;
+    this.tableContent = this.$refs.tableContent;
+    this.systable = this.$refs.systable;
+    this.colgroupTr = this.systable.children[0];
+    this.labelTr = this.systable.children[1].children[0];
+    this.recordBody = this.systable.children[2];
+    this.footer = this.$refs.footer;
+    this.inputSquare = this.$refs.inputSquare;
+    this.inputBox = this.$refs.inputBox;
 
     this.baseScrollTopOffset = this.calcStaticScrollOffset();
 
     this.clearVScrollFocus = debounce(() => {
-      this.$refs.vScrollButton?.classList.remove('focus')
-    }, 1000)
+      this.$refs.vScrollButton?.classList.remove("focus");
+    }, 1000);
 
     this.clearHScrollFocus = debounce(() => {
-      this.$refs.hScroll?.classList.remove('focus')
-    }, 1000)
+      this.$refs.hScroll?.classList.remove("focus");
+    }, 1000);
 
-    if (this.height)
-      this.systable.parentNode.style.height = this.height
+    if (this.height) this.systable.parentNode.style.height = this.height;
 
-    this.reset()
+    this.reset();
     this.lazy(() => {
-      this.labelTr.children[0].style.height = this.labelTr.offsetHeight + 'px'
-      this.calCellTop2 = this.labelTr.offsetHeight
-      this.refreshPageSize()
-      this.tableContent.scrollTo(0, this.tableContent.scrollTop)
-      this.calStickyLeft()
-    }, 200)
+      this.labelTr.children[0].style.height = this.labelTr.offsetHeight + "px";
+      this.calCellTop2 = this.labelTr.offsetHeight;
+      this.refreshPageSize();
+      this.tableContent.scrollTo(0, this.tableContent.scrollTop);
+      this.calStickyLeft();
+    }, 200);
 
-    if (ResizeObserver) new ResizeObserver(this.winResize).observe(this.editor)
-    this.addEventListener()
+    if (ResizeObserver) new ResizeObserver(this.winResize).observe(this.editor);
+    this.addEventListener();
 
     const api = {
       exportTable: this.exportTable,
-    }
+    };
 
-    this.$emit('ready', api);
+    this.$emit("ready", api);
   },
   methods: {
     applyFilter(rowsForFilter, columnIndex) {
       this.selectedColumnRowsForFilter[columnIndex] = rowsForFilter;
-      this.columnFilter[columnIndex] = 'tempValue';
+      this.columnFilter[columnIndex] = "tempValue";
       this.refresh();
     },
     removeFilter(columnIndex) {
@@ -601,7 +832,10 @@ export default defineComponent({
         selectedColIndex: this.selectedColIndex,
       };
 
-      if (lastState && JSON.stringify(lastState) === JSON.stringify(currentState)) {
+      if (
+        lastState &&
+        JSON.stringify(lastState) === JSON.stringify(currentState)
+      ) {
         return;
       }
 
@@ -654,57 +888,57 @@ export default defineComponent({
       });
     },
     addEventListener() {
-      window.addEventListener('resize', this.winResize)
-      window.addEventListener('keydown', this.winKeydown)
-      window.addEventListener('keyup', this.winKeyup)
-      window.addEventListener('wheel', this.mousewheel, { passive: false })
+      window.addEventListener("resize", this.winResize);
+      window.addEventListener("keydown", this.winKeydown);
+      window.addEventListener("keyup", this.winKeyup);
+      window.addEventListener("wheel", this.mousewheel, { passive: false });
     },
     removeEventListener() {
-      window.removeEventListener('resize', this.winResize)
-      window.removeEventListener('keydown', this.winKeydown)
-      window.removeEventListener('keyup', this.winKeyup)
-      window.removeEventListener('wheel', this.mousewheel)
+      window.removeEventListener("resize", this.winResize);
+      window.removeEventListener("keydown", this.winKeydown);
+      window.removeEventListener("keyup", this.winKeyup);
+      window.removeEventListener("wheel", this.mousewheel);
     },
     reset() {
-      this.redo = []
-      this.showFilteredOnly = true
-      this.columnFilter = {}
-      this.sortPos = 0
-      this.sortDir = 0
-      this.inputFind = ''
-      this.pageTop = 0
-      this.selected = {}
-      this.selectedCount = 0
-      this.prevSelect = -1
-      this.localLoading = false
-      this.rowIndex = {}
-      this.refresh()
+      this.redo = [];
+      this.showFilteredOnly = true;
+      this.columnFilter = {};
+      this.sortPos = 0;
+      this.sortDir = 0;
+      this.inputFind = "";
+      this.pageTop = 0;
+      this.selected = {};
+      this.selectedCount = 0;
+      this.prevSelect = -1;
+      this.localLoading = false;
+      this.rowIndex = {};
+      this.refresh();
     },
     toggleFilterView(e) {
-      if (e) e.stopPropagation()
-      this.showFilteredOnly = !this.showFilteredOnly
-      return this.refresh()
+      if (e) e.stopPropagation();
+      this.showFilteredOnly = !this.showFilteredOnly;
+      return this.refresh();
     },
     resetColumn() {
-      this.fields = []
-      this.tableContent.scrollTo(0, this.tableContent.scrollTop)
-      this.calStickyLeft()
+      this.fields = [];
+      this.tableContent.scrollTo(0, this.tableContent.scrollTop);
+      this.calStickyLeft();
     },
     registerColumn(field) {
-      let pos = this.fields.findIndex(item => item.pos > field.pos)
-      if (pos === -1) pos = this.fields.length
-      this.fields.splice(pos, 0, field)
-      if (this.register) this.register(field, pos)
-      if (field.register) field.register(field, pos)
-      this.colHash = this.hashCode(this.version + JSON.stringify(this.fields))
+      let pos = this.fields.findIndex((item) => item.pos > field.pos);
+      if (pos === -1) pos = this.fields.length;
+      this.fields.splice(pos, 0, field);
+      if (this.register) this.register(field, pos);
+      if (field.register) field.register(field, pos);
+      this.colHash = this.hashCode(this.version + JSON.stringify(this.fields));
     },
     insertColumn(pos) {
-      const colname = 'COL-' + Math.random().toString().slice(2, 6)
+      const colname = "COL-" + Math.random().toString().slice(2, 6);
       let colDef = {
         name: colname,
         label: colname,
-        type: 'string',
-        width: '100px',
+        type: "string",
+        width: "100px",
 
         change: null,
         link: null,
@@ -715,36 +949,43 @@ export default defineComponent({
         mandatory: false,
         lengthLimit: 0,
 
-        initStyle: 'left',
+        initStyle: "left",
         invisible: false,
         readonly: this.readonly,
         pos: 0,
         options: null,
-        toValue: t => t,
-        toText: t => t,
-        register: null
-      }
-      if (this.addColumn) colDef = this.addColumn(colDef)
-      this.newColumn(colDef, pos)
+        toValue: (t) => t,
+        toText: (t) => t,
+        register: null,
+      };
+      if (this.addColumn) colDef = this.addColumn(colDef);
+      this.newColumn(colDef, pos);
     },
     newColumn(field, pos) {
-      this.fields.splice(pos, 0, field)
+      this.fields.splice(pos, 0, field);
       if (this.register) this.register(field, pos);
       if (field.register) field.register(field, pos);
-      this.colHash = this.hashCode(this.version + JSON.stringify(this.fields))
+      this.colHash = this.hashCode(this.version + JSON.stringify(this.fields));
     },
     autoRegisterAllColumns(rows) {
-      const widths = rows.slice(0, 25)
-        .reduce((t, v) => Object.keys(v).map((s, i) => !t || v[s].length > t[i] ? v[s].length : t[i]), 0)
-        .map(v => Math.min(Math.max(v * 8.2, 55), 250))
+      const widths = rows
+        .slice(0, 25)
+        .reduce(
+          (t, v) =>
+            Object.keys(v).map((s, i) =>
+              !t || v[s].length > t[i] ? v[s].length : t[i]
+            ),
+          0
+        )
+        .map((v) => Math.min(Math.max(v * 8.2, 55), 250));
 
       Object.keys(rows[0]).forEach((col, i) => {
-        if (col === 'id') return
+        if (col === "id") return;
         this.registerColumn({
           name: col,
           label: col,
-          type: widths[i] ? 'string' : 'number',
-          width: (widths[i] ? widths[i] : 75) + 'px',
+          type: widths[i] ? "string" : "number",
+          width: (widths[i] ? widths[i] : 75) + "px",
           change: null,
           link: null,
           keyField: false,
@@ -753,344 +994,406 @@ export default defineComponent({
           allowKeys: null,
           mandatory: false,
           lengthLimit: 0,
-          initStyle: { textAlign: widths[i] ? 'left' : 'right' },
+          initStyle: { textAlign: widths[i] ? "left" : "right" },
           invisible: false,
           readonly: this.readonly,
           pos: 0,
           options: null,
-          toValue: t => t,
-          toText: t => t,
+          toValue: (t) => t,
+          toText: (t) => t,
           valueFormatter: null,
-          register: null
-        })
-      })
+          register: null,
+        });
+      });
     },
     refresh() {
-      this.prevSelect = -1
-      if (this.fields.length === 0 && this.modelValue.length && Object.keys(this.modelValue[0])) {
-        this.autoRegisterAllColumns(this.modelValue)
+      this.prevSelect = -1;
+      if (
+        this.fields.length === 0 &&
+        this.modelValue.length &&
+        Object.keys(this.modelValue[0])
+      ) {
+        this.autoRegisterAllColumns(this.modelValue);
       }
-      this.calTable()
-      this.calStickyLeft()
-      this.refreshPageSize()
+      this.calTable();
+      this.calStickyLeft();
+      this.refreshPageSize();
     },
     //------------фильтрация
     calTable() {
-        const seed = String(new Date().getTime() % 1e8);
+      const seed = String(new Date().getTime() % 1e8);
 
-        this.modelValue.forEach((rec, i) => {
-          if (!rec.id) rec.id = `${seed}-${('00000' + i).slice(-7)}`;
-        });
+      this.modelValue.forEach((rec, i) => {
+        if (!rec.id) rec.id = `${seed}-${("00000" + i).slice(-7)}`;
+      });
 
-        let filtered = this.modelValue;
+      let filtered = this.modelValue;
 
-        if (this.showFilteredOnly) {
-          filtered = filtered.filter((row) => {
-            return Object.keys(this.selectedColumnRowsForFilter).every((columnIndex) => {
-              const filterValues = this.selectedColumnRowsForFilter[columnIndex];
+      if (this.showFilteredOnly) {
+        filtered = filtered.filter((row) => {
+          return Object.keys(this.selectedColumnRowsForFilter).every(
+            (columnIndex) => {
+              const filterValues =
+                this.selectedColumnRowsForFilter[columnIndex];
               const columnName = this.fields[columnIndex].name;
               return filterValues.includes(row[columnName].value);
-            });
-          });
-        }
-
-        const grouped = filtered.filter((rec, i, table) => {
-          if (i === 0) return true;
-
-          const prec = table[i - 1];
-          let result = true;
-
-          this.fields.forEach((field) => {
-            const name = field.name;
-
-            if (field.grouping && rec[name].value === prec[name].value) {
-              if (field.grouping === 'collapse' && this.ungroup[field.name + rec[name].value] !== true) {
-                result = false;
-              } else if (field.grouping === 'expand' && this.ungroup[field.name + rec[name].value]) {
-                result = false;
-              }
             }
-          });
-
-          return result;
+          );
         });
-        
-        this.table = grouped;
-        this.calculateRowSpans();
+      }
 
+      const grouped = filtered.filter((rec, i, table) => {
+        if (i === 0) return true;
 
-        this.reviseSelectedAfterTableChange();
+        const prec = table[i - 1];
+        let result = true;
+
+        this.fields.forEach((field) => {
+          const name = field.name;
+
+          if (field.grouping && rec[name].value === prec[name].value) {
+            if (
+              field.grouping === "collapse" &&
+              this.ungroup[field.name + rec[name].value] !== true
+            ) {
+              result = false;
+            } else if (
+              field.grouping === "expand" &&
+              this.ungroup[field.name + rec[name].value]
+            ) {
+              result = false;
+            }
+          }
+        });
+
+        return result;
+      });
+
+      this.table = grouped;
+      this.calculateRowSpans();
+
+      this.reviseSelectedAfterTableChange();
     },
     calculateRowSpans() {
-    this.rowSpans = {};
+      this.rowSpans = {};
 
-    this.fields.forEach((field) => {
-      if (!field.grouping) return;
+      this.fields.forEach((field) => {
+        if (!field.grouping) return;
 
-      let lastValue = null;
-      let spanStart = 0;
+        let lastValue = null;
+        let spanStart = 0;
 
-      this.table.forEach((row, rowIndex) => {
-        const val = row[field.name]?.value;
+        this.table.forEach((row, rowIndex) => {
+          const val = row[field.name]?.value;
 
-        if (val !== lastValue || rowIndex === 0) {
-          if (rowIndex > 0) {
-            const span = rowIndex - spanStart;
+          if (val !== lastValue || rowIndex === 0) {
+            if (rowIndex > 0) {
+              const span = rowIndex - spanStart;
+              if (span > 1) {
+                this.rowSpans[`${spanStart}-${field.name}`] = span;
+                for (let i = spanStart + 1; i < rowIndex; i++) {
+                  this.rowSpans[`${i}-${field.name}`] = 0;
+                }
+              }
+            }
+
+            spanStart = rowIndex;
+            lastValue = val;
+          }
+
+          if (rowIndex === this.table.length - 1) {
+            const span = rowIndex - spanStart + 1;
             if (span > 1) {
               this.rowSpans[`${spanStart}-${field.name}`] = span;
-              for (let i = spanStart + 1; i < rowIndex; i++) {
+              for (let i = spanStart + 1; i <= rowIndex; i++) {
                 this.rowSpans[`${i}-${field.name}`] = 0;
               }
             }
           }
-
-          spanStart = rowIndex;
-          lastValue = val;
-        }
-
-        if (rowIndex === this.table.length - 1) {
-          const span = rowIndex - spanStart + 1;
-          if (span > 1) {
-            this.rowSpans[`${spanStart}-${field.name}`] = span;
-            for (let i = spanStart + 1; i <= rowIndex; i++) {
-              this.rowSpans[`${i}-${field.name}`] = 0;
-            }
-          }
-        }
+        });
       });
-    });
-  },
+    },
+    isGroupEnd(index) {
+      const current = this.pagingTable[index];
+      const next = this.pagingTable[index + 1];
+
+      if (!next) return true;
+
+      return this.fields
+        .filter(f => f.grouping)
+        .some(f => current[f.name]?.value !== next[f.name]?.value);
+    },
     getRowSpan(rowIndex, fieldName) {
       return this.rowSpans[`${rowIndex}-${fieldName}`] ?? 1;
     },
     calStickyLeft() {
-      let left = 0, n = 0
-      this.leftMost = -1
-      Array.from(this.labelTr.children).forEach(th => {
-        left += th.offsetWidth
-        const field = this.fields[n++]
+      let left = 0,
+        n = 0;
+      this.leftMost = -1;
+      Array.from(this.labelTr.children).forEach((th) => {
+        left += th.offsetWidth;
+        const field = this.fields[n++];
         if (field) {
           if (field.sticky) {
-            field.left = left + 'px'
-            this.leftMost = -1
-          }
-          else if (this.leftMost === -1) this.leftMost = left
+            field.left = left + "px";
+            this.leftMost = -1;
+          } else if (this.leftMost === -1) this.leftMost = left;
         }
-      })
-      const instance = getCurrentInstance()
-      instance?.proxy?.$forceUpdate()
+      });
+      const instance = getCurrentInstance();
+      instance?.proxy?.$forceUpdate();
     },
     renderColumnCellStyle(field, record) {
-      let result = field.initStyle
-      if (typeof result === 'function') result = result(record, field)
-      if (field.readonly) result = Object.assign(result, this.readonlyStyle)
-      if (field.left) result.left = field.left
-      return result
+      let result = field.initStyle;
+      if (typeof result === "function") result = result(record, field);
+      if (field.readonly) result = Object.assign(result, this.readonlyStyle);
+      if (field.left) result.left = field.left;
+      return result;
     },
     getKeys(rec) {
-      if (!rec) rec = this.currentRecord
-      const key = this.fields.filter(field => field.keyField).map(field => rec[field.name].value)
-      if (key.length && key.join() !== '') return key
-      return [rec.id]
+      if (!rec) rec = this.currentRecord;
+      const key = this.fields
+        .filter((field) => field.keyField)
+        .map((field) => rec[field.name].value);
+      if (key.length && key.join() !== "") return key;
+      return [rec.id];
     },
     /* *** Customization **************************************************************************************
      */
     columnFillWidth() {
-      if (this.table.length === 0) return
-      if (!this.editor) return
-      const doFields = this.fields.filter(f => f.autoFillWidth)
-      const count = doFields.length
-      if (!count) return
+      if (this.table.length === 0) return;
+      if (!this.editor) return;
+      const doFields = this.fields.filter((f) => f.autoFillWidth);
+      const count = doFields.length;
+      if (!count) return;
 
       this.lazy(() => {
-        let fullWidth = this.editor.getBoundingClientRect().width
-        let viewWidth = this.fields.filter(f => !f.invisible).reduce((c, f) => c + parseFloat(f.width), 0)
-        viewWidth += this.numColWidth
-        if (this.vScroller.buttonHeight < this.vScroller.height) fullWidth -= 13
-        const fillWidth = viewWidth - fullWidth + 2
+        let fullWidth = this.editor.getBoundingClientRect().width;
+        let viewWidth = this.fields
+          .filter((f) => !f.invisible)
+          .reduce((c, f) => c + parseFloat(f.width), 0);
+        viewWidth += this.numColWidth;
+        if (this.vScroller.buttonHeight < this.vScroller.height)
+          fullWidth -= 13;
+        const fillWidth = viewWidth - fullWidth + 2;
         if (Math.abs(fillWidth) > 1)
-          doFields.forEach(f => {
-            const w = parseFloat(f.width) - fillWidth / count
-            f.width = (w > parseFloat(f.origWidth) ? w : parseFloat(f.origWidth)) + 'px'
-          })
-      })
+          doFields.forEach((f) => {
+            const w = parseFloat(f.width) - fillWidth / count;
+            f.width =
+              (w > parseFloat(f.origWidth) ? w : parseFloat(f.origWidth)) +
+              "px";
+          });
+      });
     },
     /* *** Vertical Scrollbar *********************************************************************************
      */
     calVScroll() {
-      const fullHeight = this.$el.clientHeight
-      const offset = this.baseScrollTopOffset
+      const fullHeight = this.$el.clientHeight;
+      const offset = this.baseScrollTopOffset;
 
-      const visibleHeight = fullHeight - offset
-      this.vScroller.top = offset - 1
-      this.vScroller.height = visibleHeight
+      const visibleHeight = fullHeight - offset;
+      this.vScroller.top = offset - 1;
+      this.vScroller.height = visibleHeight;
 
-      const rowHeight = 24
-      const totalRowsHeight = this.table.length * rowHeight
+      const rowHeight = 24;
+      const totalRowsHeight = this.table.length * rowHeight;
 
-      const ratio = visibleHeight / totalRowsHeight
-      this.vScroller.buttonHeight = Math.max(24, visibleHeight * ratio)
+      const ratio = visibleHeight / totalRowsHeight;
+      this.vScroller.buttonHeight = Math.max(24, visibleHeight * ratio);
 
-      const scrollPosition = this.tableContent.scrollTop + this.pageTop * rowHeight
-      const scrollRange = totalRowsHeight - visibleHeight
-      const prop = scrollRange > 0 ? scrollPosition / scrollRange : 0
+      const scrollPosition =
+        this.tableContent.scrollTop + this.pageTop * rowHeight;
+      const scrollRange = totalRowsHeight - visibleHeight;
+      const prop = scrollRange > 0 ? scrollPosition / scrollRange : 0;
 
       this.vScroller.buttonTop =
-        (visibleHeight - this.vScroller.buttonHeight) * prop
+        (visibleHeight - this.vScroller.buttonHeight) * prop;
     },
     vsMouseDown(e) {
-      e.stopPropagation()
-      const pos = e.offsetY - this.vScroller.buttonHeight / 2
-      let ratio = Math.max(0, pos)
-      ratio = Math.min(ratio, this.vScroller.height - this.vScroller.buttonHeight)
-      ratio = ratio / (this.vScroller.height - this.vScroller.buttonHeight)
-      this.tableContent.scrollTo(this.tableContent.scrollLeft, this.table.length * 24 * ratio)
+      e.stopPropagation();
+      const pos = e.offsetY - this.vScroller.buttonHeight / 2;
+      let ratio = Math.max(0, pos);
+      ratio = Math.min(
+        ratio,
+        this.vScroller.height - this.vScroller.buttonHeight
+      );
+      ratio = ratio / (this.vScroller.height - this.vScroller.buttonHeight);
+      this.tableContent.scrollTo(
+        this.tableContent.scrollLeft,
+        this.table.length * 24 * ratio
+      );
     },
     vsbMouseDown(e) {
-      e.stopPropagation()
+      e.stopPropagation();
       if (!this.vScroller.mouseY) {
-        this.vScroller.saveButtonTop = this.vScroller.buttonTop
-        this.vScroller.mouseY = e.clientY
-        window.addEventListener('mousemove', this.vsbMouseMove)
-        window.addEventListener('mouseup', this.vsbMouseUp)
-        this.$refs.vScrollButton.classList.add('focus')
+        this.vScroller.saveButtonTop = this.vScroller.buttonTop;
+        this.vScroller.mouseY = e.clientY;
+        window.addEventListener("mousemove", this.vsbMouseMove);
+        window.addEventListener("mouseup", this.vsbMouseUp);
+        this.$refs.vScrollButton.classList.add("focus");
       }
     },
     vsbMouseUp() {
-      window.removeEventListener('mousemove', this.vsbMouseMove)
-      window.removeEventListener('mouseup', this.vsbMouseUp)
+      window.removeEventListener("mousemove", this.vsbMouseMove);
+      window.removeEventListener("mouseup", this.vsbMouseUp);
       this.lazy(() => {
-        if (!this.$refs.vScrollButton) return
-        this.$refs.vScrollButton.classList.remove('focus')
-      })
-      this.vScroller.mouseY = 0
-      this.vScroller.runner = ''
-      const instance = getCurrentInstance()
-      instance?.proxy?.$forceUpdate()
+        if (!this.$refs.vScrollButton) return;
+        this.$refs.vScrollButton.classList.remove("focus");
+      });
+      this.vScroller.mouseY = 0;
+      this.vScroller.runner = "";
+      const instance = getCurrentInstance();
+      instance?.proxy?.$forceUpdate();
     },
     vsbMouseMove(e) {
-      if (e.buttons === 0)
-        this.vsbMouseUp()
+      if (e.buttons === 0) this.vsbMouseUp();
       else {
-        const diff = e.clientY - this.vScroller.mouseY
-          const ratio = (this.vScroller.saveButtonTop + diff) / (this.vScroller.height - this.vScroller.buttonHeight)
-          this.tableContent.scrollTo(this.tableContent.scrollLeft, this.table.length * 24 * ratio)
+        const diff = e.clientY - this.vScroller.mouseY;
+        const ratio =
+          (this.vScroller.saveButtonTop + diff) /
+          (this.vScroller.height - this.vScroller.buttonHeight);
+        this.tableContent.scrollTo(
+          this.tableContent.scrollLeft,
+          this.table.length * 24 * ratio
+        );
       }
     },
     /* *** Horizontal Scrollbar *********************************************************************************
      */
     ftMouseDown(e) {
-      const footerRect = this.footer.getBoundingClientRect()
-      const ratio = (e.x - footerRect.left - this.numColWidth) / (footerRect.width - this.numColWidth)
-      const fullWidth = this.systable.getBoundingClientRect().width
-      const viewWidth = this.tableContent.getBoundingClientRect().width
-      this.tableContent.scrollTo(fullWidth * ratio - viewWidth / 2, this.tableContent.scrollTop)
+      const footerRect = this.footer.getBoundingClientRect();
+      const ratio =
+        (e.x - footerRect.left - this.numColWidth) /
+        (footerRect.width - this.numColWidth);
+      const fullWidth = this.systable.getBoundingClientRect().width;
+      const viewWidth = this.tableContent.getBoundingClientRect().width;
+      this.tableContent.scrollTo(
+        fullWidth * ratio - viewWidth / 2,
+        this.tableContent.scrollTop
+      );
     },
     sbMouseDown(e) {
-      e.stopPropagation()
+      e.stopPropagation();
       if (!this.hScroller.mouseX) {
-        const sleft = this.$refs.hScroll.getBoundingClientRect().left
-        const fleft = this.footer.getBoundingClientRect().left + this.numColWidth
-        this.hScroller.left = sleft - fleft
-        this.hScroller.mouseX = e.clientX
-        window.addEventListener('mousemove', this.sbMouseMove)
-        window.addEventListener('mouseup', this.sbMouseUp)
-        this.$refs.hScroll.classList.add('focus')
+        const sleft = this.$refs.hScroll.getBoundingClientRect().left;
+        const fleft =
+          this.footer.getBoundingClientRect().left + this.numColWidth;
+        this.hScroller.left = sleft - fleft;
+        this.hScroller.mouseX = e.clientX;
+        window.addEventListener("mousemove", this.sbMouseMove);
+        window.addEventListener("mouseup", this.sbMouseUp);
+        this.$refs.hScroll.classList.add("focus");
       }
     },
     sbMouseUp() {
-      window.removeEventListener('mousemove', this.sbMouseMove)
-      window.removeEventListener('mouseup', this.sbMouseUp)
+      window.removeEventListener("mousemove", this.sbMouseMove);
+      window.removeEventListener("mouseup", this.sbMouseUp);
       this.lazy(() => {
-        if (!this.$refs.hScroll) return
-        this.$refs.hScroll.classList.remove('focus')
-      })
-      this.hScroller.mouseX = 0
-      const instance = getCurrentInstance()
-      instance?.proxy?.$forceUpdate()
+        if (!this.$refs.hScroll) return;
+        this.$refs.hScroll.classList.remove("focus");
+      });
+      this.hScroller.mouseX = 0;
+      const instance = getCurrentInstance();
+      instance?.proxy?.$forceUpdate();
     },
     sbMouseMove(e) {
-      if (e.buttons === 0)
-        this.sbMouseUp()
+      if (e.buttons === 0) this.sbMouseUp();
       else {
-        const diff = e.clientX - this.hScroller.mouseX
-        const ratio = (this.hScroller.left + diff) / this.hScroller.scrollerUnseenWidth
-        this.tableContent.scrollTo(this.hScroller.tableUnseenWidth * ratio, this.tableContent.scrollTop)
+        const diff = e.clientX - this.hScroller.mouseX;
+        const ratio =
+          (this.hScroller.left + diff) / this.hScroller.scrollerUnseenWidth;
+        this.tableContent.scrollTo(
+          this.hScroller.tableUnseenWidth * ratio,
+          this.tableContent.scrollTop
+        );
       }
     },
     /* *** Window Event *******************************************************************************************
      */
     calcStaticScrollOffset() {
-      let offset = this.labelTr?.offsetHeight || 0
-      if (this.filterRow) offset += 29
-      if (!this.noFooter) offset += 25
-      if (this.totalRow) offset += 27
-      return offset
+      let offset = this.labelTr?.offsetHeight || 0;
+      if (this.filterRow) offset += 29;
+      if (!this.noFooter) offset += 25;
+      if (this.totalRow) offset += 27;
+      return offset;
     },
     tableScroll() {
       if (this.focused && this.currentField) {
-        this.inputSquare.style.marginLeft = (this.currentField.sticky ? this.tableContent.scrollLeft - this.squareSavedLeft: 0) + 'px';
+        this.inputSquare.style.marginLeft =
+          (this.currentField.sticky
+            ? this.tableContent.scrollLeft - this.squareSavedLeft
+            : 0) + "px";
       }
 
       if (this.tableContent.scrollTop !== this.vScroller.lastTop) {
-        this.calVScroll()
-        this.$refs.vScrollButton?.classList.add('focus')
-        this.clearVScrollFocus()
+        this.calVScroll();
+        this.$refs.vScrollButton?.classList.add("focus");
+        this.clearVScrollFocus();
       }
       this.vScroller.lastTop = this.tableContent.scrollTop;
 
       if (this.tableContent.scrollLeft !== this.hScroller.lastLeft) {
         if (this.$refs.hScroll && this.hScroller.tableUnseenWidth) {
-          this.$refs.hScroll.classList.add('focus')
+          this.$refs.hScroll.classList.add("focus");
 
-          const ratio = this.tableContent.scrollLeft / this.hScroller.tableUnseenWidth
-          this.$refs.hScroll.style.left = this.hScroller.scrollerUnseenWidth * ratio + 'px'
+          const ratio =
+            this.tableContent.scrollLeft / this.hScroller.tableUnseenWidth;
+          this.$refs.hScroll.style.left =
+            this.hScroller.scrollerUnseenWidth * ratio + "px";
 
-          this.clearHScrollFocus()
+          this.clearHScrollFocus();
         }
       }
-      this.hScroller.lastLeft = this.tableContent.scrollLeft
+      this.hScroller.lastLeft = this.tableContent.scrollLeft;
     },
     mousewheel(e) {
-      if (this.noMouseScroll || !e.deltaY) return
-      let adjust = 0
-      if (e.deltaY > 1 * this.wheelSensitivity && this.pageTop + this.pageSize < this.table.length) adjust = 1
-      else if (e.deltaY < -1 * this.wheelSensitivity && this.pageTop > 0) adjust = -1
+      if (this.noMouseScroll || !e.deltaY) return;
+      let adjust = 0;
+      if (
+        e.deltaY > 1 * this.wheelSensitivity &&
+        this.pageTop + this.pageSize < this.table.length
+      )
+        adjust = 1;
+      else if (e.deltaY < -1 * this.wheelSensitivity && this.pageTop > 0)
+        adjust = -1;
       if (adjust) {
-        this.pageTop += adjust
-        setTimeout(this.calVScroll)
+        this.pageTop += adjust;
+        setTimeout(this.calVScroll);
         if (this.$refs.vScrollButton) {
-          this.$refs.vScrollButton.classList.add('focus')
-          this.lazy(() => this.$refs.vScrollButton.classList.remove('focus'), 1000)
+          this.$refs.vScrollButton.classList.add("focus");
+          this.lazy(
+            () => this.$refs.vScrollButton.classList.remove("focus"),
+            1000
+          );
         }
       }
-      return false
+      return false;
     },
     winResize() {
-      this.lazy(this.refreshPageSize, 0)
+      this.lazy(this.refreshPageSize, 0);
     },
     winKeyup(e) {
-      if (e.key === 'Shift') {
+      if (e.key === "Shift") {
         this.isShiftPressed = false;
       }
 
-      if (e.key === 'Control' || e.metaKey) {
+      if (e.key === "Control" || e.metaKey) {
         this.isCtrlOrMetaPressed = false;
       }
 
-      if (!e.altKey) this.systable.classList.remove('alt')
+      if (!e.altKey) this.systable.classList.remove("alt");
     },
     winKeydown(e) {
-      if (e.key === 'Shift') {
+      if (e.key === "Shift") {
         this.isShiftPressed = true;
       }
 
-      if (e.key === 'Control' || e.metaKey) {
+      if (e.key === "Control" || e.metaKey) {
         this.isCtrlOrMetaPressed = true;
       }
 
-      if (e.altKey) this.systable.classList.add('alt')
-      if (!this.focused) return
+      if (e.altKey) this.systable.classList.add("alt");
+      if (!this.focused) return;
       if (e.ctrlKey || e.metaKey)
         switch (e.keyCode) {
           case 90:
@@ -1099,384 +1402,411 @@ export default defineComponent({
             } else {
               this.undoHistory();
             }
-            e.preventDefault()
-            break
+            e.preventDefault();
+            break;
           case 89:
             this.redoHistory();
-            e.preventDefault()
-            break
+            e.preventDefault();
+            break;
           case 65:
-            this.toggleSelectAllRecords()
-            e.preventDefault()
-            break
+            this.toggleSelectAllRecords();
+            e.preventDefault();
+            break;
           case 67:
-            this.inputBox.value = this.currentCell.textContent
-            this.inputBox.focus()
-            this.inputBox.select()
-            document.execCommand('copy')
-            e.preventDefault()
-            break
+            this.inputBox.value = this.currentCell.textContent;
+            this.inputBox.focus();
+            this.inputBox.select();
+            document.execCommand("copy");
+            e.preventDefault();
+            break;
           case 70:
             if (!this.noFinding) {
               this.showPanelFind = true;
-              e.preventDefault()
+              e.preventDefault();
             }
-            break
+            break;
           case 71:
-            if (!this.noFinding && this.inputFind !== '') {
-              this.doFindNext()
-              e.preventDefault()
+            if (!this.noFinding && this.inputFind !== "") {
+              this.doFindNext();
+              e.preventDefault();
             }
-            break
+            break;
         }
       else {
-        if (this.currentRowPos < 0) return
+        if (this.currentRowPos < 0) return;
         switch (e.keyCode) {
           case 37:
-            if (!this.focused) return
+            if (!this.focused) return;
             if (!this.inputBoxShow) {
-              this.moveWest(e)
-              e.preventDefault()
-            }
-            else {
+              this.moveWest(e);
+              e.preventDefault();
+            } else {
               if (this.inputBox.selectionStart === 0) {
-                this.moveWest(e)
-                e.preventDefault()
+                this.moveWest(e);
+                e.preventDefault();
               }
             }
-            break
+            break;
           case 38:
-            if (!this.focused) return
-            e.preventDefault()
-            this.moveNorth()
-            break
+            if (!this.focused) return;
+            e.preventDefault();
+            this.moveNorth();
+            break;
           case 9:
-            if (!this.focused) return
+            if (!this.focused) return;
             if (e.shiftKey) {
               if (!this.moveWest(e)) {
-                if (this.moveNorth(e))
-                  this.moveToEast(e)
-                else
-                  return this.inputBoxBlur()
+                if (this.moveNorth(e)) this.moveToEast(e);
+                else return this.inputBoxBlur();
               }
-            }
-            else {
+            } else {
               if (!this.moveEast(e)) {
-                if (this.moveSouth(e))
-                  this.moveToWest(e)
-                else
-                  return this.inputBoxBlur()
+                if (this.moveSouth(e)) this.moveToWest(e);
+                else return this.inputBoxBlur();
               }
             }
-            e.preventDefault()
-            break
+            e.preventDefault();
+            break;
           case 39:
-            if (!this.focused) return
+            if (!this.focused) return;
             if (!this.inputBoxShow) {
-              this.moveEast(e)
-              e.preventDefault()
-            }
-            else {
+              this.moveEast(e);
+              e.preventDefault();
+            } else {
               if (this.inputBox.selectionEnd === this.inputBox.value.length) {
-                this.moveEast(e)
-                e.preventDefault()
+                this.moveEast(e);
+                e.preventDefault();
               }
             }
-            break
+            break;
           case 40:
-            if (!this.focused) return
-            e.preventDefault()
-            this.moveSouth(e)
-            break
+            if (!this.focused) return;
+            e.preventDefault();
+            this.moveSouth(e);
+            break;
           case 13:
-            if (!this.focused) return
-            e.preventDefault()
+            if (!this.focused) return;
+            e.preventDefault();
 
-            if (this.enterToSouth)
-                this.moveSouth(e)
-              else
-                this.moveEast(e)
+            if (this.enterToSouth) this.moveSouth(e);
+            else this.moveEast(e);
 
-              this.inputBox.value = this.currentCell.textContent
-              this.inputBoxShow = 0
-              this.inputBoxChanged = false
+            this.inputBox.value = this.currentCell.textContent;
+            this.inputBoxShow = 0;
+            this.inputBoxChanged = false;
 
-            this.inputBoxComplete()
-            break
+            this.inputBoxComplete();
+            break;
           case 27:
-            if (!this.focused) return
+            if (!this.focused) return;
             if (this.inputBoxShow) {
-              e.preventDefault()
-              this.inputBox.value = this.currentCell.textContent
-              this.inputBoxShow = 0
-              this.inputBoxChanged = false
+              e.preventDefault();
+              this.inputBox.value = this.currentCell.textContent;
+              this.inputBoxShow = 0;
+              this.inputBoxChanged = false;
             }
-            break
+            break;
           case 8:
           case 46:
-            if (!this.focused) return
+            if (!this.focused) return;
             if (this.inputBoxShow) {
-              this.inputBoxChanged = true
-              return
+              this.inputBoxChanged = true;
+              return;
             }
-            if (this.currentField.readonly) return
-            this.inputBoxChanged = true
-            this.inputBox.value = ''
-            this.inputBoxComplete()
-            break
+            if (this.currentField.readonly) return;
+            this.inputBoxChanged = true;
+            this.inputBox.value = "";
+            this.inputBoxComplete();
+            break;
           default:
-            if (!this.focused) return
-            if (this.currentField.readonly) return
-            if (e.altKey) return
-            if (e.key !== 'Process' && e.key.length > 1) return
+            if (!this.focused) return;
+            if (this.currentField.readonly) return;
+            if (e.altKey) return;
+            if (e.key !== "Process" && e.key.length > 1) return;
             if (this.currentField.allowKeys) {
-              if (this.currentField.allowKeys.constructor.name === 'Function') {
-                if (!this.currentField.allowKeys(e.key.toUpperCase())) return e.preventDefault()
-              }
-              else
-                if (this.currentField.allowKeys.indexOf(e.key.toUpperCase()) === -1) return e.preventDefault()
+              if (this.currentField.allowKeys.constructor.name === "Function") {
+                if (!this.currentField.allowKeys(e.key.toUpperCase()))
+                  return e.preventDefault();
+              } else if (
+                this.currentField.allowKeys.indexOf(e.key.toUpperCase()) === -1
+              )
+                return e.preventDefault();
             }
-            if (this.inputBoxShow && this.currentField.lengthLimit && this.inputBox.value.length >= this.currentField.lengthLimit) return e.preventDefault()
-            this.inputBoxChanged = true
-            break
+            if (
+              this.inputBoxShow &&
+              this.currentField.lengthLimit &&
+              this.inputBox.value.length >= this.currentField.lengthLimit
+            )
+              return e.preventDefault();
+            this.inputBoxChanged = true;
+            break;
         }
       }
     },
     /* *** Column Separator *******************************************************************************************
      */
     colSepMouseDown(e) {
-      e.preventDefault()
-      e.stopPropagation()
-      if (this.allowAddCol && !e.target.classList.contains('col-sep')) {
-        e.target.style.display = 'none'
-        const me = e.target.parentElement.parentElement
-        const pos = Array.from(me.parentElement.children).findIndex(td => td === me)
-        this.insertColumn(pos)
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.allowAddCol && !e.target.classList.contains("col-sep")) {
+        e.target.style.display = "none";
+        const me = e.target.parentElement.parentElement;
+        const pos = Array.from(me.parentElement.children).findIndex(
+          (td) => td === me
+        );
+        this.insertColumn(pos);
       }
-      this.focused = false
+      this.focused = false;
       const getStyleVal = (elm, css) => {
-        window.getComputedStyle(elm, null).getPropertyValue(css)
-      }
-      const index = Array.from(this.labelTr.children).indexOf(e.target.parentElement)
-      this.sep = {}
-      this.sep.curCol = this.colgroupTr.children[index - (this.noNumCol ? 1 : 0)]
-      this.sep.curField = this.fields[index - 1]
-      this.sep.pageX = e.pageX
-      let padding = 0
-      if (getStyleVal(this.sep.curCol, 'box-sizing') !== 'border-box') {
-        const padLeft = getStyleVal(this.sep.curCol, 'padding-left')
-        const padRight = getStyleVal(this.sep.curCol, 'padding-right')
+        window.getComputedStyle(elm, null).getPropertyValue(css);
+      };
+      const index = Array.from(this.labelTr.children).indexOf(
+        e.target.parentElement
+      );
+      this.sep = {};
+      this.sep.curCol =
+        this.colgroupTr.children[index - (this.noNumCol ? 1 : 0)];
+      this.sep.curField = this.fields[index - 1];
+      this.sep.pageX = e.pageX;
+      let padding = 0;
+      if (getStyleVal(this.sep.curCol, "box-sizing") !== "border-box") {
+        const padLeft = getStyleVal(this.sep.curCol, "padding-left");
+        const padRight = getStyleVal(this.sep.curCol, "padding-right");
         if (padLeft && padRight)
-          padding = parseInt(padLeft) + parseInt(padRight)
+          padding = parseInt(padLeft) + parseInt(padRight);
       }
-      this.sep.curColWidth = e.target.parentElement.offsetWidth - padding
-      window.addEventListener('mousemove', this.colSepMouseMove)
-      window.addEventListener('mouseup', this.colSepMouseUp)
+      this.sep.curColWidth = e.target.parentElement.offsetWidth - padding;
+      window.addEventListener("mousemove", this.colSepMouseMove);
+      window.addEventListener("mouseup", this.colSepMouseUp);
     },
     colSepMouseOver(e) {
-      if (e.target.classList.contains('col-sep')) {
-        e.target.style.borderRight = '5px solid #cccccc'
-        e.target.style.height = this.systable.getBoundingClientRect().height + 'px'
-        if (this.allowAddCol)
-          e.target.children[0].style.display = 'block'
-      }
-      else {
-        if (this.addColBtnTimeout) clearTimeout(this.addColBtnTimeout)
-        if (this.allowAddCol)
-          e.target.style.display = 'block'
+      if (e.target.classList.contains("col-sep")) {
+        e.target.style.borderRight = "5px solid #cccccc";
+        e.target.style.height =
+          this.systable.getBoundingClientRect().height + "px";
+        if (this.allowAddCol) e.target.children[0].style.display = "block";
+      } else {
+        if (this.addColBtnTimeout) clearTimeout(this.addColBtnTimeout);
+        if (this.allowAddCol) e.target.style.display = "block";
       }
     },
     colSepMouseOut(e) {
-      if (e.target.classList.contains('col-sep')) {
-        e.target.style.borderRight = '5px solid transparent'
-        e.target.style.height = '100%'
+      if (e.target.classList.contains("col-sep")) {
+        e.target.style.borderRight = "5px solid transparent";
+        e.target.style.height = "100%";
         this.addColBtnTimeout = setTimeout(() => {
           if (e.target && e.target.children[0] && e.target.children[0].style) {
-            e.target.children[0].style.display = 'none';
+            e.target.children[0].style.display = "none";
           }
-        }, 500)
-      }
-      else {
+        }, 500);
+      } else {
         if (e.target && e.target.style) {
-          e.target.style.display = 'none';
+          e.target.style.display = "none";
         }
       }
     },
     colSepMouseMove(e) {
-      if (!this.sep || !this.sep.curCol) return
-      const diffX = e.pageX - this.sep.pageX
-      const newWidth = (this.sep.curColWidth + diffX) + 'px'
-      this.sep.curCol.style.width = newWidth
-      this.sep.curField.width = newWidth
-      this.lazy(this.calStickyLeft, 200)
+      if (!this.sep || !this.sep.curCol) return;
+      const diffX = e.pageX - this.sep.pageX;
+      const newWidth = this.sep.curColWidth + diffX + "px";
+      this.sep.curCol.style.width = newWidth;
+      this.sep.curField.width = newWidth;
+      this.lazy(this.calStickyLeft, 200);
     },
     colSepMouseUp(e) {
-      e.preventDefault()
-      e.stopPropagation()
-      delete this.sep
-      window.removeEventListener('mousemove', this.colSepMouseMove)
-      window.removeEventListener('mouseup', this.colSepMouseUp)
-      const setting = this.getSetting()
-      this.$emit('setting', setting)
+      e.preventDefault();
+      e.stopPropagation();
+      delete this.sep;
+      window.removeEventListener("mousemove", this.colSepMouseMove);
+      window.removeEventListener("mouseup", this.colSepMouseUp);
+      const setting = this.getSetting();
+      this.$emit("setting", setting);
     },
     /* *** Finder *******************************************************************************************
      */
     doFindNext() {
-      return this.doFind()
+      return this.doFind();
     },
     doFind(s) {
-      if (typeof s === 'undefined') s = this.inputFind
-      else this.inputFind = s
-      s = s.toUpperCase()
-      const row = Math.max(0, this.currentRowPos)
+      if (typeof s === "undefined") s = this.inputFind;
+      else this.inputFind = s;
+      s = s.toUpperCase();
+      const row = Math.max(0, this.currentRowPos);
       for (let r = row + this.pageTop; r < this.table.length; r++) {
-        const rec = this.table[r]
-        for (let c = (r === row + this.pageTop ? this.currentColPos + 1 : 0); c < this.fields.length; c++) {
-          const field = this.fields[c].name
-          if (typeof rec[field] !== 'undefined' && String(rec[field].value).toUpperCase().indexOf(s) >= 0) {
-            this.pageTop = this.findPageTop(r)
+        const rec = this.table[r];
+        for (
+          let c = r === row + this.pageTop ? this.currentColPos + 1 : 0;
+          c < this.fields.length;
+          c++
+        ) {
+          const field = this.fields[c].name;
+          if (
+            typeof rec[field] !== "undefined" &&
+            String(rec[field].value).toUpperCase().indexOf(s) >= 0
+          ) {
+            this.pageTop = this.findPageTop(r);
             setTimeout(() => {
-              this.moveInputSquare(r - this.pageTop, c)
-              setTimeout(() => this.inputBox.focus())
-              this.focused = true
-            })
-            return true
+              this.moveInputSquare(r - this.pageTop, c);
+              setTimeout(() => this.inputBox.focus());
+              this.focused = true;
+            });
+            return true;
           }
         }
       }
       for (let r = 0; r <= row + this.pageTop; r++) {
-        const rec = this.table[r]
-        for (let c = 0; c < (r === row + this.pageTop ? this.currentColPos : this.fields.length); c++) {
-          const field = this.fields[c].name
-          if (typeof rec[field] !== 'undefined' && String(rec[field].value).toUpperCase().indexOf(s) >= 0) {
-            this.pageTop = this.findPageTop(r)
-            this.moveInputSquare(r - this.pageTop, c)
+        const rec = this.table[r];
+        for (
+          let c = 0;
+          c <
+          (r === row + this.pageTop ? this.currentColPos : this.fields.length);
+          c++
+        ) {
+          const field = this.fields[c].name;
+          if (
+            typeof rec[field] !== "undefined" &&
+            String(rec[field].value).toUpperCase().indexOf(s) >= 0
+          ) {
+            this.pageTop = this.findPageTop(r);
+            this.moveInputSquare(r - this.pageTop, c);
             setTimeout(() => {
-              this.focused = true
-            })
-            return true
+              this.focused = true;
+            });
+            return true;
           }
         }
       }
-      return false
+      return false;
     },
     findPageTop(rowPos) {
       for (let pt = this.pageTop; pt < this.table.length; pt += this.pageSize)
-        if (rowPos >= pt && rowPos < pt + this.pageSize) return pt
+        if (rowPos >= pt && rowPos < pt + this.pageSize) return pt;
       for (let pt = this.pageTop; pt > 0; pt -= this.pageSize)
-        if (rowPos >= pt && rowPos < pt + this.pageSize) return pt
-      return this.pageTop
+        if (rowPos >= pt && rowPos < pt + this.pageSize) return pt;
+      return this.pageTop;
     },
     /* *** Sort *******************************************************************************************
      */
     headerClick(e, colPos) {
-      if (!this.noHeaderEdit && e.target.tagName === 'SPAN') {
-        e.target.contentEditable = true
-        e.target.addEventListener('focusout', this.completeHeaderChange)
-        return
+      if (!this.noHeaderEdit && e.target.tagName === "SPAN") {
+        e.target.contentEditable = true;
+        e.target.addEventListener("focusout", this.completeHeaderChange);
+        return;
       }
       if (e.which === 1) {
-        e.preventDefault()
-        if (this.sortPos === colPos && this.sortDir > 0)
-          this.sort(-1, colPos)
-        else if (this.sortDir === 0)
-          this.sort(1, colPos)
-        else
-          this.sort(0, colPos)
+        e.preventDefault();
+        if (this.sortPos === colPos && this.sortDir > 0) this.sort(-1, colPos);
+        else if (this.sortDir === 0) this.sort(1, colPos);
+        else this.sort(0, colPos);
       }
     },
     completeHeaderChange(e) {
-      const th = e.target.parentElement.parentElement
-      const index = Array.from(th.parentElement.children).findIndex(v => v === th)
-      this.fields[index - 1].label = e.target.textContent
+      const th = e.target.parentElement.parentElement;
+      const index = Array.from(th.parentElement.children).findIndex(
+        (v) => v === th
+      );
+      this.fields[index - 1].label = e.target.textContent;
     },
     sort(n, pos) {
-      const colPos = typeof pos === 'undefined' ? this.columnFilterRef.colPos : pos
-      const field = this.fields[colPos]
-      if (field.noSorting) return
+      const colPos =
+        typeof pos === "undefined" ? this.columnFilterRef.colPos : pos;
+      const field = this.fields[colPos];
+      if (field.noSorting) return;
 
-      this.localLoading = true
+      this.localLoading = true;
 
-      const name = field.name
+      const name = field.name;
       setTimeout(() => {
         let sorting = (a, b) => {
-          return String(a).localeCompare(String(b))
-        }
+          return String(a).localeCompare(String(b));
+        };
         if (n === 0) {
-          this.modelValue.sort((a, b) => a.id > b.id ? 1 : -1)
-          this.sortPos = 0
-        }
-        else {
+          this.modelValue.sort((a, b) => (a.id > b.id ? 1 : -1));
+          this.sortPos = 0;
+        } else {
           this.modelValue.sort((a, b) => {
-            return sorting(a[name].value, b[name].value) * -n
-          })
-          this.sortPos = colPos
+            return sorting(a[name].value, b[name].value) * -n;
+          });
+          this.sortPos = colPos;
         }
-        this.sortDir = n
-        this.refresh()
-        this.localLoading = false
-      }, 0)
+        this.sortDir = n;
+        this.refresh();
+        this.localLoading = false;
+      }, 0);
     },
     /* *** Paging *******************************************************************************************
      */
     refreshPageSize() {
       if (this.$refs.hScroll) {
-        const fullWidth = this.systable.getBoundingClientRect().width
-        const viewWidth = this.tableContent.getBoundingClientRect().width
-        this.hScroller.tableUnseenWidth = fullWidth - viewWidth
-        this.$refs.hScroll.style.width = (100 * viewWidth / fullWidth) + '%'
-        const scrollerWidth = this.$refs.hScroll.getBoundingClientRect().width
-        this.hScroller.scrollerUnseenWidth = this.footer.getBoundingClientRect().width - this.numColWidth - scrollerWidth
+        const fullWidth = this.systable.getBoundingClientRect().width;
+        const viewWidth = this.tableContent.getBoundingClientRect().width;
+        this.hScroller.tableUnseenWidth = fullWidth - viewWidth;
+        this.$refs.hScroll.style.width = (100 * viewWidth) / fullWidth + "%";
+        const scrollerWidth = this.$refs.hScroll.getBoundingClientRect().width;
+        this.hScroller.scrollerUnseenWidth =
+          this.footer.getBoundingClientRect().width -
+          this.numColWidth -
+          scrollerWidth;
       }
 
-      let outerElement = this.editor
-      let bottomOffset = 0
-      if (this.height !== 'auto') {
-        while (outerElement && !outerElement.style.height && outerElement.style.height !== 'auto') {
-          const style = getComputedStyle(outerElement)
-          bottomOffset += parseInt(style.marginBottom)
-          bottomOffset += parseInt(style.paddingBottom)
-          bottomOffset += parseInt(style.borderBottomWidth)
-          outerElement = outerElement.parentElement
+      let outerElement = this.editor;
+      let bottomOffset = 0;
+      if (this.height !== "auto") {
+        while (
+          outerElement &&
+          !outerElement.style.height &&
+          outerElement.style.height !== "auto"
+        ) {
+          const style = getComputedStyle(outerElement);
+          bottomOffset += parseInt(style.marginBottom);
+          bottomOffset += parseInt(style.paddingBottom);
+          bottomOffset += parseInt(style.borderBottomWidth);
+          outerElement = outerElement.parentElement;
         }
       }
       if (outerElement) {
-        const style = getComputedStyle(outerElement)
-        bottomOffset += parseInt(style.paddingBottom)
-        bottomOffset += parseInt(style.borderBottomWidth)
+        const style = getComputedStyle(outerElement);
+        bottomOffset += parseInt(style.paddingBottom);
+        bottomOffset += parseInt(style.borderBottomWidth);
       }
 
-      const outerHeight = outerElement?.clientHeight || window.innerHeight
-      const outerTop = outerElement?.getBoundingClientRect().top || 0
+      const outerHeight = outerElement?.clientHeight || window.innerHeight;
+      const outerTop = outerElement?.getBoundingClientRect().top || 0;
 
-      if (this.height === 'auto') {
-        let h = Math.floor(window.innerHeight - this.tableContent.getBoundingClientRect().top - 25)
-        let offset = 4
-        if (this.filterRow) offset += 29
-        if (this.totalRow) offset += 25
-        if (!this.footerRow) offset += 25
-        h = Math.min(24 * (this.table.length - this.pageTop) + offset, h)
-        this.systable.parentNode.style.height = h + 'px'
+      if (this.height === "auto") {
+        let h = Math.floor(
+          window.innerHeight -
+            this.tableContent.getBoundingClientRect().top -
+            25
+        );
+        let offset = 4;
+        if (this.filterRow) offset += 29;
+        if (this.totalRow) offset += 25;
+        if (!this.footerRow) offset += 25;
+        h = Math.min(24 * (this.table.length - this.pageTop) + offset, h);
+        this.systable.parentNode.style.height = h + "px";
       }
-      this.columnFillWidth()
-      setTimeout(this.calVScroll)
+      this.columnFillWidth();
+      setTimeout(this.calVScroll);
     },
     /* *** Setting *******************************************************************************************
      */
     getSetting() {
-      const colWidth = Array.from(this.colgroupTr.children).map(col => col?.style.width)
+      const colWidth = Array.from(this.colgroupTr.children).map(
+        (col) => col?.style.width
+      );
       const fields = this.fields.map((field, i) => {
         return {
           name: field.name,
           invisible: field.invisible,
           width: colWidth[i + 1],
-          label: field.label
-        }
-      })
+          label: field.label,
+        };
+      });
       return {
         colHash: this.colHash,
-        fields: fields
-      }
+        fields: fields,
+      };
     },
 
     settingClick() {
@@ -1500,12 +1830,12 @@ export default defineComponent({
      */
     importTable(file) {
       const importTable = useExcelImport();
-      const test = importTable(file)
+      const test = importTable(file);
 
       test.then((data) => {
-        console.log('data', data);
-        console.log('tableData', this.table);
-      })
+        console.log("data", data);
+        console.log("tableData", this.table);
+      });
     },
     async exportTable(options = ref({})) {
       const { exportTable } = useExcelExport();
@@ -1525,9 +1855,9 @@ export default defineComponent({
       }
 
       exportTable(tableData, this.fields, {
-        delimiter: opts.delimiter ?? ',',
+        delimiter: opts.delimiter ?? ",",
         formattedValues: opts.formattedValues ?? false,
-        fileName: opts.fileName ?? 'export',
+        fileName: opts.fileName ?? "export",
         editor: this.editor,
       });
     },
@@ -1535,9 +1865,9 @@ export default defineComponent({
      */
     rowLabelClick(e) {
       let target = e.target;
-      while (target.tagName !== 'TD') target = target.parentNode;
+      while (target.tagName !== "TD") target = target.parentNode;
 
-      const rowPos = Number(target.getAttribute('pos')) + this.pageTop;
+      const rowPos = Number(target.getAttribute("pos")) + this.pageTop;
 
       if (e.shiftKey && this.prevSelect !== -1 && this.prevSelect !== rowPos) {
         document.getSelection().removeAllRanges();
@@ -1545,7 +1875,8 @@ export default defineComponent({
         for (let i = start; i <= end; i++) this.selectRecord(i);
       } else {
         const selected = this.selected[rowPos];
-        if (!this.freeSelect && !(e.ctrlKey || e.metaKey)) this.clearAllSelected();
+        if (!this.freeSelect && !(e.ctrlKey || e.metaKey))
+          this.clearAllSelected();
         selected ? this.unSelectRecord(rowPos) : this.selectRecord(rowPos);
       }
 
@@ -1553,10 +1884,12 @@ export default defineComponent({
     },
     selectAllClick() {
       if (this.disableSelection) return;
-      this.toggleSelectAllRecords()
+      this.toggleSelectAllRecords();
     },
     reviseSelectedAfterTableChange() {
-      this.rowIndex = Object.fromEntries(this.table.map((rec, i) => [rec.id, i]));
+      this.rowIndex = Object.fromEntries(
+        this.table.map((rec, i) => [rec.id, i])
+      );
 
       this.selected = Object.fromEntries(
         Object.entries(this.selected)
@@ -1577,11 +1910,19 @@ export default defineComponent({
       this.selectedCount++;
 
       const recordElement = this.recordBody.children[rowPos - this.pageTop];
-      if (recordElement) recordElement.classList.add('select');
+      if (recordElement) recordElement.classList.add("select");
 
-      const currentRowsData = Object.keys(this.selected).map(i => this.table[i]);
+      const currentRowsData = Object.keys(this.selected).map(
+        (i) => this.table[i]
+      );
 
-      this.$emit('select', [this.getSelectionFieldValue(row)], true, currentRowsData, this.selected);
+      this.$emit(
+        "select",
+        [this.getSelectionFieldValue(row)],
+        true,
+        currentRowsData,
+        this.selected
+      );
     },
     unSelectRecord(rowPos) {
       if (!this.selected[rowPos]) return;
@@ -1593,12 +1934,19 @@ export default defineComponent({
       this.selectedCount--;
       const recordElement = this.recordBody.children[rowPos - this.pageTop];
 
-      if (recordElement) recordElement.classList.remove('select');
+      if (recordElement) recordElement.classList.remove("select");
 
-      const currentRowsData = Object.keys(this.selected).map(i => this.table[i]);
+      const currentRowsData = Object.keys(this.selected).map(
+        (i) => this.table[i]
+      );
 
       this.lazy(rowPos, () => {
-        this.$emit('select', [this.getSelectionFieldValue(row)], false, currentRowsData);
+        this.$emit(
+          "select",
+          [this.getSelectionFieldValue(row)],
+          false,
+          currentRowsData
+        );
       });
     },
     toggleSelectAllRecords(e) {
@@ -1611,19 +1959,39 @@ export default defineComponent({
         const selectedEntries = this.table.map((row, i) => [i, row.id]);
         this.selected = Object.fromEntries(selectedEntries);
         this.selectedCount = this.table.length;
-        const currentRowsData = Object.keys(this.selected).map(i => this.table[i]);
-        this.$emit('select', selectedEntries.map(([_, id]) => this.getSelectionFieldValue(this.table.find(row => row.id === id))), true, currentRowsData);
+        const currentRowsData = Object.keys(this.selected).map(
+          (i) => this.table[i]
+        );
+        this.$emit(
+          "select",
+          selectedEntries.map(([_, id]) =>
+            this.getSelectionFieldValue(this.table.find((row) => row.id === id))
+          ),
+          true,
+          currentRowsData
+        );
       }
     },
     getSelectionFieldValue(row) {
-      return this.selectionField === 'id' ? row[this.selectionField] : row[this.selectionField]?.value;
+      return this.selectionField === "id"
+        ? row[this.selectionField]
+        : row[this.selectionField]?.value;
     },
     clearAllSelected() {
       if (this.singleSelect) return;
 
       if (this.selectedCount > 0) {
-        const currentRowsData = Object.keys(this.selected).map(i => this.table[i]);
-        this.$emit('select', Object.keys(this.selected).map(i => this.getSelectionFieldValue(this.table[i])), false, currentRowsData);
+        const currentRowsData = Object.keys(this.selected).map(
+          (i) => this.table[i]
+        );
+        this.$emit(
+          "select",
+          Object.keys(this.selected).map((i) =>
+            this.getSelectionFieldValue(this.table[i])
+          ),
+          false,
+          currentRowsData
+        );
       }
 
       this.selected = {};
@@ -1632,100 +2000,125 @@ export default defineComponent({
     /* *** Cursor *******************************************************************************************
      */
     moveTo(rowPos, colPos) {
-      colPos = colPos || 0
-      const done = this.moveInputSquare(rowPos - this.pageTop, colPos)
-      this.focused = true
-      setTimeout(() => this.inputBox.focus())
-      return done
+      colPos = colPos || 0;
+      const done = this.moveInputSquare(rowPos - this.pageTop, colPos);
+      this.focused = true;
+      setTimeout(() => this.inputBox.focus());
+      return done;
     },
     moveToSouthWest() {
-      let goRowPos = this.table.length - 1
-      let goColPos = 0
-      while (this.fields[goColPos].invisible && goColPos < this.fields.length - 1) goColPos++
-      return this.moveTo(goRowPos, goColPos)
+      let goRowPos = this.table.length - 1;
+      let goColPos = 0;
+      while (
+        this.fields[goColPos].invisible &&
+        goColPos < this.fields.length - 1
+      )
+        goColPos++;
+      return this.moveTo(goRowPos, goColPos);
     },
     moveToWest() {
-      let goRowPos = this.currentRowPos
-      let goColPos = 0
-      while (this.fields[goColPos].invisible && goColPos < this.fields.length - 1) goColPos++
-      return this.moveTo(goRowPos, goColPos)
+      let goRowPos = this.currentRowPos;
+      let goColPos = 0;
+      while (
+        this.fields[goColPos].invisible &&
+        goColPos < this.fields.length - 1
+      )
+        goColPos++;
+      return this.moveTo(goRowPos, goColPos);
     },
     moveToEast() {
-      let goRowPos = this.currentRowPos
-      let goColPos = this.fields.length - 1
-      while (this.fields[goColPos].invisible && goColPos > 0) goColPos--
-      return this.moveTo(goRowPos, goColPos)
+      let goRowPos = this.currentRowPos;
+      let goColPos = this.fields.length - 1;
+      while (this.fields[goColPos].invisible && goColPos > 0) goColPos--;
+      return this.moveTo(goRowPos, goColPos);
     },
     moveWest() {
       if (this.focused && this.currentColPos > 0) {
-        let goColPos = this.currentColPos - 1
-        while (this.fields[goColPos].invisible && goColPos > 0) goColPos--
-        if (goColPos === -1 || this.fields[goColPos].invisible) return false
-        return this.moveInputSquare(this.currentRowPos, goColPos)
+        let goColPos = this.currentColPos - 1;
+        while (this.fields[goColPos].invisible && goColPos > 0) goColPos--;
+        if (goColPos === -1 || this.fields[goColPos].invisible) return false;
+        return this.moveInputSquare(this.currentRowPos, goColPos);
       }
-      return false
+      return false;
     },
     moveEast() {
       if (this.focused && this.currentColPos < this.fields.length - 1) {
-        let goColPos = this.currentColPos + 1
-        while (this.fields[goColPos].invisible && goColPos < this.fields.length - 1) goColPos++
-        if (goColPos === this.fields.length || this.fields[goColPos].invisible) return false
-        return this.moveInputSquare(this.currentRowPos, goColPos)
+        let goColPos = this.currentColPos + 1;
+        while (
+          this.fields[goColPos].invisible &&
+          goColPos < this.fields.length - 1
+        )
+          goColPos++;
+        if (goColPos === this.fields.length || this.fields[goColPos].invisible)
+          return false;
+        return this.moveInputSquare(this.currentRowPos, goColPos);
       }
-      return false
+      return false;
     },
     moveNorth() {
       if (this.focused) {
-        const done = this.moveInputSquare(this.currentRowPos - 1, this.currentColPos)
-        this.calVScroll()
+        const done = this.moveInputSquare(
+          this.currentRowPos - 1,
+          this.currentColPos
+        );
+        this.calVScroll();
         if (this.$refs.vScrollButton) {
           setTimeout(() => {
-            this.$refs.vScrollButton.classList.add('focus')
+            this.$refs.vScrollButton.classList.add("focus");
             this.lazy(() => {
-              if (!this.$refs.vScrollButton) return
-              this.$refs.vScrollButton.classList.remove('focus')
-            }, 1000)
-          })
+              if (!this.$refs.vScrollButton) return;
+              this.$refs.vScrollButton.classList.remove("focus");
+            }, 1000);
+          });
         }
-        return done
+        return done;
       }
-      return false
+      return false;
     },
     moveSouth() {
       if (this.focused) {
-        if (this.currentRowPos + 1 >= (this.pageBottom - this.pageTop) && this.pageBottom >= this.table.length) {
-          if (this.readonly) return false
-          setTimeout(this.moveSouth, 0)
-          return true
+        if (
+          this.currentRowPos + 1 >= this.pageBottom - this.pageTop &&
+          this.pageBottom >= this.table.length
+        ) {
+          if (this.readonly) return false;
+          setTimeout(this.moveSouth, 0);
+          return true;
         }
-        const done = this.moveInputSquare(this.currentRowPos + 1, this.currentColPos)
-        this.calVScroll()
+        const done = this.moveInputSquare(
+          this.currentRowPos + 1,
+          this.currentColPos
+        );
+        this.calVScroll();
         if (this.$refs.vScrollButton) {
           setTimeout(() => {
-            this.$refs.vScrollButton.classList.add('focus')
+            this.$refs.vScrollButton.classList.add("focus");
             this.lazy(() => {
-              if (!this.$refs.vScrollButton) return
-              this.$refs.vScrollButton.classList.remove('focus')
-            }, 1000)
-          })
+              if (!this.$refs.vScrollButton) return;
+              this.$refs.vScrollButton.classList.remove("focus");
+            }, 1000);
+          });
         }
-        return done
+        return done;
       }
-      return false
+      return false;
     },
     mouseDown(e) {
-      if (e.target.parentNode.parentNode.tagName === 'TBODY' && !e.target.classList.contains('first-col')) {
-        e.preventDefault()
-        const row = e.target.parentNode
-        const colPos = Array.from(row.children).indexOf(e.target) - 1
-        const rowPos = Array.from(row.parentNode.children).indexOf(row)
+      if (
+        e.target.parentNode.parentNode.tagName === "TBODY" &&
+        !e.target.classList.contains("first-col")
+      ) {
+        e.preventDefault();
+        const row = e.target.parentNode;
+        const colPos = Array.from(row.children).indexOf(e.target) - 1;
+        const rowPos = Array.from(row.parentNode.children).indexOf(row);
 
         if (colPos !== this.currentColPos || rowPos !== this.currentRowPos)
-          this.inputBoxBlur()
+          this.inputBoxBlur();
 
-        this.currentField = this.fields[colPos]
-        this.currentCell = row.children[colPos + 1]
-        this.currentRecord = this.table[this.pageTop + rowPos]
+        this.currentField = this.fields[colPos];
+        this.currentCell = row.children[colPos + 1];
+        this.currentRecord = this.table[this.pageTop + rowPos];
 
         this.handleCellClick(
           { rowPos, colPos },
@@ -1737,30 +2130,51 @@ export default defineComponent({
 
         this.isCellClickActive = true;
 
-        if (typeof this.currentField.cellClick === 'function') {
-          this.currentField.cellClick(this.currentCell.textContent, this.currentRecord, rowPos, colPos, this.currentField, this)
+        if (typeof this.currentField.cellClick === "function") {
+          this.currentField.cellClick(
+            this.currentCell.textContent,
+            this.currentRecord,
+            rowPos,
+            colPos,
+            this.currentField,
+            this
+          );
         }
-        if (this.currentField && this.currentField.link /* && e.altKey */ && this.currentCell.textContent) {
-          return setTimeout(() => this.currentField.link(this.currentCell.textContent, this.currentRecord, rowPos, colPos, this.currentField, this))
+        if (
+          this.currentField &&
+          this.currentField.link /* && e.altKey */ &&
+          this.currentCell.textContent
+        ) {
+          return setTimeout(() =>
+            this.currentField.link(
+              this.currentCell.textContent,
+              this.currentRecord,
+              rowPos,
+              colPos,
+              this.currentField,
+              this
+            )
+          );
         }
         if (this.currentField.grouping) {
-          this.ungroup[this.currentField.name + this.currentCell.textContent] = !this.ungroup[this.currentField.name + this.currentCell.textContent]
-          this.refresh()
-          return
+          this.ungroup[this.currentField.name + this.currentCell.textContent] =
+            !this.ungroup[
+              this.currentField.name + this.currentCell.textContent
+            ];
+          this.refresh();
+          return;
         }
 
+        setTimeout(() => this.inputBox.focus());
+        this.focused = true;
+        this.moveInputSquare(rowPos, colPos);
 
-        setTimeout(() => this.inputBox.focus())
-        this.focused = true
-        this.moveInputSquare(rowPos, colPos)
-
-        if (e.target.offsetWidth - e.offsetX > 25) return
+        if (e.target.offsetWidth - e.offsetX > 25) return;
         if (e.target.offsetWidth < e.target.scrollWidth) {
-          const rect = e.target.getBoundingClientRect()
+          const rect = e.target.getBoundingClientRect();
         }
-        if (this.currentField.readonly) return
-        this.inputBox.value = this.currentCell.textContent
-
+        if (this.currentField.readonly) return;
+        this.inputBox.value = this.currentCell.textContent;
       }
     },
     mouseUp(e) {
@@ -1768,209 +2182,239 @@ export default defineComponent({
       this.isCellClickActive = false;
     },
     cellMouseMove(e) {
-      let cursor = 'cell'
-      if (this.inputBoxShow) cursor = 'default'
+      let cursor = "cell";
+      if (this.inputBoxShow) cursor = "default";
       if (e.target.offsetWidth - e.offsetX < 25) {
-        if (!e.target.classList.contains('readonly') && (e.target.classList.contains('select') || e.target.classList.contains('datepick')))
-          cursor = 'pointer'
-        if (e.target.offsetWidth < e.target.scrollWidth)
-          cursor = 'pointer'
+        if (
+          !e.target.classList.contains("readonly") &&
+          (e.target.classList.contains("select") ||
+            e.target.classList.contains("datepick"))
+        )
+          cursor = "pointer";
+        if (e.target.offsetWidth < e.target.scrollWidth) cursor = "pointer";
       }
-      const row = e.target.parentNode
-      const colPos = Array.from(row.children).indexOf(e.target) - 1
-      const currentField = this.fields[colPos]
-      if (currentField?.type === 'action' || currentField?.grouping)
-        cursor = 'pointer'
-      e.target.style.cursor = cursor
+      const row = e.target.parentNode;
+      const colPos = Array.from(row.children).indexOf(e.target) - 1;
+      const currentField = this.fields[colPos];
+      if (currentField?.type === "action" || currentField?.grouping)
+        cursor = "pointer";
+      e.target.style.cursor = cursor;
     },
     cellMouseOver(e) {
-
       if (!this.isCellClickActive) {
         return;
       }
 
-      const row = e.target.parentNode
-      const colPos = Array.from(row.children).indexOf(e.target) - 1
-      const rowPos = Array.from(row.parentNode.children).indexOf(row)
+      const row = e.target.parentNode;
+      const colPos = Array.from(row.children).indexOf(e.target) - 1;
+      const rowPos = Array.from(row.parentNode.children).indexOf(row);
       const [startRow, startCol] = this.startCell;
-      this.selectRange(
-        startRow,
-        startCol,
-        rowPos,
-        colPos
-      );
+      this.selectRange(startRow, startCol, rowPos, colPos);
     },
     numcolMouseOver(e) {
-      const cell = e.target
-      if (!cell.classList.contains('error')) return
-      if (this.tipTimeout) clearTimeout(this.tipTimeout)
-      const rect = cell.getBoundingClientRect()
-      this.$refs.tooltip.style.top = (rect.top - 14) + 'px'
-      this.$refs.tooltip.style.left = (rect.right + 8) + 'px'
-      cell.addEventListener('mouseout', this.cellMouseOut)
+      const cell = e.target;
+      if (!cell.classList.contains("error")) return;
+      if (this.tipTimeout) clearTimeout(this.tipTimeout);
+      const rect = cell.getBoundingClientRect();
+      this.$refs.tooltip.style.top = rect.top - 14 + "px";
+      this.$refs.tooltip.style.left = rect.right + 8 + "px";
+      cell.addEventListener("mouseout", this.cellMouseOut);
     },
     cellMouseOut(e) {
-      e.target.removeEventListener(e.type, this.cellMouseOut)
+      e.target.removeEventListener(e.type, this.cellMouseOut);
     },
     /* *** InputBox *****************************************************************************************
      */
     moveInputSquare(rowPos, colPos) {
-      if (colPos < 0) return false
-      const top = this.pageTop
-      let row = this.recordBody.children[rowPos]
+      if (colPos < 0) return false;
+      const top = this.pageTop;
+      let row = this.recordBody.children[rowPos];
       if (!row) {
         if (rowPos > this.currentRowPos) {
           if (this.pageTop + this.pageSize < this.table.length)
-            this.pageTop += 1
-          else
-            return false
-          row = this.recordBody.children[--rowPos]
-        }
-        else {
-          if (this.pageTop - 1 >= 0)
-            this.pageTop -= 1
-          else
-            return false
-          row = this.recordBody.children[++rowPos]
+            this.pageTop += 1;
+          else return false;
+          row = this.recordBody.children[--rowPos];
+        } else {
+          if (this.pageTop - 1 >= 0) this.pageTop -= 1;
+          else return false;
+          row = this.recordBody.children[++rowPos];
         }
       }
 
-      this.labelTr.children[this.currentColPos + 1].classList.remove('focus')
-      if (this.currentRowPos >= 0 && this.currentRowPos < this.pagingTable.length)
-        this.recordBody.children[this.currentRowPos].children[0].classList.remove('focus')
-      this.lastCell?.classList.remove('focus')
+      this.labelTr.children[this.currentColPos + 1].classList.remove("focus");
+      if (
+        this.currentRowPos >= 0 &&
+        this.currentRowPos < this.pagingTable.length
+      )
+        this.recordBody.children[
+          this.currentRowPos
+        ].children[0].classList.remove("focus");
+      this.lastCell?.classList.remove("focus");
 
-      if (this.inputBoxShow) this.inputBoxShow = 0
+      if (this.inputBoxShow) this.inputBoxShow = 0;
       if (this.inputBoxChanged) {
-        const value = this.inputBox._value || this.inputBox.value
-        this.inputBox._value = ''
-        this.inputCellWrite(value, this.currentColPos, top + this.currentRowPos)
-        this.inputBoxChanged = false
+        const value = this.inputBox._value || this.inputBox.value;
+        this.inputBox._value = "";
+        this.inputCellWrite(
+          value,
+          this.currentColPos,
+          top + this.currentRowPos
+        );
+        this.inputBoxChanged = false;
       }
 
-      const cell = row.children[colPos + 1]
-      if (!cell) return false
-      this.currentField = this.fields[colPos]
-      const cellRect = cell.getBoundingClientRect()
-      const tableRect = this.systable.getBoundingClientRect()
-      this.squareSavedLeft = this.tableContent.scrollLeft
-      this.inputSquare.style.marginLeft = 0
-      this.inputSquare.style.left = (cellRect.left - tableRect.left - 1) + 'px'
-      this.inputSquare.style.top = (cellRect.top - tableRect.top - 1) + 'px'
-      this.inputSquare.style.width = (cellRect.width + 1) + 'px'
-      this.inputSquare.style.height = (cellRect.height + 1) + 'px'
-      this.inputSquare.style.zIndex = this.currentField.sticky ? 3 : 0
+      const cell = row.children[colPos + 1];
+      if (!cell) return false;
+      this.currentField = this.fields[colPos];
+      const cellRect = cell.getBoundingClientRect();
+      const tableRect = this.systable.getBoundingClientRect();
+      this.squareSavedLeft = this.tableContent.scrollLeft;
+      this.inputSquare.style.marginLeft = 0;
+      this.inputSquare.style.left = cellRect.left - tableRect.left - 1 + "px";
+      this.inputSquare.style.top = cellRect.top - tableRect.top - 1 + "px";
+      this.inputSquare.style.width = cellRect.width + 1 + "px";
+      this.inputSquare.style.height = cellRect.height + 1 + "px";
+      this.inputSquare.style.zIndex = this.currentField.sticky ? 3 : 0;
 
       if (!this.currentField.sticky) {
-        const boundRect = this.$el.getBoundingClientRect()
+        const boundRect = this.$el.getBoundingClientRect();
         if (cellRect.right >= boundRect.right - 12)
-          this.tableContent.scrollBy(cellRect.right - boundRect.right + 13, 0)
+          this.tableContent.scrollBy(cellRect.right - boundRect.right + 13, 0);
         if (cellRect.left <= boundRect.left + this.leftMost)
-          this.tableContent.scrollBy(cellRect.left - boundRect.left - this.leftMost - 1, 0)
+          this.tableContent.scrollBy(
+            cellRect.left - boundRect.left - this.leftMost - 1,
+            0
+          );
       }
 
-      this.currentRowPos = rowPos
-      this.currentColPos = colPos
-      this.currentCell = cell
-      this.currentRecord = this.table[top + rowPos]
+      this.currentRowPos = rowPos;
+      this.currentColPos = colPos;
+      this.currentCell = cell;
+      this.currentRecord = this.table[top + rowPos];
 
-      this.$emit('cell-focus', { rowPos, colPos, cell, record: this.currentRecord })
-      this.currentCell.classList.add('focus')
-      this.lastCell = this.currentCell
+      this.$emit("cell-focus", {
+        rowPos,
+        colPos,
+        cell,
+        record: this.currentRecord,
+      });
+      this.currentCell.classList.add("focus");
+      this.lastCell = this.currentCell;
 
-      if (this.currentRowPos >= 0 && this.currentRowPos < this.pagingTable.length) {
-        this.inputBox.value = this.currentCell.textContent
-        this.inputBox.focus()
-        this.focused = true
-        row.children[0].classList.add('focus')
-        this.labelTr.children[colPos + 1].classList.add('focus')
+      if (
+        this.currentRowPos >= 0 &&
+        this.currentRowPos < this.pagingTable.length
+      ) {
+        this.inputBox.value = this.currentCell.textContent;
+        this.inputBox.focus();
+        this.focused = true;
+        row.children[0].classList.add("focus");
+        this.labelTr.children[colPos + 1].classList.add("focus");
       }
-      return true
+      return true;
     },
     inputSquareClick() {
-      if (!this.currentField.readonly && !this.inputBoxShow && this.currentField.type !== 'select') {
-        this.inputBox.value = this.currentCell.textContent
-        this.inputBoxShow = 1
-        this.inputBox.focus()
-        this.inputBoxChanged = false
-        this.focused = true
+      if (
+        !this.currentField.readonly &&
+        !this.inputBoxShow &&
+        this.currentField.type !== "select"
+      ) {
+        this.inputBox.value = this.currentCell.textContent;
+        this.inputBoxShow = 1;
+        this.inputBox.focus();
+        this.inputBoxChanged = false;
+        this.focused = true;
       }
     },
     inputBoxMouseMove(e) {
-      let cursor = 'text'
-      if (!this.currentField.readonly && (this.currentField.options)
-        && e.target.offsetWidth - e.offsetX < 15)
-        cursor = 'pointer'
-      e.target.style.cursor = cursor
+      let cursor = "text";
+      if (
+        !this.currentField.readonly &&
+        this.currentField.options &&
+        e.target.offsetWidth - e.offsetX < 15
+      )
+        cursor = "pointer";
+      e.target.style.cursor = cursor;
     },
     inputBoxMouseDown(e) {
-      if (e.target.offsetWidth - e.offsetX > 15) return
-      if (this.currentField.readonly) return
+      if (e.target.offsetWidth - e.offsetX > 15) return;
+      if (this.currentField.readonly) return;
     },
     inputCellWrite(setText, colPos, recPos) {
-      let field = this.currentField
-      if (typeof colPos !== 'undefined') field = this.fields[colPos]
-      if (typeof recPos === 'undefined') recPos = this.pageTop + this.currentRowPos
-      if (!this.noMassUpdate && typeof this.selected[recPos] !== 'undefined')
-        this.updateSelectedRows(field, setText)
+      let field = this.currentField;
+      if (typeof colPos !== "undefined") field = this.fields[colPos];
+      if (typeof recPos === "undefined")
+        recPos = this.pageTop + this.currentRowPos;
+      if (!this.noMassUpdate && typeof this.selected[recPos] !== "undefined")
+        this.updateSelectedRows(field, setText);
       else
-        this.updateCell(recPos, field, field.toValue(setText, this.table[recPos], field))
+        this.updateCell(
+          recPos,
+          field,
+          field.toValue(setText, this.table[recPos], field)
+        );
     },
     inputBoxBlur() {
-      if (!this.$refs.dpContainer) return
-      if (this.$refs.dpContainer.querySelector(':hover')) return
-      this.inputBoxComplete()
-      this.focused = false
-      if (this.currentRowPos !== -1 && this.currentRowPos < this.recordBody.children.length) {
-        this.recordBody.children[this.currentRowPos].children[0].classList.remove('focus')
-        this.labelTr.children[this.currentColPos + 1].classList.remove('focus')
+      if (!this.$refs.dpContainer) return;
+      if (this.$refs.dpContainer.querySelector(":hover")) return;
+      this.inputBoxComplete();
+      this.focused = false;
+      if (
+        this.currentRowPos !== -1 &&
+        this.currentRowPos < this.recordBody.children.length
+      ) {
+        this.recordBody.children[
+          this.currentRowPos
+        ].children[0].classList.remove("focus");
+        this.labelTr.children[this.currentColPos + 1].classList.remove("focus");
       }
-      this.lastCell?.classList.remove('focus')
+      this.lastCell?.classList.remove("focus");
     },
     inputBoxComplete() {
       if (this.inputBoxChanged) {
-        const value = this.inputBox._value || this.inputBox.value
-        this.inputBox._value = ''
-        this.inputCellWrite(value)
-        this.inputBoxChanged = false
+        const value = this.inputBox._value || this.inputBox.value;
+        this.inputBox._value = "";
+        this.inputCellWrite(value);
+        this.inputBoxChanged = false;
       }
-      this.inputBoxShow = 0
-      this.focused = false
-      this.focused = true
+      this.inputBoxShow = 0;
+      this.focused = false;
+      this.focused = true;
     },
     /* *** Update *******************************************************************************************
      */
     async updateCell(row, field, newVal, isUndo) {
       const rowIndex = row;
       switch (row.constructor.name) {
-        case 'String':
-          row = this.modelValue.find(r => r.id === row)
-          break
-        case 'Number':
-          row = this.table[row]
-          break
-        case 'Object':
-          break
+        case "String":
+          row = this.modelValue.find((r) => r.id === row);
+          break;
+        case "Number":
+          row = this.table[row];
+          break;
+        case "Object":
+          break;
         default:
-          throw new Error('Invalid row argument type')
+          throw new Error("Invalid row argument type");
       }
       switch (field.constructor.name) {
-        case 'String':
-          field = this.fields.find(f => f.name === field)
-          break
-        case 'Number':
-          field = this.fields[field]
-          break
-        case 'Object':
-          break
+        case "String":
+          field = this.fields.find((f) => f.name === field);
+          break;
+        case "Number":
+          field = this.fields[field];
+          break;
+        case "Object":
+          break;
         default:
-          throw new Error('Invalid field argument type')
+          throw new Error("Invalid field argument type");
       }
-      if (!field) throw new Error('Invalid field argument')
-      if (!row) return
+      if (!field) throw new Error("Invalid field argument");
+      if (!row) return;
 
-      const oldVal = row[field.name]
-      const oldKeys = this.getKeys(row)
+      const oldVal = row[field.name];
+      const oldKeys = this.getKeys(row);
 
       row[field.name] = { value: newVal, anomaly: false, isSelected: false };
 
@@ -1982,64 +2426,69 @@ export default defineComponent({
           oldKeys: oldKeys,
           name: field.name,
           field: field,
-          oldVal: typeof oldVal !== 'undefined' ? oldVal.value : '',
+          oldVal: typeof oldVal !== "undefined" ? oldVal.value : "",
           newVal: newVal,
-          err: ''
-        }
+          err: "",
+        };
 
-        if (field.mandatory && newVal.value === '')
-          transaction.err += (transaction.err ? '\n' : '') + field.mandatory
+        if (field.mandatory && newVal.value === "")
+          transaction.err += (transaction.err ? "\n" : "") + field.mandatory;
 
-
-        this.lazy(transaction, (buf) => {
-          this.$emit('update', buf)
-          if (!isUndo) this.redo.push(buf)
-        }, 50)
-      })
+        this.lazy(
+          transaction,
+          (buf) => {
+            this.$emit("update", buf);
+            if (!isUndo) this.redo.push(buf);
+          },
+          50
+        );
+      });
     },
     updateSelectedRows(field, setText) {
-      this.localLoading = true
+      this.localLoading = true;
       setTimeout(() => {
-        Object.keys(this.selected).forEach(recPos => {
-          const pos = parseInt(recPos)
-          this.updateCell(pos, field.name, field.toValue(setText, this.table[pos], field))
-        })
-        this.localLoading = false
-      }, 0)
+        Object.keys(this.selected).forEach((recPos) => {
+          const pos = parseInt(recPos);
+          this.updateCell(
+            pos,
+            field.name,
+            field.toValue(setText, this.table[pos], field)
+          );
+        });
+        this.localLoading = false;
+      }, 0);
     },
     /* *** Helper ****************************************************************************************
      */
     hashCode(s) {
-      return s.split('').reduce((a, b) => {
-        return a = ((a << 5) - a) + b.charCodeAt(0) | 0
-      }, 0)
+      return s.split("").reduce((a, b) => {
+        return (a = ((a << 5) - a + b.charCodeAt(0)) | 0);
+      }, 0);
     },
     lazy(p, delay, p1) {
-      if (typeof p !== 'function') return this.lazyBuf(p, delay, p1)
-      if (!delay) delay = 20
-      const hash = this.hashCode(p.name + p.toString())
-      if (this.lazyTimeout[hash]) clearTimeout(this.lazyTimeout[hash])
+      if (typeof p !== "function") return this.lazyBuf(p, delay, p1);
+      if (!delay) delay = 20;
+      const hash = this.hashCode(p.name + p.toString());
+      if (this.lazyTimeout[hash]) clearTimeout(this.lazyTimeout[hash]);
       this.lazyTimeout[hash] = setTimeout(() => {
-        p()
-        delete this.lazyTimeout[hash]
-      }, delay)
+        p();
+        delete this.lazyTimeout[hash];
+      }, delay);
     },
     lazyBuf(item, p, delay) {
-      if (!delay) delay = 20
-      const hash = this.hashCode(p.name + p.toString())
-      if (this.lazyBuffer[hash])
-        this.lazyBuffer[hash].push(item)
-      else
-        this.lazyBuffer[hash] = [item]
+      if (!delay) delay = 20;
+      const hash = this.hashCode(p.name + p.toString());
+      if (this.lazyBuffer[hash]) this.lazyBuffer[hash].push(item);
+      else this.lazyBuffer[hash] = [item];
 
-      if (this.lazyTimeout[hash]) clearTimeout(this.lazyTimeout[hash])
+      if (this.lazyTimeout[hash]) clearTimeout(this.lazyTimeout[hash]);
       this.lazyTimeout[hash] = setTimeout(() => {
         this.$nextTick(() => {
-          p(this.lazyBuffer[hash])
-          delete this.lazyTimeout[hash]
-          delete this.lazyBuffer[hash]
-        })
-      }, delay)
+          p(this.lazyBuffer[hash]);
+          delete this.lazyTimeout[hash];
+          delete this.lazyBuffer[hash];
+        });
+      }, delay);
     },
     handlePaste(event) {
       if (this.disableMultiPaste) return;
@@ -2222,10 +2671,10 @@ export default defineComponent({
         ? this.selectedCells.delete(cellKey)
         : this.selectedCells.add(cellKey);
     },
-  }
-})
+  },
+});
 </script>
 
 <style scoped>
-@import './styles/styles.scss';
+@import "./styles/styles.scss";
 </style>
