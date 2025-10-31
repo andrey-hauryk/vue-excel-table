@@ -113,8 +113,8 @@
             </tr>
             <template v-if="$slots.LastRow">
               <tr>
-                <td></td>
-                <td><slot name="LastRow"></slot></td>
+                <td class="center-text first-col"></td>
+                <td :colspan="fields.length"><slot name="LastRow"></slot></td>
               </tr>
             </template>
           </tbody>
