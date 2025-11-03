@@ -197,6 +197,20 @@
                       <slot :name="`cell-${item.name}`" :record="record" />
                     </template>
 
+                    <template
+                      v-else-if="$slots.cell"
+                    >
+                      <slot
+                        name="cell"
+                        :record="record"
+                        :column="item"
+                        :value="record[item.name]?.value"
+                        :rowIndex="rowPos"
+                        :colIndex="p"
+                        :field="item.name"
+                      />
+                    </template>
+
                     <!-- if render function exist render render fn -->
                     <template v-else-if="typeof item.render === 'function'">
                       <component :is="item.render(record)" />
