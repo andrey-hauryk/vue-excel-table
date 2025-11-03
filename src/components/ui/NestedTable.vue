@@ -48,7 +48,6 @@ import ExpansionPanel from '../table/components/ExpansionPanel.vue';
 import VueExcelEditor from '../table/VueExcelEditor.vue';
 import VueExcelColumn from '../table/VueExcelColumn.vue';
 import {reactive, ref, watch} from 'vue';
-import { useScenariosStore } from '@/store/scenarios';
 
 const props = defineProps({
   tableData: Array,
@@ -66,7 +65,7 @@ const setProps = () => {
 
 const emit = defineEmits(['selected']);
 
-const panelStates = useScenariosStore().panelStates;
+const panelStates = [];
 
 const allSelectedIds = ref<string[]>(props.selectedRows);
 
