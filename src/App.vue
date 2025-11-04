@@ -11,8 +11,9 @@
       <template #cell="{ record, column, value, rowIndex }">
         <template v-if="rowIndex === 2">
           <select
-            v-model="record[column.field]"
+            :value="record[column.field]"
             class="cell-select"
+            @change="(e) => handleSelectChange(e, record, column.field)"
             @click.stop
           >
             <option disabled value="">Выберите значение</option>
@@ -26,9 +27,9 @@
           </select>
         </template>
 
-        <!-- <template v-else>
+        <template v-else>
           {{ value }}
-        </template> -->
+        </template>
       </template>
     </ExcelTable>
   </div>
@@ -51,7 +52,16 @@ const exportTable = () => {
   tableApi.value?.exportTable();
 };
 
-// ✅ Опции для select в зависимости от поля
+const handleSelectChange = (event: Event, record: any, field: string) => {
+  const newValue = (event.target as HTMLSelectElement).value;
+
+  record[field] = newValue;
+
+  tableData.value = [...tableData.value];
+
+  console.log('value', tableData.value);
+};
+
 const getOptions = (field: string) => {
   switch (field) {
     case "well_status":
@@ -65,7 +75,6 @@ const getOptions = (field: string) => {
   }
 };
 
-// Колонки без изменений
 const columns = computed(() => [
   { field: "groupKey", type: "string", label: "Группа", grouping: "expand" },
   { field: "date_dt", type: "date", label: "Дата" },
