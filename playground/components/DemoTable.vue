@@ -1,8 +1,6 @@
 <template>
-  <div class="demo">
-    <h2>🎨 Vue Excel Table Playground</h2>
-
-    <button @click="exportTable" class="demo__btn">Экспорт</button>
+  <div class="table">
+    <button @click="exportTable">Экспорт</button>
 
     <ExcelTable
       v-model="tableData"
@@ -12,7 +10,12 @@
     >
       <template #cell="{ record, column, value, rowIndex }">
         <template v-if="rowIndex === 2">
-          <select v-model="record[column.field]" class="cell-select" @click.stop>
+          <select
+            :value="record[column.field]"
+            class="cell-select"
+            @change="(e) => handleSelectChange(e, record, column.field)"
+            @click.stop
+          >
             <option disabled value="">Выберите значение</option>
             <option
               v-for="option in getOptions(column.field)"
@@ -23,7 +26,10 @@
             </option>
           </select>
         </template>
-        <template v-else>{{ value }}</template>
+
+        <template v-else>
+          {{ value }}
+        </template>
       </template>
     </ExcelTable>
   </div>
@@ -31,9 +37,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { formatNumber } from "../../src/mock/helpers";
-import tableDataMock from "../../src/mock/data";
-import { ExcelTable } from "@/index";
+import { formatNumber } from "../mock/helpers"; // если есть
+import tableDataMock from "../mock/data"; // если есть
 
 const tableData = ref(tableDataMock);
 const tableApi = ref<any>(null);
@@ -44,6 +49,12 @@ const handleTableReady = (api: any) => {
 
 const exportTable = () => {
   tableApi.value?.exportTable();
+};
+
+const handleSelectChange = (event: Event, record: any, field: string) => {
+  const newValue = (event.target as HTMLSelectElement).value;
+  record[field] = newValue;
+  tableData.value = [...tableData.value];
 };
 
 const getOptions = (field: string) => {
@@ -62,28 +73,19 @@ const getOptions = (field: string) => {
 const columns = computed(() => [
   { field: "groupKey", type: "string", label: "Группа", grouping: "expand" },
   { field: "date_dt", type: "date", label: "Дата" },
-  { field: "prod_horizon", type: "string", label: "Объект работы" },
   { field: "well_status", type: "string", label: "Состояние" },
   { field: "well_type", type: "string", label: "Характер работы" },
-  { field: "eff", type: "number", label: "К_эксп" },
+  {
+    field: "eff",
+    autocomplete: true,
+    type: "number",
+    label: "К_эксп",
+    valueFormatter: (value: number) => formatNumber(value, "eff"),
+  },
 ]);
 </script>
 
 <style scoped lang="scss">
-.demo {
-  padding: 20px;
-  font-family: Inter, sans-serif;
-}
-.demo__btn {
-  padding: 6px 12px;
-  margin-bottom: 10px;
-  font-size: 12px;
-  background: #009639;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
 .cell-select {
   width: 100%;
   font-size: 10px;

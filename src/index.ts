@@ -1,6 +1,6 @@
-import ExcelTable from "./components/ExcelTable.vue";
-import VueExcelEditor from "./components/VueExcelEditor.vue";
-import VueExcelColumn from "./components/VueExcelColumn.vue";
+import ExcelTable from "./components/ui/ExcelTable.vue";
+import VueExcelEditor from "./components/table/VueExcelEditor.vue";
+import VueExcelColumn from "./components/table/VueExcelColumn.vue";
 
 export { ExcelTable, VueExcelEditor, VueExcelColumn };
 
