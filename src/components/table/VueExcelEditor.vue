@@ -229,6 +229,7 @@
                       </template>
                     </template>
                   </td>
+                  <td :key="item.name" v-else style="display: none"></td>
                 </template>
                 <td
                   v-if="vScroller.buttonHeight < vScroller.height"
