@@ -2554,7 +2554,7 @@ export default defineComponent({
           if (key && !(this.table.length - 1 < rowOffset)) {
             this.table[rowOffset][key].value = cellData;
             this.table[rowOffset][key].isSelected = true;
-            rowUpdates.push({ column: key, value: cellData });
+            rowUpdates.push({ column: key, value: cellData, field: this.fields });
           }
         });
 
@@ -2562,6 +2562,7 @@ export default defineComponent({
           updates.push({
             rowIndex: rowOffset,
             rowId: this.table[rowOffset].id,
+            row: this.table[rowOffset],
             updates: rowUpdates,
           });
         }
