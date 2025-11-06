@@ -1,86 +1,90 @@
 <template>
   <div>
-    <template v-for="(table, index) in tableData" :key="table.company_id">
+    <template v-for="(table, index) in tableData" :key="table[idKey]">
       <ExpansionPanel
-        :title="table.company_name"
-        v-model:show="panelStates[index]"
-      >
-        <VueExcelEditor
-          class="excel-table"
-          v-model="table.scenarios"
-          noPaging
-          noFooter
-          no-header-edit
-          selectable
-          free-select
-          disableMultiCopy
-          disableMultiPaste
-          :cellStyle="cellStyle"
+        :title="table[titleKey]"
+        v-model:show="panelStates[index].isOpen"
+        >
+        <ExcelTable
+          v-model="table[tableKey]"
+          v-bind="tableOptions"
+          :columns="columns"
+          :init-style="{ padding: '2px 4px', height: '15px', 'text-align': 'center' }"
           :selectedRows="selectedRowsLocal"
-          :sortingByDefault="{
-            colPos: 7,
-            dir: 1,
-          }"
-          highlightRowKey="cons_ready"
+          :sortingByDefault="sortingByDefaultLocal"
+          :cellStyle="cellStyle"
           @select="handleSelect"
           @ready="setProps"
-          >
-          <template v-for="(column, colIndex) in columns" :key="column.index || colIndex">
-            <VueExcelColumn
-              v-bind="column"
-              :init-style="{ padding: '2px 4px', height: '15px', 'text-align': 'center' }"
-              auto-fill-width
-              v-slot="scope"
-            >
-            </VueExcelColumn>
-            <template v-if="$slots[`cell-${column.field}`]">
-                <slot :name="`cell-${column.field}`" :record="record" />
-            </template>
-          </template>
-        </VueExcelEditor>
+        ></ExcelTable>
       </ExpansionPanel>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import ExpansionPanel from '../table/components/ExpansionPanel.vue';
-import VueExcelEditor from '../table/VueExcelEditor.vue';
-import VueExcelColumn from '../table/VueExcelColumn.vue';
-import {reactive, ref, watch} from 'vue';
+import { ExcelTable } from "vue-excel-table";
+import ExpansionPanel from "@/components/ExpansionPanel.vue";
+import {ref} from 'vue';
 
-const props = defineProps({
-  tableData: Array,
-  columns: Array,
-  selectedRows: Array,
-  cellStyle: Function,
+interface Panel {
+  id: string;
+  isOpen: boolean;
+}
+
+interface tableOptions {
+  selectable: boolean;
+  noPaging: boolean;
+  noFooter: boolean;
+  noHeaderEdit: boolean;
+  freeSelect: boolean;
+  disableMultiCopy: boolean;
+  disableMultiPaste: boolean;
+  highlightRowKey: string;
+  autoFillWidth: boolean;
+}
+
+interface Props {
+  tableData: any;
+  columns: any;
+  titleKey: string;
+  idKey: string;
+  tableKey: string;
+  loading: boolean;
+  panelStates: Panel[];
+  selectedRows: any;
+  tableOptions: tableOptions;
+  cellStyle: any;
+  sortingByDefault: any;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  titleKey: "company_name",
+  idKey: "company_id",
+  tableKey: "scenarios",
 });
 
 const selectedRowsLocal = ref([]);
+const sortingByDefaultLocal = ref([]);
 
 const setProps = () => {
   selectedRowsLocal.value = props.selectedRows;
+  sortingByDefaultLocal.value = props.sortingByDefault;
 };
-
 
 const emit = defineEmits(['selected']);
 
-const panelStates = [];
-
-const allSelectedIds = ref<string[]>(props.selectedRows);
+const allSelectedIds = ref<Set<string>>(new Set(props.selectedRows));
 
 const handleSelect = (selectedId: string[], status: boolean): void => {
-  selectedId.forEach((id: string) => {
-    const indexIfExist: number = allSelectedIds.value.indexOf(id);
-    if (!status) {
-      allSelectedIds.value.splice(indexIfExist, 1);
+  selectedId.forEach((id) => {
+    if (status) {
+      allSelectedIds.value.add(id);
     } else {
-      allSelectedIds.value.push(id);
+      allSelectedIds.value.delete(id);
     }
   });
-
-  emit('selected', allSelectedIds.value);
-}
+  emit('selected', Array.from(allSelectedIds.value));
+};
 </script>
 
 <style scoped lang="scss">
