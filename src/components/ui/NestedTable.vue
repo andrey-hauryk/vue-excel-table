@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { ExcelTable } from "vue-excel-table";
-import ExpansionPanel from "@/components/ExpansionPanel.vue";
+import ExpansionPanel from "../table/components/ExpansionPanel.vue";
 import {ref} from 'vue';
 
 interface Panel {

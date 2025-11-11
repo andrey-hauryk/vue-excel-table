@@ -1,13 +1,11 @@
 import ExcelTable from "./components/ui/ExcelTable.vue";
-import VueExcelEditor from "./components/table/VueExcelEditor.vue";
-import VueExcelColumn from "./components/table/VueExcelColumn.vue";
+import NestedTable from "./components/ui/NestedTable.vue";
 
-export { ExcelTable, VueExcelEditor, VueExcelColumn };
+export { ExcelTable, NestedTable };
 
 export default {
   install(app) {
     app.component("ExcelTable", ExcelTable);
-    app.component("VueExcelEditor", VueExcelEditor);
-    app.component("VueExcelColumn", VueExcelColumn);
+    app.component("NestedTable", NestedTable);
   },
 };
