@@ -12,7 +12,8 @@
     ".": {
       "import": "./dist/vue-excel-table.es.js",
       "require": "./dist/vue-excel-table.umd.js"
-    }
+    },
+    "./vue-excel-table.css": "./dist/vue-excel-table.css"
   },
   "scripts": {
     "dev:play": "vite --config playground/vite.config.ts",
