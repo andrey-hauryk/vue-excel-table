@@ -16,10 +16,9 @@
     "./vue-excel-table.css": "./dist/vue-excel-table.css"
   },
   "scripts": {
-    "dev:play": "vite --config playground/vite.config.ts",
     "build": "vite build",
     "build:tgz": "npm run build && npm pack",
-    "preview": "vite preview"
+    "dev:preview": "npm run build && cd preview && npm run dev"
   },
   "peerDependencies": {
     "vue": "^3.0.0"
