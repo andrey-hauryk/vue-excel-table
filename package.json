@@ -5,6 +5,9 @@
   "main": "./dist/vue-excel-table.umd.js",
   "module": "./dist/vue-excel-table.es.js",
   "types": "./dist/index.d.ts",
+  "workspaces": [
+    "preview"
+  ],
   "files": [
     "dist"
   ],

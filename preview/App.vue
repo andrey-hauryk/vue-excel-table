@@ -1,7 +1,7 @@
 <template>
   <div style="padding: 20px">
-    <!-- <DemoTable /> -->
-     <NestedTableDemo></NestedTableDemo>
+    <DemoTable />
+     <!-- <NestedTableDemo></NestedTableDemo> -->
   </div>
 </template>
 
