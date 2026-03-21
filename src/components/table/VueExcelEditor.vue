@@ -299,7 +299,6 @@
               :style="{ opacity: inputBoxShow }"
               @blur="inputBoxBlur"
               @mousemove="inputBoxMouseMove"
-              @mousedown="inputBoxMouseDown"
               @mouseup="mouseUp"
               trim
               autocomplete="off"
@@ -626,7 +625,6 @@ export default defineComponent({
       sortPos: 0,
       sortDir: 0,
       lazyTimeout: {},
-      lazyBuffer: {},
       hScroller: {},
       vScroller: {},
       leftMost: 0,
@@ -682,35 +680,6 @@ export default defineComponent({
       return this.pageTop + this.pageSize > this.table.length
         ? this.table.length
         : this.pageTop + this.pageSize;
-    },
-    setting: {
-      get() {
-        return null;
-      },
-      set(setter) {
-        if (setter.fields) {
-          if (setter.fields.length !== this.fields.length) return;
-          let valid = true;
-          const newFields = setter.fields.map((local) => {
-            const current = this.fields.find((f) => f.name === local.name);
-            if (!current) valid = false;
-            else {
-              if (typeof local.invisible !== "undefined")
-                current.invisible = local.invisible;
-              if (typeof local.width !== "undefined")
-                current.width = local.width;
-              if (typeof local.label !== "undefined")
-                current.label = local.label;
-            }
-            return current;
-          });
-          if (valid) {
-            this.fields = newFields;
-            const instance = getCurrentInstance();
-            instance?.proxy?.$forceUpdate();
-          }
-        }
-      },
     },
   },
   watch: {
@@ -912,7 +881,7 @@ export default defineComponent({
     toggleFilterView(e) {
       if (e) e.stopPropagation();
       this.showFilteredOnly = !this.showFilteredOnly;
-      return this.refresh();
+      this.refresh();
     },
     resetColumn() {
       this.fields = [];
@@ -1422,7 +1391,7 @@ export default defineComponent({
             break;
           case 71:
             if (!this.noFinding && this.inputFind !== "") {
-              this.doFindNext();
+              this.doFind();
               e.preventDefault();
             }
             break;
@@ -1433,11 +1402,11 @@ export default defineComponent({
           case 37:
             if (!this.focused) return;
             if (!this.inputBoxShow) {
-              this.moveWest(e);
+              this.moveWest();
               e.preventDefault();
             } else {
               if (this.inputBox.selectionStart === 0) {
-                this.moveWest(e);
+                this.moveWest();
                 e.preventDefault();
               }
             }
@@ -1450,13 +1419,13 @@ export default defineComponent({
           case 9:
             if (!this.focused) return;
             if (e.shiftKey) {
-              if (!this.moveWest(e)) {
-                if (this.moveNorth(e)) this.moveToEast(e);
+              if (!this.moveWest()) {
+                if (this.moveNorth()) this.moveToEast();
                 else return this.inputBoxBlur();
               }
             } else {
-              if (!this.moveEast(e)) {
-                if (this.moveSouth(e)) this.moveToWest(e);
+              if (!this.moveEast()) {
+                if (this.moveSouth()) this.moveToWest();
                 else return this.inputBoxBlur();
               }
             }
@@ -1465,11 +1434,11 @@ export default defineComponent({
           case 39:
             if (!this.focused) return;
             if (!this.inputBoxShow) {
-              this.moveEast(e);
+              this.moveEast();
               e.preventDefault();
             } else {
               if (this.inputBox.selectionEnd === this.inputBox.value.length) {
-                this.moveEast(e);
+                this.moveEast();
                 e.preventDefault();
               }
             }
@@ -1477,14 +1446,14 @@ export default defineComponent({
           case 40:
             if (!this.focused) return;
             e.preventDefault();
-            this.moveSouth(e);
+            this.moveSouth();
             break;
           case 13:
             if (!this.focused) return;
             e.preventDefault();
 
-            if (this.enterToSouth) this.moveSouth(e);
-            else this.moveEast(e);
+            if (this.enterToSouth) this.moveSouth();
+            else this.moveEast();
 
             this.inputBox.value = this.currentCell.textContent;
             this.inputBoxShow = 0;
@@ -1619,9 +1588,6 @@ export default defineComponent({
     },
     /* *** Finder *******************************************************************************************
      */
-    doFindNext() {
-      return this.doFind();
-    },
     doFind(s) {
       if (typeof s === "undefined") s = this.inputFind;
       else this.inputFind = s;
@@ -1766,57 +1732,38 @@ export default defineComponent({
       const colWidth = Array.from(this.colgroupTr.children).map(
         (col) => col?.style.width
       );
-      const fields = this.fields.map((field, i) => {
-        return {
+      return {
+        colHash: this.colHash,
+        fields: this.fields.map((field, i) => ({
           name: field.name,
           invisible: field.invisible,
           width: colWidth[i + 1],
           label: field.label,
-        };
-      });
-      return {
-        colHash: this.colHash,
-        fields: fields,
+        })),
       };
     },
 
     settingClick() {
-      if (!this.disablePanelSetting) {
-        this.showPanelSetting = true;
-      }
+      if (!this.disablePanelSetting) this.showPanelSetting = true;
     },
 
     panelFilterClick(item, p) {
       if (this.disablePanelFilter) return;
 
       this.showPanelFilter = true;
-      this.filterColumnsRows = [];
       this.filterColumnPosition = p;
-
-      this.modelValue.forEach((row) => {
-        this.filterColumnsRows.push(row[item.name].value);
-      });
+      this.filterColumnsRows = this.modelValue.map((row) => row[item.name].value);
     },
     /* *** Import/Export ************************************************************************************
      */
     importTable(file) {
-      const importTable = useExcelImport();
-      importTable(file).then((data) => {
-        console.log("data", data);
-        console.log("tableData", this.table);
-      });
+      const importExcel = useExcelImport();
+      importExcel(file);
     },
     async exportTable(options = ref({})) {
       const { exportTable } = useExcelExport();
-
-      let tableData = [];
       const opts = options.value ?? {};
-
-      if (opts.filteredValues) {
-        tableData = this.table;
-      } else {
-        tableData = this.modelValue;
-      }
+      let tableData = opts.filteredValues ? this.table : this.modelValue;
 
       if (opts.selectedRows) {
         const selectedIds = Object.values(this.selected);
@@ -1881,15 +1828,11 @@ export default defineComponent({
       const recordElement = this.recordBody.children[rowPos - this.pageTop];
       if (recordElement) recordElement.classList.add("select");
 
-      const currentRowsData = Object.keys(this.selected).map(
-        (i) => this.table[i]
-      );
-
       this.$emit(
         "select",
         [this.getSelectionFieldValue(row)],
         true,
-        currentRowsData,
+        this.getCurrentRowsData(),
         this.selected
       );
     },
@@ -1905,16 +1848,12 @@ export default defineComponent({
 
       if (recordElement) recordElement.classList.remove("select");
 
-      const currentRowsData = Object.keys(this.selected).map(
-        (i) => this.table[i]
-      );
-
-      this.lazy(rowPos, () => {
+      this.lazy(() => {
         this.$emit(
           "select",
           [this.getSelectionFieldValue(row)],
           false,
-          currentRowsData
+          this.getCurrentRowsData()
         );
       });
     },
@@ -1928,16 +1867,11 @@ export default defineComponent({
         const selectedEntries = this.table.map((row, i) => [i, row.id]);
         this.selected = Object.fromEntries(selectedEntries);
         this.selectedCount = this.table.length;
-        const currentRowsData = Object.keys(this.selected).map(
-          (i) => this.table[i]
-        );
         this.$emit(
           "select",
-          selectedEntries.map(([_, id]) =>
-            this.getSelectionFieldValue(this.table.find((row) => row.id === id))
-          ),
+          this.table.map((row) => this.getSelectionFieldValue(row)),
           true,
-          currentRowsData
+          this.getCurrentRowsData()
         );
       }
     },
@@ -1946,20 +1880,20 @@ export default defineComponent({
         ? row[this.selectionField]
         : row[this.selectionField]?.value;
     },
+    getCurrentRowsData() {
+      return Object.keys(this.selected).map((i) => this.table[i]);
+    },
     clearAllSelected() {
       if (this.singleSelect) return;
 
       if (this.selectedCount > 0) {
-        const currentRowsData = Object.keys(this.selected).map(
-          (i) => this.table[i]
-        );
         this.$emit(
           "select",
           Object.keys(this.selected).map((i) =>
             this.getSelectionFieldValue(this.table[i])
           ),
           false,
-          currentRowsData
+          this.getCurrentRowsData()
         );
       }
 
@@ -1975,31 +1909,19 @@ export default defineComponent({
       setTimeout(() => this.inputBox.focus());
       return done;
     },
-    moveToSouthWest() {
-      let goRowPos = this.table.length - 1;
-      let goColPos = 0;
-      while (
-        this.fields[goColPos].invisible &&
-        goColPos < this.fields.length - 1
-      )
-        goColPos++;
-      return this.moveTo(goRowPos, goColPos);
-    },
     moveToWest() {
-      let goRowPos = this.currentRowPos;
       let goColPos = 0;
       while (
         this.fields[goColPos].invisible &&
         goColPos < this.fields.length - 1
       )
         goColPos++;
-      return this.moveTo(goRowPos, goColPos);
+      return this.moveTo(this.currentRowPos, goColPos);
     },
     moveToEast() {
-      let goRowPos = this.currentRowPos;
       let goColPos = this.fields.length - 1;
       while (this.fields[goColPos].invisible && goColPos > 0) goColPos--;
-      return this.moveTo(goRowPos, goColPos);
+      return this.moveTo(this.currentRowPos, goColPos);
     },
     moveWest() {
       if (this.focused && this.currentColPos > 0) {
@@ -2291,10 +2213,6 @@ export default defineComponent({
         cursor = "pointer";
       e.target.style.cursor = cursor;
     },
-    inputBoxMouseDown(e) {
-      if (e.target.offsetWidth - e.offsetX > 15) return;
-      if (this.currentField.readonly) return;
-    },
     inputCellWrite(setText, colPos, recPos) {
       let field = this.currentField;
       if (typeof colPos !== "undefined") field = this.fields[colPos];
@@ -2416,29 +2334,13 @@ export default defineComponent({
         return (a = ((a << 5) - a + b.charCodeAt(0)) | 0);
       }, 0);
     },
-    lazy(p, delay, p1) {
-      if (typeof p !== "function") return this.lazyBuf(p, delay, p1);
+    lazy(p, delay) {
       if (!delay) delay = 20;
       const hash = this.hashCode(p.name + p.toString());
       if (this.lazyTimeout[hash]) clearTimeout(this.lazyTimeout[hash]);
       this.lazyTimeout[hash] = setTimeout(() => {
         p();
         delete this.lazyTimeout[hash];
-      }, delay);
-    },
-    lazyBuf(item, p, delay) {
-      if (!delay) delay = 20;
-      const hash = this.hashCode(p.name + p.toString());
-      if (this.lazyBuffer[hash]) this.lazyBuffer[hash].push(item);
-      else this.lazyBuffer[hash] = [item];
-
-      if (this.lazyTimeout[hash]) clearTimeout(this.lazyTimeout[hash]);
-      this.lazyTimeout[hash] = setTimeout(() => {
-        this.$nextTick(() => {
-          p(this.lazyBuffer[hash]);
-          delete this.lazyTimeout[hash];
-          delete this.lazyBuffer[hash];
-        });
       }, delay);
     },
     handlePaste(event) {
