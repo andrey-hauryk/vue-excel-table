@@ -424,18 +424,7 @@ import IconEraser from "./components/svg/IconEraser.vue";
 import { useExcelExport } from "../table/composables/useExportTable";
 import { useExcelImport } from "../table/composables/useImportTable";
 
-import { ref } from "vue";
-
 export default defineComponent({
-  setup(props) {
-    const test = ref("Тестирую");
-
-    console.log(props);
-
-    return {
-      test,
-    };
-  },
   components: {
     "vue-excel-filter": VueExcelFilter,
     "panel-filter": PanelFilter,
@@ -637,7 +626,6 @@ export default defineComponent({
       calCellTop2: 29,
       sortPos: 0,
       sortDir: 0,
-      redo: [],
       lazyTimeout: {},
       lazyBuffer: {},
       hScroller: {},
@@ -860,10 +848,6 @@ export default defineComponent({
         this.undoStack.shift();
       }
 
-      if (this.undoStack.length > this.maxHistorySteps) {
-        this.undoStack.shift();
-      }
-
       this.redoStack = [];
     },
     undoHistory() {
@@ -915,7 +899,6 @@ export default defineComponent({
       window.removeEventListener("wheel", this.mousewheel);
     },
     reset() {
-      this.redo = [];
       this.showFilteredOnly = true;
       this.columnFilter = {};
       this.sortPos = 0;
@@ -1845,9 +1828,7 @@ export default defineComponent({
      */
     importTable(file) {
       const importTable = useExcelImport();
-      const test = importTable(file);
-
-      test.then((data) => {
+      importTable(file).then((data) => {
         console.log("data", data);
         console.log("tableData", this.table);
       });
@@ -2185,9 +2166,6 @@ export default defineComponent({
         this.moveInputSquare(rowPos, colPos);
 
         if (e.target.offsetWidth - e.offsetX > 25) return;
-        if (e.target.offsetWidth < e.target.scrollWidth) {
-          const rect = e.target.getBoundingClientRect();
-        }
         if (this.currentField.readonly) return;
         this.inputBox.value = this.currentCell.textContent;
       }
@@ -2453,7 +2431,6 @@ export default defineComponent({
           transaction,
           (buf) => {
             this.$emit("update", buf);
-            if (!isUndo) this.redo.push(buf);
           },
           50
         );
