@@ -155,7 +155,6 @@
                     hide: noNumCol,
                   }"
                   :pos="rowPos"
-                  @mouseover="numcolMouseOver"
                   @click="rowLabelClick"
                 >
                   <span
@@ -366,7 +365,7 @@
             <span
               :style="{
                 color:
-                  table.length !== filteredValue.length ? 'red' : 'inherit',
+                  table.length !== modelValue.length ? 'red' : 'inherit',
               }"
               >{{ table.length }}</span
             >
@@ -632,7 +631,6 @@ export default defineComponent({
       vScroller: {},
       leftMost: 0,
       table: [],
-      filteredValue: [],
       showFilteredOnly: true,
       ungroup: {},
       showPanelFind: false,
@@ -680,11 +678,10 @@ export default defineComponent({
       return this.table.slice(this.pageTop, this.pageTop + this.pageSize);
     },
     pageBottom() {
-      if (this.filteredValue.length === 0) return 0;
-      else
-        return this.pageTop + this.pageSize > this.table.length
-          ? this.table.length
-          : this.pageTop + this.pageSize;
+      if (this.table.length === 0) return 0;
+      return this.pageTop + this.pageSize > this.table.length
+        ? this.table.length
+        : this.pageTop + this.pageSize;
     },
     setting: {
       get() {
@@ -1707,7 +1704,7 @@ export default defineComponent({
     },
     sort(n, pos) {
       const colPos =
-        typeof pos === "undefined" ? this.columnFilterRef.colPos : pos;
+        typeof pos === "undefined" ? this.filterColumnPosition : pos;
       const field = this.fields[colPos];
       if (field.noSorting) return;
 
@@ -1747,30 +1744,6 @@ export default defineComponent({
           scrollerWidth;
       }
 
-      let outerElement = this.editor;
-      let bottomOffset = 0;
-      if (this.height !== "auto") {
-        while (
-          outerElement &&
-          !outerElement.style.height &&
-          outerElement.style.height !== "auto"
-        ) {
-          const style = getComputedStyle(outerElement);
-          bottomOffset += parseInt(style.marginBottom);
-          bottomOffset += parseInt(style.paddingBottom);
-          bottomOffset += parseInt(style.borderBottomWidth);
-          outerElement = outerElement.parentElement;
-        }
-      }
-      if (outerElement) {
-        const style = getComputedStyle(outerElement);
-        bottomOffset += parseInt(style.paddingBottom);
-        bottomOffset += parseInt(style.borderBottomWidth);
-      }
-
-      const outerHeight = outerElement?.clientHeight || window.innerHeight;
-      const outerTop = outerElement?.getBoundingClientRect().top || 0;
-
       if (this.height === "auto") {
         let h = Math.floor(
           window.innerHeight -
@@ -1780,7 +1753,7 @@ export default defineComponent({
         let offset = 4;
         if (this.filterRow) offset += 29;
         if (this.totalRow) offset += 25;
-        if (!this.footerRow) offset += 25;
+        if (!this.noFooter) offset += 25;
         h = Math.min(24 * (this.table.length - this.pageTop) + offset, h);
         this.systable.parentNode.style.height = h + "px";
       }
@@ -2204,18 +2177,6 @@ export default defineComponent({
       const [startRow, startCol] = this.startCell;
       this.selectRange(startRow, startCol, rowPos, colPos);
     },
-    numcolMouseOver(e) {
-      const cell = e.target;
-      if (!cell.classList.contains("error")) return;
-      if (this.tipTimeout) clearTimeout(this.tipTimeout);
-      const rect = cell.getBoundingClientRect();
-      this.$refs.tooltip.style.top = rect.top - 14 + "px";
-      this.$refs.tooltip.style.left = rect.right + 8 + "px";
-      cell.addEventListener("mouseout", this.cellMouseOut);
-    },
-    cellMouseOut(e) {
-      e.target.removeEventListener(e.type, this.cellMouseOut);
-    },
     /* *** InputBox *****************************************************************************************
      */
     moveInputSquare(rowPos, colPos) {
@@ -2349,8 +2310,6 @@ export default defineComponent({
         );
     },
     inputBoxBlur() {
-      if (!this.$refs.dpContainer) return;
-      if (this.$refs.dpContainer.querySelector(":hover")) return;
       this.inputBoxComplete();
       this.focused = false;
       if (
@@ -2377,7 +2336,7 @@ export default defineComponent({
     },
     /* *** Update *******************************************************************************************
      */
-    async updateCell(row, field, newVal, isUndo) {
+    updateCell(row, field, newVal) {
       const rowIndex = row;
       switch (row.constructor.name) {
         case "String":
